@@ -56,6 +56,11 @@ const Onboarding = () => {
 
   const handleSubmit = async () => {
     try {
+      const session = await supabase.auth.getSession();
+      if (!session.data.session?.user.id) {
+        throw new Error('No user session found');
+      }
+
       let voiceUrl = null;
       let videoUrl = null;
 
@@ -71,6 +76,7 @@ const Onboarding = () => {
       const { error } = await supabase
         .from('onboarding_responses')
         .insert({
+          user_id: session.data.session.user.id,
           question_number: currentQuestion + 1,
           text_response: textResponse,
           voice_url: voiceUrl,

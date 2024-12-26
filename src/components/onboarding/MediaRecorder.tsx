@@ -19,16 +19,16 @@ export const MediaRecorder = ({ onMediaRecorded }: MediaRecorderProps) => {
       };
 
       const stream = await navigator.mediaDevices.getUserMedia(constraints);
-      const mediaRecorder = new MediaRecorder(stream);
+      const recorder = new window.MediaRecorder(stream);
       const chunks: BlobPart[] = [];
 
-      mediaRecorder.ondataavailable = (e) => {
+      recorder.ondataavailable = (e) => {
         if (e.data.size > 0) {
           chunks.push(e.data);
         }
       };
 
-      mediaRecorder.onstop = () => {
+      recorder.onstop = () => {
         const blob = new Blob(chunks, {
           type: type === 'video' ? 'video/webm' : 'audio/webm',
         });
@@ -36,7 +36,7 @@ export const MediaRecorder = ({ onMediaRecorded }: MediaRecorderProps) => {
         stream.getTracks().forEach(track => track.stop());
       };
 
-      mediaRecorderRef.current = mediaRecorder;
+      mediaRecorderRef.current = recorder;
       mediaRecorderRef.current.start();
       setIsRecording(true);
       setMediaType(type);
