@@ -11,6 +11,7 @@ const Login = () => {
   const { toast } = useToast();
 
   useEffect(() => {
+    // Check if user is already signed in
     supabase.auth.getSession().then(({ data: { session } }) => {
       if (session) {
         navigate('/');
@@ -58,6 +59,14 @@ const Login = () => {
             theme="light"
             providers={[]}
             redirectTo={window.location.origin}
+            onAuthError={(error) => {
+              console.error('Auth error:', error);
+              toast({
+                title: "Authentication Error",
+                description: error.message,
+                variant: "destructive",
+              });
+            }}
           />
         </Card>
       </div>

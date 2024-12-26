@@ -9,36 +9,7 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
-      onboarding_responses: {
-        Row: {
-          created_at: string
-          id: string
-          question_number: number
-          text_response: string | null
-          user_id: string
-          video_url: string | null
-          voice_url: string | null
-        }
-        Insert: {
-          created_at?: string
-          id?: string
-          question_number: number
-          text_response?: string | null
-          user_id: string
-          video_url?: string | null
-          voice_url?: string | null
-        }
-        Update: {
-          created_at?: string
-          id?: string
-          question_number?: number
-          text_response?: string | null
-          user_id?: string
-          video_url?: string | null
-          voice_url?: string | null
-        }
-        Relationships: []
-      }
+      [_ in never]: never
     }
     Views: {
       [_ in never]: never
