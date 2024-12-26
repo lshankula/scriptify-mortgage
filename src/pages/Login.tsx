@@ -4,14 +4,23 @@ import { ThemeSupa } from '@supabase/auth-ui-shared';
 import { supabase } from '@/integrations/supabase/client';
 import { useNavigate } from 'react-router-dom';
 import { Card } from '@/components/ui/card';
+import { useToast } from '@/components/ui/use-toast';
 
 const Login = () => {
   const navigate = useNavigate();
+  const { toast } = useToast();
 
   useEffect(() => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      console.log('Auth state changed:', event, session);
       if (event === 'SIGNED_IN') {
         navigate('/');
+      }
+      if (event === 'SIGNED_OUT') {
+        console.log('User signed out');
+      }
+      if (event === 'USER_UPDATED') {
+        console.log('User updated:', session);
       }
     });
 
@@ -33,10 +42,24 @@ const Login = () => {
         <Card className="py-8 px-4 shadow sm:rounded-lg sm:px-10">
           <Auth
             supabaseClient={supabase}
-            appearance={{ theme: ThemeSupa }}
+            appearance={{ 
+              theme: ThemeSupa,
+              style: {
+                button: { background: 'rgb(var(--primary))', color: 'white' },
+                anchor: { color: 'rgb(var(--primary))' },
+              },
+            }}
             theme="light"
             providers={['google']}
             redirectTo={window.location.origin}
+            onError={(error) => {
+              console.error('Auth error:', error);
+              toast({
+                title: "Authentication Error",
+                description: error.message,
+                variant: "destructive",
+              });
+            }}
           />
         </Card>
       </div>
