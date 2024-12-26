@@ -1,10 +1,13 @@
-import { useState, useRef } from 'react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
-import { Mic, Video, Send, ArrowRight, ArrowLeft } from 'lucide-react';
+import { Send, ArrowRight, ArrowLeft } from 'lucide-react';
+import { MediaRecorder } from '@/components/onboarding/MediaRecorder';
+import { MediaPreview } from '@/components/onboarding/MediaPreview';
+import { ProgressBar } from '@/components/onboarding/ProgressBar';
 
 const questions = [
   "What inspired you to get into the mortgage industry, and what keeps you motivated today?",
@@ -22,61 +25,18 @@ const questions = [
 const Onboarding = () => {
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [textResponse, setTextResponse] = useState('');
-  const [isRecording, setIsRecording] = useState(false);
   const [mediaBlob, setMediaBlob] = useState<Blob | null>(null);
   const [mediaType, setMediaType] = useState<'voice' | 'video' | null>(null);
-  const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const navigate = useNavigate();
   const { toast } = useToast();
 
-  const startRecording = async (type: 'voice' | 'video') => {
-    try {
-      const constraints = {
-        audio: true,
-        video: type === 'video',
-      };
-
-      const stream = await navigator.mediaDevices.getUserMedia(constraints);
-      const mediaRecorder = new MediaRecorder(stream);
-      const chunks: BlobPart[] = [];
-
-      mediaRecorder.ondataavailable = (e) => {
-        if (e.data.size > 0) {
-          chunks.push(e.data);
-        }
-      };
-
-      mediaRecorder.onstop = () => {
-        const blob = new Blob(chunks, {
-          type: type === 'video' ? 'video/webm' : 'audio/webm',
-        });
-        setMediaBlob(blob);
-        stream.getTracks().forEach(track => track.stop());
-      };
-
-      mediaRecorderRef.current = mediaRecorder;
-      mediaRecorderRef.current.start();
-      setIsRecording(true);
-      setMediaType(type);
-    } catch (error) {
-      console.error('Error accessing media devices:', error);
-      toast({
-        title: "Error",
-        description: "Could not access your microphone/camera. Please check your permissions.",
-        variant: "destructive",
-      });
-    }
-  };
-
-  const stopRecording = () => {
-    if (mediaRecorderRef.current && isRecording) {
-      mediaRecorderRef.current.stop();
-      setIsRecording(false);
-    }
+  const handleMediaRecorded = (blob: Blob, type: 'voice' | 'video') => {
+    setMediaBlob(blob);
+    setMediaType(type);
   };
 
   const uploadMedia = async (blob: Blob, type: 'voice' | 'video') => {
-    const fileExt = type === 'video' ? 'webm' : 'webm';
+    const fileExt = 'webm';
     const fileName = `${crypto.randomUUID()}.${fileExt}`;
     const { data, error } = await supabase.storage
       .from('onboarding-media')
@@ -132,7 +92,7 @@ const Onboarding = () => {
           title: "Onboarding Complete!",
           description: "Thank you for sharing your story with us.",
         });
-        navigate('/dashboard');
+        navigate('/');
       }
     } catch (error) {
       console.error('Error submitting response:', error);
@@ -149,21 +109,10 @@ const Onboarding = () => {
       <div className="max-w-2xl mx-auto">
         <Card className="p-6">
           <div className="space-y-6">
-            <div className="flex justify-between items-center">
-              <h2 className="text-2xl font-bold text-gray-900">
-                Question {currentQuestion + 1} of {questions.length}
-              </h2>
-              <div className="text-sm text-gray-500">
-                {Math.round(((currentQuestion + 1) / questions.length) * 100)}% Complete
-              </div>
-            </div>
-
-            <div className="w-full bg-gray-200 rounded-full h-2">
-              <div
-                className="bg-primary rounded-full h-2 transition-all duration-300"
-                style={{ width: `${((currentQuestion + 1) / questions.length) * 100}%` }}
-              />
-            </div>
+            <ProgressBar 
+              currentQuestion={currentQuestion} 
+              totalQuestions={questions.length} 
+            />
 
             <p className="text-lg text-gray-700">{questions[currentQuestion]}</p>
 
@@ -174,46 +123,8 @@ const Onboarding = () => {
               placeholder="Type your response here..."
             />
 
-            <div className="flex gap-4">
-              {!isRecording ? (
-                <>
-                  <Button
-                    variant="outline"
-                    onClick={() => startRecording('voice')}
-                    className="flex items-center gap-2"
-                  >
-                    <Mic className="w-4 h-4" />
-                    Record Voice
-                  </Button>
-                  <Button
-                    variant="outline"
-                    onClick={() => startRecording('video')}
-                    className="flex items-center gap-2"
-                  >
-                    <Video className="w-4 h-4" />
-                    Record Video
-                  </Button>
-                </>
-              ) : (
-                <Button
-                  variant="destructive"
-                  onClick={stopRecording}
-                  className="flex items-center gap-2"
-                >
-                  Stop Recording
-                </Button>
-              )}
-            </div>
-
-            {mediaBlob && (
-              <div className="mt-4">
-                {mediaType === 'video' ? (
-                  <video src={URL.createObjectURL(mediaBlob)} controls className="w-full" />
-                ) : (
-                  <audio src={URL.createObjectURL(mediaBlob)} controls className="w-full" />
-                )}
-              </div>
-            )}
+            <MediaRecorder onMediaRecorded={handleMediaRecorded} />
+            <MediaPreview mediaBlob={mediaBlob} mediaType={mediaType} />
 
             <div className="flex justify-between pt-6">
               <Button
