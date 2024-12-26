@@ -3,6 +3,7 @@ import Index from "./pages/Index";
 import Login from "./pages/Login";
 import Onboarding from "./pages/Onboarding";
 import Features from "./pages/Features";
+import Pricing from "./pages/Pricing";
 
 function App() {
   return (
@@ -12,6 +13,7 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/onboarding" element={<Onboarding />} />
         <Route path="/features" element={<Features />} />
+        <Route path="/pricing" element={<Pricing />} />
       </Routes>
     </Router>
   );
