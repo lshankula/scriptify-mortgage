@@ -5,6 +5,7 @@ import { Auth } from "@supabase/auth-ui-react";
 import { ThemeSupa } from "@supabase/auth-ui-shared";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/components/ui/use-toast";
+import { Navigation } from "@/components/Navigation";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -48,26 +49,29 @@ const Login = () => {
   }, [navigate, toast]);
 
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
-      <div className="sm:mx-auto sm:w-full sm:max-w-md">
-        <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
-          Welcome to MortgageContent.ai
-        </h2>
-        <p className="mt-2 text-center text-sm text-gray-600">
-          Sign in to your account
-        </p>
-      </div>
+    <div className="min-h-screen bg-gray-50">
+      <Navigation />
+      <div className="flex flex-col justify-center py-12 sm:px-6 lg:px-8">
+        <div className="sm:mx-auto sm:w-full sm:max-w-md">
+          <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
+            Welcome to MortgageContent.ai
+          </h2>
+          <p className="mt-2 text-center text-sm text-gray-600">
+            Sign in to your account
+          </p>
+        </div>
 
-      <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
-        <Card className="py-8 px-4 shadow sm:rounded-lg sm:px-10">
-          <Auth
-            supabaseClient={supabase}
-            appearance={{ theme: ThemeSupa }}
-            theme="light"
-            providers={[]}
-            redirectTo={window.location.origin}
-          />
-        </Card>
+        <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
+          <Card className="py-8 px-4 shadow sm:rounded-lg sm:px-10">
+            <Auth
+              supabaseClient={supabase}
+              appearance={{ theme: ThemeSupa }}
+              theme="light"
+              providers={[]}
+              redirectTo={window.location.origin}
+            />
+          </Card>
+        </div>
       </div>
     </div>
   );
