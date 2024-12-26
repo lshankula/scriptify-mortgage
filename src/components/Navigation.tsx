@@ -1,10 +1,30 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Button } from "@/components/ui/button";
-import { Menu, X } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { Menu, X, LogOut } from 'lucide-react';
+import { Link, useNavigate } from 'react-router-dom';
+import { supabase } from "@/integrations/supabase/client";
 
 export const Navigation = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const [user, setUser] = useState<any>(null);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setUser(session?.user ?? null);
+    });
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      setUser(session?.user ?? null);
+    });
+
+    return () => subscription.unsubscribe();
+  }, []);
+
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
+    navigate('/login');
+  };
 
   return (
     <nav className="bg-white shadow-sm">
@@ -19,12 +39,28 @@ export const Navigation = () => {
           <div className="hidden sm:flex sm:items-center sm:space-x-8">
             <Link to="/features" className="text-gray-600 hover:text-primary px-3 py-2 text-sm font-medium">Features</Link>
             <Link to="/pricing" className="text-gray-600 hover:text-primary px-3 py-2 text-sm font-medium">Pricing</Link>
-            <Link to="/login">
-              <Button variant="outline" className="ml-4">Log In</Button>
-            </Link>
-            <Link to="/signup">
-              <Button className="bg-primary hover:bg-primary-dark">Get Started</Button>
-            </Link>
+            {user ? (
+              <>
+                <span className="text-gray-600 px-3 py-2 text-sm font-medium">{user.email}</span>
+                <Button 
+                  variant="outline" 
+                  className="flex items-center gap-2"
+                  onClick={handleLogout}
+                >
+                  <LogOut className="h-4 w-4" />
+                  Log Out
+                </Button>
+              </>
+            ) : (
+              <>
+                <Link to="/login">
+                  <Button variant="outline" className="ml-4">Log In</Button>
+                </Link>
+                <Link to="/signup">
+                  <Button className="bg-primary hover:bg-primary-dark">Get Started</Button>
+                </Link>
+              </>
+            )}
           </div>
 
           <div className="flex items-center sm:hidden">
@@ -54,18 +90,34 @@ export const Navigation = () => {
             >
               Pricing
             </Link>
-            <Link
-              to="/login"
-              className="block px-3 py-2 text-base font-medium text-gray-600 hover:text-primary hover:bg-gray-50"
-            >
-              Log In
-            </Link>
-            <Link
-              to="/signup"
-              className="block px-3 py-2 text-base font-medium text-primary hover:text-primary-dark hover:bg-gray-50"
-            >
-              Get Started
-            </Link>
+            {user ? (
+              <>
+                <span className="block px-3 py-2 text-base font-medium text-gray-600">
+                  {user.email}
+                </span>
+                <button
+                  onClick={handleLogout}
+                  className="block w-full text-left px-3 py-2 text-base font-medium text-red-600 hover:text-red-700 hover:bg-gray-50"
+                >
+                  Log Out
+                </button>
+              </>
+            ) : (
+              <>
+                <Link
+                  to="/login"
+                  className="block px-3 py-2 text-base font-medium text-gray-600 hover:text-primary hover:bg-gray-50"
+                >
+                  Log In
+                </Link>
+                <Link
+                  to="/signup"
+                  className="block px-3 py-2 text-base font-medium text-primary hover:text-primary-dark hover:bg-gray-50"
+                >
+                  Get Started
+                </Link>
+              </>
+            )}
           </div>
         </div>
       )}
