@@ -4,13 +4,20 @@ import { ThemeSupa } from '@supabase/auth-ui-shared';
 import { supabase } from '@/integrations/supabase/client';
 import { useNavigate } from 'react-router-dom';
 import { Card } from '@/components/ui/card';
-import { useToast } from '@/components/ui/use-toast';
+import { useToast } from '@/hooks/use-toast';
 
 const Login = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
 
   useEffect(() => {
+    // Check if user is already signed in
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      if (session) {
+        navigate('/');
+      }
+    });
+
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
       console.log('Auth state changed:', event, session);
       if (event === 'SIGNED_IN') {
@@ -50,9 +57,9 @@ const Login = () => {
               },
             }}
             theme="light"
-            providers={['google']}
+            providers={[]}
             redirectTo={window.location.origin}
-            onError={(error) => {
+            onAuthError={(error) => {
               console.error('Auth error:', error);
               toast({
                 title: "Authentication Error",
