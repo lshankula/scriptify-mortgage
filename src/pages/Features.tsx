@@ -71,7 +71,7 @@ const Features = () => {
               Transform your mortgage business content strategy with AI-powered tools trained on viral content that actually converts.
             </p>
             <div className="mt-8">
-              <Link to="/signup">
+              <Link to="/login">
                 <Button size="lg" className="px-8">
                   Get Started Now
                   <ArrowRight className="ml-2 h-5 w-5" />
@@ -139,7 +139,7 @@ const Features = () => {
                 ))}
               </div>
               <div className="mt-10">
-                <Link to="/signup">
+                <Link to="/login">
                   <Button size="lg">
                     Start Creating Content
                     <ArrowRight className="ml-2 h-5 w-5" />
@@ -167,7 +167,7 @@ const Features = () => {
           </h2>
           <div className="mt-8 flex lg:mt-0 lg:flex-shrink-0">
             <div className="inline-flex rounded-md shadow">
-              <Link to="/signup">
+              <Link to="/login">
                 <Button className="bg-accent hover:bg-accent-dark">
                   Get Started
                   <ArrowRight className="ml-2 h-4 w-4" />
