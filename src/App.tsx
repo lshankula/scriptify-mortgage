@@ -7,15 +7,27 @@ import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import Index from "./pages/Index";
 import Login from "./pages/Login";
+import Onboarding from "./pages/Onboarding";
 
 const queryClient = new QueryClient();
 
 const PrivateRoute = ({ children }: { children: React.ReactNode }) => {
   const [session, setSession] = useState<boolean | null>(null);
+  const [hasCompletedOnboarding, setHasCompletedOnboarding] = useState<boolean | null>(null);
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
       setSession(!!session);
+      if (session) {
+        // Check if user has completed onboarding
+        supabase
+          .from('onboarding_responses')
+          .select('question_number')
+          .eq('user_id', session.user.id)
+          .then(({ data }) => {
+            setHasCompletedOnboarding(data && data.length === 10);
+          });
+      }
     });
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
@@ -25,11 +37,19 @@ const PrivateRoute = ({ children }: { children: React.ReactNode }) => {
     return () => subscription.unsubscribe();
   }, []);
 
-  if (session === null) {
+  if (session === null || hasCompletedOnboarding === null) {
     return null; // Loading state
   }
 
-  return session ? <>{children}</> : <Navigate to="/login" />;
+  if (!session) {
+    return <Navigate to="/login" />;
+  }
+
+  if (!hasCompletedOnboarding) {
+    return <Navigate to="/onboarding" />;
+  }
+
+  return <>{children}</>;
 };
 
 const App = () => (
@@ -40,6 +60,14 @@ const App = () => (
       <BrowserRouter>
         <Routes>
           <Route path="/login" element={<Login />} />
+          <Route
+            path="/onboarding"
+            element={
+              <PrivateRoute>
+                <Onboarding />
+              </PrivateRoute>
+            }
+          />
           <Route
             path="/"
             element={
