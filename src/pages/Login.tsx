@@ -29,10 +29,18 @@ const Login = () => {
       if (event === 'USER_UPDATED') {
         console.log('User updated:', session);
       }
+      if (event === 'USER_DELETED' || event === 'INITIAL_SESSION') {
+        console.error('Auth error occurred');
+        toast({
+          title: "Authentication Error",
+          description: "An error occurred during authentication",
+          variant: "destructive",
+        });
+      }
     });
 
     return () => subscription.unsubscribe();
-  }, [navigate]);
+  }, [navigate, toast]);
 
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
@@ -59,14 +67,6 @@ const Login = () => {
             theme="light"
             providers={[]}
             redirectTo={window.location.origin}
-            onAuthError={(error) => {
-              console.error('Auth error:', error);
-              toast({
-                title: "Authentication Error",
-                description: error.message,
-                variant: "destructive",
-              });
-            }}
           />
         </Card>
       </div>
