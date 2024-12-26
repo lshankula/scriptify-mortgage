@@ -11,27 +11,63 @@ import { supabase } from "@/integrations/supabase/client";
 const questions = [
   {
     id: 1,
-    question: "What is your company name?",
-    type: "text",
-    placeholder: "Enter your company name",
+    question: "What inspired you to get into the mortgage industry, and what keeps you motivated today?",
+    type: "textarea",
+    placeholder: "Share your journey and what drives you",
   },
   {
     id: 2,
-    question: "What type of content do you typically need?",
+    question: "What's the most rewarding part of your job, and why does it matter so much to you?",
     type: "textarea",
-    placeholder: "Describe the type of content you need (e.g., blog posts, social media, email campaigns)",
+    placeholder: "Tell us about what makes your work meaningful",
   },
   {
     id: 3,
-    question: "What is your target audience?",
+    question: "Can you share a specific story of a client you helped that had a lasting impact on you?",
     type: "textarea",
-    placeholder: "Describe your ideal customer or target audience",
+    placeholder: "Share a memorable experience with a client",
   },
   {
     id: 4,
-    question: "What are your main marketing goals?",
+    question: "What do you think makes your process or approach different from others in the industry?",
     type: "textarea",
-    placeholder: "Describe what you want to achieve with your content",
+    placeholder: "Describe what sets you apart",
+  },
+  {
+    id: 5,
+    question: "What's the biggest misconception people have about homebuying or mortgages, and how do you address it?",
+    type: "textarea",
+    placeholder: "Share common misconceptions and your approach to addressing them",
+  },
+  {
+    id: 6,
+    question: "What's one challenge clients often face, and how do you help them overcome it?",
+    type: "textarea",
+    placeholder: "Describe a common challenge and your solution",
+  },
+  {
+    id: 7,
+    question: "Why do clients and agents trust you, and what keeps them coming back?",
+    type: "textarea",
+    placeholder: "Share what builds trust with your clients",
+  },
+  {
+    id: 8,
+    question: "How do you help clients who feel overwhelmed or like they won't qualify for a loan?",
+    type: "textarea",
+    placeholder: "Describe how you support challenging situations",
+  },
+  {
+    id: 9,
+    question: "If someone is looking to buy a home, what's the simplest first step they can take to get started?",
+    type: "textarea",
+    placeholder: "Share your advice for getting started",
+  },
+  {
+    id: 10,
+    question: "Looking back on your career, what's the one thing you hope to be remembered for?",
+    type: "textarea",
+    placeholder: "Share your legacy and impact",
   },
 ];
 
@@ -41,12 +77,23 @@ const Onboarding = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { toast } = useToast();
   const navigate = useNavigate();
+  const [userId, setUserId] = useState<string | null>(null);
 
   useEffect(() => {
     const checkOnboardingStatus = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      
+      if (!session?.user?.id) {
+        navigate("/login");
+        return;
+      }
+      
+      setUserId(session.user.id);
+
       const { data: existingResponses } = await supabase
         .from("onboarding_responses")
         .select("*")
+        .eq("user_id", session.user.id)
         .order("question_number");
 
       if (existingResponses && existingResponses.length > 0) {
@@ -76,6 +123,15 @@ const Onboarding = () => {
       return;
     }
 
+    if (!userId) {
+      toast({
+        title: "Error",
+        description: "User session not found. Please try logging in again.",
+        variant: "destructive",
+      });
+      return;
+    }
+
     try {
       setIsSubmitting(true);
       
@@ -83,6 +139,7 @@ const Onboarding = () => {
       const { error } = await supabase.from("onboarding_responses").insert({
         question_number: questions[currentQuestion].id,
         text_response: currentResponse,
+        user_id: userId
       });
 
       if (error) throw error;
@@ -128,21 +185,12 @@ const Onboarding = () => {
               <h3 className="text-lg font-medium text-gray-900 mb-2">
                 {currentQ.question}
               </h3>
-              {currentQ.type === "textarea" ? (
-                <Textarea
-                  value={responses[currentQ.id] || ""}
-                  onChange={(e) => handleInputChange(e.target.value)}
-                  placeholder={currentQ.placeholder}
-                  className="min-h-[100px]"
-                />
-              ) : (
-                <Input
-                  type="text"
-                  value={responses[currentQ.id] || ""}
-                  onChange={(e) => handleInputChange(e.target.value)}
-                  placeholder={currentQ.placeholder}
-                />
-              )}
+              <Textarea
+                value={responses[currentQ.id] || ""}
+                onChange={(e) => handleInputChange(e.target.value)}
+                placeholder={currentQ.placeholder}
+                className="min-h-[100px]"
+              />
             </div>
 
             <div className="flex justify-between">
