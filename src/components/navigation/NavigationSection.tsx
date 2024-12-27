@@ -1,4 +1,5 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import { NavItem } from './NavItem';
 import { SubNavItem } from './SubNavItem';
 import { MenuItem } from './types';
@@ -20,6 +21,17 @@ export const NavigationSection = ({
   setActiveMenu,
   setExpandedItem,
 }: NavigationSectionProps) => {
+  const navigate = useNavigate();
+
+  const handleSubitemClick = (subitem: string) => {
+    // Map specific subitems to routes
+    if (subitem === "Social Post") {
+      navigate('/social');
+    }
+    // Add other mappings as needed
+    console.log('Subitem clicked:', subitem);
+  };
+
   return (
     <div>
       <NavItem
@@ -49,6 +61,7 @@ export const NavigationSection = ({
                       key={subIndex}
                       label={subitem}
                       isSubitem
+                      onClick={() => handleSubitemClick(subitem)}
                     />
                   ))}
                 </div>
