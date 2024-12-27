@@ -4,7 +4,7 @@ import { Card } from "@/components/ui/card";
 import { Auth } from "@supabase/auth-ui-react";
 import { ThemeSupa } from "@supabase/auth-ui-shared";
 import { supabase } from "@/integrations/supabase/client";
-import { useToast } from "@/components/ui/use-toast";
+import { useToast } from "@/hooks/use-toast";
 import { Navigation } from "@/components/Navigation";
 
 const Login = () => {
@@ -12,8 +12,20 @@ const Login = () => {
   const { toast } = useToast();
 
   useEffect(() => {
+    console.log("Login component mounted");
+    
     // Check if user is already logged in
-    supabase.auth.getSession().then(({ data: { session } }) => {
+    supabase.auth.getSession().then(({ data: { session }, error }) => {
+      if (error) {
+        console.error("Error checking session:", error);
+        toast({
+          title: "Error",
+          description: "Failed to check authentication status",
+          variant: "destructive",
+        });
+        return;
+      }
+      
       if (session) {
         console.log("User already logged in, redirecting...");
         navigate("/");
@@ -24,18 +36,37 @@ const Login = () => {
       console.log("Auth state changed:", event, session?.user?.email);
       
       if (event === "SIGNED_IN") {
-        // Check if user has completed onboarding
-        const { data: existingResponses } = await supabase
-          .from("onboarding_responses")
-          .select("*")
-          .limit(1);
+        try {
+          // Check if user has completed onboarding
+          const { data: existingResponses, error } = await supabase
+            .from("onboarding_responses")
+            .select("*")
+            .limit(1);
 
-        if (existingResponses && existingResponses.length > 0) {
-          console.log("User has completed onboarding, redirecting to home");
-          navigate("/");
-        } else {
-          console.log("User needs to complete onboarding");
-          navigate("/onboarding");
+          if (error) {
+            console.error("Error checking onboarding status:", error);
+            toast({
+              title: "Error",
+              description: "Failed to check onboarding status",
+              variant: "destructive",
+            });
+            return;
+          }
+
+          if (existingResponses && existingResponses.length > 0) {
+            console.log("User has completed onboarding, redirecting to home");
+            navigate("/");
+          } else {
+            console.log("User needs to complete onboarding");
+            navigate("/onboarding");
+          }
+        } catch (error) {
+          console.error("Error in auth state change handler:", error);
+          toast({
+            title: "Error",
+            description: "An unexpected error occurred",
+            variant: "destructive",
+          });
         }
       }
       
@@ -49,16 +80,14 @@ const Login = () => {
       }
 
       if (event === "INITIAL_SESSION" && !session) {
-        console.error("Auth error occurred");
-        toast({
-          title: "Authentication Error",
-          description: "An error occurred during authentication",
-          variant: "destructive",
-        });
+        console.log("No initial session");
       }
     });
 
-    return () => subscription.unsubscribe();
+    return () => {
+      console.log("Cleaning up auth subscription");
+      subscription.unsubscribe();
+    };
   }, [navigate, toast]);
 
   return (
@@ -82,6 +111,14 @@ const Login = () => {
               theme="light"
               providers={[]}
               redirectTo={window.location.origin}
+              onError={(error) => {
+                console.error("Auth error:", error);
+                toast({
+                  title: "Authentication Error",
+                  description: error.message,
+                  variant: "destructive",
+                });
+              }}
             />
           </Card>
         </div>
