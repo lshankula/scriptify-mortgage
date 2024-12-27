@@ -19,17 +19,26 @@ export const useAuthRedirect = () => {
 
       const hasCompletedOnboarding = await checkOnboardingStatus(session.user.id);
       
+      // Only redirect to home if onboarding is complete
+      // Otherwise, if we're not already on the onboarding page, redirect there
       if (hasCompletedOnboarding) {
         console.log("User has completed onboarding, redirecting to home");
         navigate("/");
       } else {
-        console.log("User needs to complete onboarding, redirecting to onboarding");
-        navigate("/onboarding");
+        const currentPath = window.location.pathname;
+        if (currentPath !== "/onboarding") {
+          console.log("User needs to complete onboarding, redirecting to onboarding");
+          navigate("/onboarding");
+        } else {
+          console.log("Already on onboarding page, no redirect needed");
+        }
       }
     };
 
-    handleRedirect();
-  }, [session, navigate, checkOnboardingStatus]);
+    if (!isLoadingSession) {
+      handleRedirect();
+    }
+  }, [session, navigate, checkOnboardingStatus, isLoadingSession]);
 
   return { isLoading: isLoadingSession || isCheckingStatus };
 };
