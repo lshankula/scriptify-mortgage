@@ -1,16 +1,14 @@
 import { useState, useEffect } from 'react';
 import { Button } from "@/components/ui/button";
-import { Menu, X, Plus, Bell, Search, UserCircle2 } from 'lucide-react';
+import { Menu, X } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { MobileMenu } from './navigation/MobileMenu';
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+import { UserAvatar } from './navigation/UserAvatar';
+import { SearchBar } from './navigation/SearchBar';
+import { NotificationButton } from './navigation/NotificationButton';
+import { CreateContentButton } from './navigation/CreateContentButton';
 
 export const Navigation = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -38,7 +36,6 @@ export const Navigation = () => {
 
   const handleGetStarted = async () => {
     if (user) {
-      // If user is logged in, check if they have completed onboarding
       const { data: responses } = await supabase
         .from('onboarding_responses')
         .select('*')
@@ -55,16 +52,6 @@ export const Navigation = () => {
     }
   };
 
-  // Function to get user initials from email
-  const getUserInitials = (email: string) => {
-    if (!email) return '??';
-    const parts = email.split('@')[0].split(/[._-]/);
-    if (parts.length >= 2) {
-      return (parts[0][0] + parts[1][0]).toUpperCase();
-    }
-    return parts[0].slice(0, 2).toUpperCase();
-  };
-
   return (
     <nav className="fixed top-0 left-0 right-0 z-10 bg-white border-b">
       <div className="max-w-7xl mx-auto px-4">
@@ -74,16 +61,7 @@ export const Navigation = () => {
             <Link to="/" className="font-bold text-xl text-primary">
               MortgageContent.ai
             </Link>
-            {user && (
-              <div className="relative">
-                <Search className="absolute left-3 top-2.5 h-4 w-4 text-gray-400" />
-                <input 
-                  type="text"
-                  placeholder="Search content..."
-                  className="pl-10 pr-4 py-2 border rounded-lg w-64"
-                />
-              </div>
-            )}
+            {user && <SearchBar />}
           </div>
 
           {/* Right section */}
@@ -100,36 +78,9 @@ export const Navigation = () => {
             )}
             {user && (
               <>
-                <Button 
-                  className="bg-primary text-white hover:bg-primary/90 flex items-center gap-2"
-                  onClick={() => navigate('/social/create')}
-                >
-                  <Plus className="w-4 h-4" />
-                  Create Content
-                </Button>
-                <button className="relative p-2 hover:bg-accent rounded-lg">
-                  <Bell className="w-5 h-5" />
-                  {notifications > 0 && (
-                    <span className="absolute top-1 right-1 bg-destructive text-destructive-foreground text-xs w-4 h-4 rounded-full flex items-center justify-center">
-                      {notifications}
-                    </span>
-                  )}
-                </button>
-                <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
-                    <Button 
-                      variant="ghost" 
-                      className="w-10 h-10 rounded-full bg-primary/10 hover:bg-primary/20"
-                    >
-                      {getUserInitials(user?.email || '')}
-                    </Button>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent align="end" className="w-56">
-                    <DropdownMenuItem onClick={handleLogout}>
-                      Log out
-                    </DropdownMenuItem>
-                  </DropdownMenuContent>
-                </DropdownMenu>
+                <CreateContentButton />
+                <NotificationButton count={notifications} />
+                <UserAvatar email={user?.email} onLogout={handleLogout} />
               </>
             )}
             {!user && (
