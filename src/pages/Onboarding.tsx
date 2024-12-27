@@ -138,9 +138,9 @@ const Onboarding = () => {
 
   return (
     <DashboardLayout>
-      <div className="min-h-screen bg-gray-50 py-12 sm:px-6 lg:px-8">
+      <div className="bg-gray-50">
         <div className="sm:mx-auto sm:w-full sm:max-w-md">
-          <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
+          <h2 className="text-center text-3xl font-extrabold text-gray-900">
             {mode === 'advanced' ? 'Advanced Training' : 
              mode === 'edit' ? 'Edit Your Responses' : 
              'Welcome to MortgageContent.ai'}
