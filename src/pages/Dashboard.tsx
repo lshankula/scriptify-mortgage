@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { Plus, Bell, Search, Star, Target, TrendingUp, Users, Zap } from 'lucide-react';
 import { NavigationMenu } from '@/components/navigation/NavigationMenu';
-import { SidebarProvider } from '@/components/ui/sidebar';
 
 const Dashboard = () => {
   const [notifications, setNotifications] = useState(3);
@@ -53,11 +52,9 @@ const Dashboard = () => {
       </nav>
 
       {/* Side Navigation */}
-      <SidebarProvider defaultOpen={true}>
-        <div className="fixed left-0 top-16 bottom-0 z-10">
-          <NavigationMenu />
-        </div>
-      </SidebarProvider>
+      <div className="fixed left-0 top-16 bottom-0 z-10">
+        <NavigationMenu />
+      </div>
 
       {/* Main Dashboard Content */}
       <main className="pt-16 pl-64">
