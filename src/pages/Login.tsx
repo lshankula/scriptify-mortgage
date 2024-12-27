@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Card } from "@/components/ui/card";
 import { Auth } from "@supabase/auth-ui-react";
@@ -10,77 +10,61 @@ import { Navigation } from "@/components/Navigation";
 const Login = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     console.log("Login component mounted");
     
     // Check if user is already logged in
-    supabase.auth.getSession().then(({ data: { session }, error }) => {
-      if (error) {
-        console.error("Error checking session:", error);
-        toast({
-          title: "Error",
-          description: "Failed to check authentication status",
-          variant: "destructive",
-        });
-        return;
+    const checkSession = async () => {
+      try {
+        console.log("Checking initial session...");
+        const { data: { session }, error } = await supabase.auth.getSession();
+        
+        if (error) {
+          console.error("Error checking session:", error);
+          toast({
+            title: "Error",
+            description: "Failed to check authentication status",
+            variant: "destructive",
+          });
+          return;
+        }
+        
+        if (session) {
+          console.log("User already logged in, redirecting...");
+          handleSignedInUser(session.user.id);
+        }
+      } catch (error) {
+        console.error("Unexpected error checking session:", error);
       }
-      
-      if (session) {
-        console.log("User already logged in, redirecting...");
-        navigate("/");
-      }
-    });
+    };
+
+    checkSession();
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
       console.log("Auth state changed:", event, session?.user?.email);
+      setIsLoading(true);
       
-      if (event === "SIGNED_IN") {
-        try {
-          // Check if user has completed onboarding
-          const { data: existingResponses, error } = await supabase
-            .from("onboarding_responses")
-            .select("*")
-            .limit(1);
-
-          if (error) {
-            console.error("Error checking onboarding status:", error);
-            toast({
-              title: "Error",
-              description: "Failed to check onboarding status",
-              variant: "destructive",
-            });
-            return;
-          }
-
-          if (existingResponses && existingResponses.length > 0) {
-            console.log("User has completed onboarding, redirecting to home");
-            navigate("/");
-          } else {
-            console.log("User needs to complete onboarding");
-            navigate("/onboarding");
-          }
-        } catch (error) {
-          console.error("Error in auth state change handler:", error);
-          toast({
-            title: "Error",
-            description: "An unexpected error occurred",
-            variant: "destructive",
-          });
+      try {
+        if (event === "SIGNED_IN" && session) {
+          console.log("Sign in successful, checking onboarding status...");
+          await handleSignedInUser(session.user.id);
         }
-      }
-      
-      if (event === "SIGNED_OUT") {
-        console.log("User signed out");
-        navigate("/login");
-      }
-      
-      if (event === "USER_UPDATED") {
-        console.log("User updated:", session);
-      }
-
-      if (event === "INITIAL_SESSION" && !session) {
-        console.log("No initial session");
+        
+        if (event === "SIGNED_OUT") {
+          console.log("User signed out");
+          navigate("/login");
+        }
+      } catch (error) {
+        console.error("Error in auth state change handler:", error);
+        toast({
+          title: "Error",
+          description: "An unexpected error occurred during authentication",
+          variant: "destructive",
+        });
+      } finally {
+        setIsLoading(false);
       }
     });
 
@@ -89,6 +73,37 @@ const Login = () => {
       subscription.unsubscribe();
     };
   }, [navigate, toast]);
+
+  const handleSignedInUser = async (userId: string) => {
+    try {
+      console.log("Checking onboarding status for user:", userId);
+      const { data: existingResponses, error } = await supabase
+        .from("onboarding_responses")
+        .select("*")
+        .eq("user_id", userId)
+        .limit(1);
+
+      if (error) {
+        console.error("Error checking onboarding status:", error);
+        throw error;
+      }
+
+      if (existingResponses && existingResponses.length > 0) {
+        console.log("User has completed onboarding, redirecting to home");
+        navigate("/");
+      } else {
+        console.log("User needs to complete onboarding");
+        navigate("/onboarding");
+      }
+    } catch (error) {
+      console.error("Error handling signed in user:", error);
+      toast({
+        title: "Error",
+        description: "Failed to check onboarding status",
+        variant: "destructive",
+      });
+    }
+  };
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -107,7 +122,17 @@ const Login = () => {
           <Card className="py-8 px-4 shadow sm:rounded-lg sm:px-10">
             <Auth
               supabaseClient={supabase}
-              appearance={{ theme: ThemeSupa }}
+              appearance={{ 
+                theme: ThemeSupa,
+                variables: {
+                  default: {
+                    colors: {
+                      brand: '#1a365d',
+                      brandAccent: '#2b6cb0',
+                    },
+                  },
+                },
+              }}
               theme="light"
               providers={[]}
               redirectTo={window.location.origin}
@@ -115,6 +140,11 @@ const Login = () => {
               showLinks={true}
               onlyThirdPartyProviders={false}
             />
+            {isLoading && (
+              <div className="mt-4 text-center text-sm text-gray-600">
+                Processing your sign in...
+              </div>
+            )}
           </Card>
         </div>
       </div>
