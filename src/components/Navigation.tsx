@@ -61,11 +61,11 @@ export const Navigation = () => {
             <Link to="/" className="font-bold text-xl text-primary">
               MortgageContent.ai
             </Link>
-            {user && <SearchBar />}
+            {user && <div className="hidden md:block"><SearchBar /></div>}
           </div>
 
-          {/* Right section */}
-          <div className="hidden sm:flex sm:items-center sm:space-x-4">
+          {/* Right section - Desktop */}
+          <div className="hidden md:flex md:items-center md:space-x-4">
             {!user && (
               <>
                 <Link to="/features" className="text-gray-600 hover:text-primary px-3 py-2 text-sm font-medium">
@@ -98,17 +98,23 @@ export const Navigation = () => {
             )}
           </div>
 
-          <div className="flex items-center sm:hidden">
-            <button
-              onClick={() => setIsOpen(!isOpen)}
-              className="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-primary"
-            >
-              {isOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
-            </button>
-          </div>
+          {/* Mobile menu button */}
+          <button
+            onClick={() => setIsOpen(!isOpen)}
+            className="md:hidden inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-primary"
+            aria-expanded="false"
+          >
+            <span className="sr-only">Open main menu</span>
+            {isOpen ? (
+              <X className="block h-6 w-6" aria-hidden="true" />
+            ) : (
+              <Menu className="block h-6 w-6" aria-hidden="true" />
+            )}
+          </button>
         </div>
       </div>
 
+      {/* Mobile menu */}
       <MobileMenu 
         isOpen={isOpen}
         user={user}
