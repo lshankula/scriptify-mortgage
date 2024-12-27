@@ -79,11 +79,15 @@ export const QuestionForm = ({
     try {
       setIsSubmitting(true);
       
-      const { error } = await supabase.from("onboarding_responses").insert({
-        question_number: questions[currentQuestion].id,
-        text_response: currentResponse,
-        user_id: userId
-      });
+      const { error } = await supabase
+        .from("onboarding_responses")
+        .upsert({
+          question_number: questions[currentQuestion].id,
+          text_response: currentResponse,
+          user_id: userId
+        }, {
+          onConflict: 'user_id,question_number'
+        });
 
       if (error) throw error;
 
@@ -119,11 +123,14 @@ export const QuestionForm = ({
                 const file = new File([blob], `voice_${Date.now()}.webm`, { type: blob.type });
                 const url = await handleMediaUpload(file, 'voice');
                 if (url) {
-                  await supabase.from("onboarding_responses")
+                  await supabase
+                    .from("onboarding_responses")
                     .upsert({
                       question_number: currentQ.id,
                       user_id: userId,
                       voice_url: url
+                    }, {
+                      onConflict: 'user_id,question_number'
                     });
                   toast({
                     title: "Voice Note Saved",
@@ -138,11 +145,14 @@ export const QuestionForm = ({
                 const file = new File([blob], `video_${Date.now()}.webm`, { type: blob.type });
                 const url = await handleMediaUpload(file, 'video');
                 if (url) {
-                  await supabase.from("onboarding_responses")
+                  await supabase
+                    .from("onboarding_responses")
                     .upsert({
                       question_number: currentQ.id,
                       user_id: userId,
                       video_url: url
+                    }, {
+                      onConflict: 'user_id,question_number'
                     });
                   toast({
                     title: "Video Saved",
