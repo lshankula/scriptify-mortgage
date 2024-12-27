@@ -13,8 +13,8 @@ const Login = () => {
   const [isLoading, setIsLoading] = useState(false);
 
   const handleSignedInUser = async (userId: string) => {
+    console.log("Checking onboarding status for user:", userId);
     try {
-      console.log("Checking onboarding status for user:", userId);
       const { data: existingResponses, error } = await supabase
         .from("onboarding_responses")
         .select("*")
@@ -47,8 +47,11 @@ const Login = () => {
 
   useEffect(() => {
     console.log("Login component mounted");
+    let mounted = true;
     
     const checkSession = async () => {
+      if (!mounted) return;
+      
       try {
         setIsLoading(true);
         console.log("Checking initial session...");
@@ -65,7 +68,7 @@ const Login = () => {
         }
         
         if (session?.user) {
-          console.log("User already logged in, checking onboarding status for:", session.user.email);
+          console.log("User already logged in:", session.user.email);
           await handleSignedInUser(session.user.id);
         } else {
           console.log("No active session found");
@@ -73,42 +76,36 @@ const Login = () => {
         }
       } catch (error) {
         console.error("Unexpected error checking session:", error);
-        toast({
-          title: "Error",
-          description: "An unexpected error occurred",
-          variant: "destructive",
-        });
-        setIsLoading(false);
+        if (mounted) {
+          toast({
+            title: "Error",
+            description: "An unexpected error occurred",
+            variant: "destructive",
+          });
+          setIsLoading(false);
+        }
       }
     };
 
     checkSession();
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
+      if (!mounted) return;
+      
       console.log("Auth state changed:", event, session?.user?.email);
       
-      try {
-        if (event === "SIGNED_IN" && session?.user) {
-          setIsLoading(true);
-          console.log("Sign in successful, checking onboarding status...");
-          await handleSignedInUser(session.user.id);
-        } else if (event === "SIGNED_OUT") {
-          console.log("User signed out");
-          navigate("/login");
-        }
-      } catch (error) {
-        console.error("Error in auth state change handler:", error);
-        toast({
-          title: "Error",
-          description: "An unexpected error occurred during authentication",
-          variant: "destructive",
-        });
-        setIsLoading(false);
+      if (event === "SIGNED_IN" && session?.user) {
+        setIsLoading(true);
+        console.log("Sign in successful, checking onboarding status...");
+        await handleSignedInUser(session.user.id);
+      } else if (event === "SIGNED_OUT") {
+        console.log("User signed out");
+        navigate("/login");
       }
     });
 
     return () => {
-      console.log("Cleaning up auth subscription");
+      mounted = false;
       subscription.unsubscribe();
     };
   }, [navigate, toast]);
@@ -128,30 +125,29 @@ const Login = () => {
 
         <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
           <Card className="py-8 px-4 shadow sm:rounded-lg sm:px-10">
-            <Auth
-              supabaseClient={supabase}
-              appearance={{ 
-                theme: ThemeSupa,
-                variables: {
-                  default: {
-                    colors: {
-                      brand: '#1a365d',
-                      brandAccent: '#2b6cb0',
+            {isLoading ? (
+              <div className="text-center">
+                <p className="text-sm text-gray-600">Processing your sign in...</p>
+              </div>
+            ) : (
+              <Auth
+                supabaseClient={supabase}
+                appearance={{ 
+                  theme: ThemeSupa,
+                  variables: {
+                    default: {
+                      colors: {
+                        brand: '#1a365d',
+                        brandAccent: '#2b6cb0',
+                      },
                     },
                   },
-                },
-              }}
-              theme="light"
-              providers={[]}
-              redirectTo={window.location.origin}
-              view="sign_in"
-              showLinks={true}
-              onlyThirdPartyProviders={false}
-            />
-            {isLoading && (
-              <div className="mt-4 text-center text-sm text-gray-600">
-                Processing your sign in...
-              </div>
+                }}
+                theme="light"
+                providers={[]}
+                redirectTo={window.location.origin}
+                onlyThirdPartyProviders={false}
+              />
             )}
           </Card>
         </div>
