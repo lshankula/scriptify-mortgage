@@ -1,6 +1,6 @@
 import React, { useState, createContext, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Home, Layout, Users, BarChart, Settings, Calendar, Trophy } from 'lucide-react';
+import { Home, Calendar, Settings } from 'lucide-react';
 import { NavItem } from './NavItem';
 import { NavigationSection } from './NavigationSection';
 import { menuItems } from './navigationData';
@@ -52,8 +52,16 @@ export const NavigationMenu = () => {
           />
         ))}
         
-        <NavItem icon={<Calendar className="w-5 h-5" />} label="Calendar" isSimple />
-        <NavItem icon={<Settings className="w-5 h-5" />} label="Settings" isSimple />
+        <NavItem 
+          icon={<Calendar className="w-5 h-5" />} 
+          label="Calendar" 
+          isSimple 
+        />
+        <NavItem 
+          icon={<Settings className="w-5 h-5" />} 
+          label="Settings" 
+          isSimple 
+        />
       </div>
     </div>
   );
