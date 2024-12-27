@@ -18,7 +18,7 @@ export const NavigationMenu = () => {
   return (
     <Sidebar>
       <div className="flex items-center justify-between p-4 border-b">
-        <span className="text-lg font-semibold">Navigation</span>
+        <span className="text-lg font-semibold">Menu</span>
         <SidebarTrigger />
       </div>
       <SidebarContent>
