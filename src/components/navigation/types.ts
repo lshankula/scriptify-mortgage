@@ -1,15 +1,16 @@
 import { ReactNode } from 'react';
 
-export interface SubItem {
+export interface SubMenuItem {
   label: string;
-  icon: ReactNode;
+  icon?: ReactNode;
   subitems?: string[];
+  link?: string;
 }
 
 export interface MenuItem {
   icon: ReactNode;
   label: string;
-  items: SubItem[];
+  items: SubMenuItem[];
 }
 
 export interface MenuItems {

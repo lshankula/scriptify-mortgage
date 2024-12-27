@@ -26,7 +26,7 @@ const LearningCenter = () => {
 
   return (
     <DashboardLayout>
-      <div className="max-w-6xl mx-auto p-6 mt-20">
+      <div className="max-w-6xl mx-auto p-6">
         {/* Progress Banner */}
         <div className="bg-primary/10 p-4 rounded-lg mb-6">
           <div className="flex items-center justify-between mb-2">

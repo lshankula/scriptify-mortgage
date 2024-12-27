@@ -18,7 +18,7 @@ export const menuItems: MenuItems = {
       { 
         label: "Learning Center",
         icon: <GraduationCap className="w-4 h-4" />,
-        subitems: ["Learning Center"]
+        link: '/learning'
       }
     ]
   },

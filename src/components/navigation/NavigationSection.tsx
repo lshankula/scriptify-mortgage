@@ -51,12 +51,7 @@ export const NavigationSection = ({
       } else {
         navigate('/onboarding');
       }
-    } else if (subitem === "Learning Center") {
-      navigate('/learning');
-    } else if (subitem === "Social Post") {
-      navigate('/social');
     }
-    console.log('Subitem clicked:', subitem);
   };
 
   return (
@@ -73,25 +68,35 @@ export const NavigationSection = ({
         <div className="ml-4 mt-1 border-l-2 border-accent">
           {menu.items.map((item, index) => (
             <div key={index}>
-              <SubNavItem
-                icon={item.icon}
-                label={item.label}
-                isExpanded={expandedItem === `${menuKey}-${index}`}
-                onClick={() => setExpandedItem(expandedItem === `${menuKey}-${index}` ? null : `${menuKey}-${index}`)}
-                hasSubitems={item.subitems?.length > 0}
-              />
-              
-              {expandedItem === `${menuKey}-${index}` && item.subitems && (
-                <div className="ml-8 border-l-2 border-accent">
-                  {item.subitems.map((subitem, subIndex) => (
-                    <SubNavItem
-                      key={subIndex}
-                      label={subitem}
-                      isSubitem
-                      onClick={() => handleSubitemClick(subitem)}
-                    />
-                  ))}
-                </div>
+              {item.link ? (
+                <SubNavItem
+                  icon={item.icon}
+                  label={item.label}
+                  onClick={() => navigate(item.link)}
+                />
+              ) : (
+                <>
+                  <SubNavItem
+                    icon={item.icon}
+                    label={item.label}
+                    isExpanded={expandedItem === `${menuKey}-${index}`}
+                    onClick={() => setExpandedItem(expandedItem === `${menuKey}-${index}` ? null : `${menuKey}-${index}`)}
+                    hasSubitems={item.subitems?.length > 0}
+                  />
+                  
+                  {expandedItem === `${menuKey}-${index}` && item.subitems && (
+                    <div className="ml-8 border-l-2 border-accent">
+                      {item.subitems.map((subitem, subIndex) => (
+                        <SubNavItem
+                          key={subIndex}
+                          label={subitem}
+                          isSubitem
+                          onClick={() => handleSubitemClick(subitem)}
+                        />
+                      ))}
+                    </div>
+                  )}
+                </>
               )}
             </div>
           ))}
