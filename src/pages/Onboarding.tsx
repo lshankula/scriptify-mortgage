@@ -160,7 +160,6 @@ const Onboarding = () => {
           }}
           onPrevious={() => setCurrentQuestion((prev) => Math.max(0, prev - 1))}
           userId={userId}
-          existingResponses={existingResponses}
           mode={mode || 'basic'}
         />
       </div>
