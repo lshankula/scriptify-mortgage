@@ -1,20 +1,26 @@
 import { Navigation } from "@/components/Navigation";
 import { Button } from "@/components/ui/button";
 import { Check, ArrowRight } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { supabase } from "@/integrations/supabase/client";
+import { useToast } from "@/components/ui/use-toast";
 
 const PricingTier = ({
   name,
   price,
   description,
   features,
-  highlighted = false
+  highlighted = false,
+  onSubscribe,
+  tier
 }: {
   name: string;
   price: string;
   description: string;
   features: string[];
   highlighted?: boolean;
+  onSubscribe: (tier: string) => void;
+  tier: string;
 }) => (
   <div className={`rounded-2xl p-6 ${highlighted ? 'ring-2 ring-primary shadow-lg' : 'border'}`}>
     <h3 className="text-2xl font-bold font-heading">{name}</h3>
@@ -31,20 +37,57 @@ const PricingTier = ({
         </li>
       ))}
     </ul>
-    <Link to="/login" className="mt-8 block">
-      <Button className={`w-full ${highlighted ? 'bg-primary hover:bg-primary-dark' : ''}`}>
-        Get Started
-        <ArrowRight className="ml-2 h-4 w-4" />
-      </Button>
-    </Link>
+    <Button 
+      onClick={() => onSubscribe(tier)}
+      className={`w-full mt-8 ${highlighted ? 'bg-primary hover:bg-primary-dark' : ''}`}
+    >
+      Get Started
+      <ArrowRight className="ml-2 h-4 w-4" />
+    </Button>
   </div>
 );
 
 const Pricing = () => {
+  const navigate = useNavigate();
+  const { toast } = useToast();
+
+  const handleSubscribe = async (tier: string) => {
+    const { data: { session } } = await supabase.auth.getSession();
+    
+    if (!session) {
+      toast({
+        title: "Authentication required",
+        description: "Please log in to subscribe to a plan",
+        variant: "destructive",
+      });
+      navigate("/login");
+      return;
+    }
+
+    try {
+      const { data, error } = await supabase.functions.invoke('create-checkout-session', {
+        body: { tier }
+      });
+
+      if (error) throw error;
+      if (data?.url) {
+        window.location.href = data.url;
+      }
+    } catch (error) {
+      console.error('Error:', error);
+      toast({
+        title: "Error",
+        description: error.message || "Failed to start checkout process",
+        variant: "destructive",
+      });
+    }
+  };
+
   const tiers = [
     {
       name: "Free",
       price: "Free",
+      tier: "free",
       description: "Perfect for trying out our AI content generation tools",
       features: [
         "Up to 10 content outputs",
@@ -57,6 +100,7 @@ const Pricing = () => {
     {
       name: "Pro",
       price: "$10",
+      tier: "pro",
       description: "Ideal for growing mortgage professionals",
       features: [
         "Up to 50 content outputs",
@@ -70,6 +114,7 @@ const Pricing = () => {
     {
       name: "Enterprise",
       price: "$25",
+      tier: "enterprise",
       description: "For mortgage businesses that need unlimited content",
       features: [
         "Unlimited content outputs",
@@ -95,7 +140,11 @@ const Pricing = () => {
         </div>
         <div className="mt-16 grid gap-8 max-w-7xl mx-auto md:grid-cols-3">
           {tiers.map((tier) => (
-            <PricingTier key={tier.name} {...tier} />
+            <PricingTier 
+              key={tier.name} 
+              {...tier} 
+              onSubscribe={handleSubscribe}
+            />
           ))}
         </div>
         <div className="mt-16 text-center">
