@@ -33,12 +33,12 @@ export const useAuthRedirect = () => {
 
       const currentPath = window.location.pathname;
       
-      // Allow access to auth-related pages when not logged in
+      // Allow access to public pages when not logged in
       if (!session?.user) {
-        console.log("No session, checking if on auth page");
-        // If not on an auth page, redirect to login
-        if (!['/login', '/signup', '/'].includes(currentPath)) {
-          console.log("Not on auth page, redirecting to login");
+        console.log("No session, checking if on protected page");
+        // If not on a public page, redirect to login
+        if (!['/login', '/signup', '/', '/features', '/pricing'].includes(currentPath)) {
+          console.log("Not on public page, redirecting to login");
           navigate("/login");
         }
         return;
@@ -47,10 +47,10 @@ export const useAuthRedirect = () => {
       setIsRedirecting(true);
 
       try {
-        // If user is on login/signup pages and is authenticated, redirect to home
+        // If user is authenticated and on login/signup pages, redirect to dashboard
         if (['/login', '/signup'].includes(currentPath)) {
-          console.log("Auth complete, redirecting to home");
-          navigate("/");
+          console.log("Auth complete, redirecting to dashboard");
+          navigate("/dashboard");
         }
       } catch (error) {
         console.error("Error during redirect check:", error);
