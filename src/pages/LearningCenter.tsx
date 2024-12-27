@@ -7,7 +7,7 @@ import { useOnboardingStatus } from "@/hooks/useOnboardingStatus";
 import { DashboardLayout } from "@/components/layouts/DashboardLayout";
 
 const LearningCenter = () => {
-  const [progress, setProgress] = useState(30); // Example progress
+  const [progress, setProgress] = useState(30);
   const navigate = useNavigate();
   const { session } = useSession();
   const { checkOnboardingStatus, isCheckingStatus } = useOnboardingStatus();
@@ -26,7 +26,7 @@ const LearningCenter = () => {
 
   return (
     <DashboardLayout>
-      <div className="max-w-6xl mx-auto p-6 mt-20">
+      <div className="max-w-6xl mx-auto p-6">
         {/* Progress Banner */}
         <div className="bg-primary/10 p-4 rounded-lg mb-6">
           <div className="flex items-center justify-between mb-2">
