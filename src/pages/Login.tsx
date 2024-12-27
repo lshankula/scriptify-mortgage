@@ -5,9 +5,12 @@ import { supabase } from "@/integrations/supabase/client";
 import { PublicNavigation } from "@/components/navigation/PublicNavigation";
 import { LoadingSpinner } from "@/components/auth/LoadingSpinner";
 import { useAuthRedirect } from "@/hooks/useAuthRedirect";
+import { useLocation } from "react-router-dom";
 
 const Login = () => {
   const { isLoading } = useAuthRedirect();
+  const location = useLocation();
+  const isSignUp = location.pathname === "/signup";
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -15,10 +18,10 @@ const Login = () => {
       <div className="flex flex-col justify-center py-12 sm:px-6 lg:px-8">
         <div className="sm:mx-auto sm:w-full sm:max-w-md">
           <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
-            Welcome to MortgageContent.ai
+            {isSignUp ? "Create your account" : "Welcome to MortgageContent.ai"}
           </h2>
           <p className="mt-2 text-center text-sm text-gray-600">
-            Sign in to your account
+            {isSignUp ? "Get started with your free account" : "Sign in to your account"}
           </p>
         </div>
 
@@ -40,6 +43,7 @@ const Login = () => {
                     },
                   },
                 }}
+                view={isSignUp ? "sign_up" : "sign_in"}
                 theme="light"
                 providers={[]}
                 redirectTo={window.location.origin + "/login"}
