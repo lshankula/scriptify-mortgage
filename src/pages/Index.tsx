@@ -1,12 +1,12 @@
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Video, FileText, TrendingUp, Clock, Target, Zap } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import { Navigation } from "@/components/Navigation";
+import { PublicNavigation } from "@/components/navigation/PublicNavigation";
 
 const Index = () => {
   return (
     <div className="min-h-screen bg-white">
-      <Navigation />
+      <PublicNavigation />
       {/* Hero Section */}
       <div className="relative bg-white overflow-hidden">
         <div className="max-w-7xl mx-auto">

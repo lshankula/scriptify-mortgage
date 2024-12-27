@@ -2,7 +2,7 @@ import { Card } from "@/components/ui/card";
 import { Auth } from "@supabase/auth-ui-react";
 import { ThemeSupa } from "@supabase/auth-ui-shared";
 import { supabase } from "@/integrations/supabase/client";
-import { Navigation } from "@/components/Navigation";
+import { PublicNavigation } from "@/components/navigation/PublicNavigation";
 import { LoadingSpinner } from "@/components/auth/LoadingSpinner";
 import { useAuthRedirect } from "@/hooks/useAuthRedirect";
 
@@ -11,7 +11,7 @@ const Login = () => {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <Navigation />
+      <PublicNavigation />
       <div className="flex flex-col justify-center py-12 sm:px-6 lg:px-8">
         <div className="sm:mx-auto sm:w-full sm:max-w-md">
           <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">

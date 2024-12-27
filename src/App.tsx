@@ -8,10 +8,15 @@ import Dashboard from "./pages/Dashboard";
 import SocialHub from "./pages/SocialHub";
 import SocialCreate from "./pages/social/SocialCreate";
 import SocialAnalytics from "./pages/social/SocialAnalytics";
+import { Navigation } from "./components/Navigation";
+import { useSession } from "./hooks/useSession";
 
 function App() {
+  const { session } = useSession();
+
   return (
     <Router>
+      {session && <Navigation />}
       <Routes>
         <Route path="/" element={<Index />} />
         <Route path="/login" element={<Login />} />
