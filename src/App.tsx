@@ -11,6 +11,7 @@ function App() {
       <Routes>
         <Route path="/" element={<Index />} />
         <Route path="/login" element={<Login />} />
+        <Route path="/signup" element={<Login />} /> {/* Using Login component for signup too */}
         <Route path="/onboarding" element={<Onboarding />} />
         <Route path="/features" element={<Features />} />
         <Route path="/pricing" element={<Pricing />} />

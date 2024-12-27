@@ -3,11 +3,13 @@ import { Button } from "@/components/ui/button";
 import { Menu, X, LogOut } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import { supabase } from "@/integrations/supabase/client";
+import { useToast } from "@/hooks/use-toast";
 
 export const Navigation = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [user, setUser] = useState<any>(null);
   const navigate = useNavigate();
+  const { toast } = useToast();
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
@@ -24,6 +26,25 @@ export const Navigation = () => {
   const handleLogout = async () => {
     await supabase.auth.signOut();
     navigate('/login');
+  };
+
+  const handleGetStarted = async () => {
+    if (user) {
+      // If user is logged in, check if they have completed onboarding
+      const { data: responses } = await supabase
+        .from('onboarding_responses')
+        .select('*')
+        .eq('user_id', user.id)
+        .limit(1);
+
+      if (responses && responses.length > 0) {
+        navigate('/'); // User has completed onboarding
+      } else {
+        navigate('/onboarding'); // User needs to complete onboarding
+      }
+    } else {
+      navigate('/signup'); // Not logged in, go to signup
+    }
   };
 
   return (
@@ -56,9 +77,12 @@ export const Navigation = () => {
                 <Link to="/login">
                   <Button variant="outline" className="ml-4">Log In</Button>
                 </Link>
-                <Link to="/signup">
-                  <Button className="bg-primary hover:bg-primary-dark">Get Started</Button>
-                </Link>
+                <Button 
+                  onClick={handleGetStarted}
+                  className="bg-primary hover:bg-primary-dark"
+                >
+                  Get Started
+                </Button>
               </>
             )}
           </div>
@@ -110,12 +134,12 @@ export const Navigation = () => {
                 >
                   Log In
                 </Link>
-                <Link
-                  to="/signup"
-                  className="block px-3 py-2 text-base font-medium text-primary hover:text-primary-dark hover:bg-gray-50"
+                <button
+                  onClick={handleGetStarted}
+                  className="block w-full text-left px-3 py-2 text-base font-medium text-primary hover:text-primary-dark hover:bg-gray-50"
                 >
                   Get Started
-                </Link>
+                </button>
               </>
             )}
           </div>
