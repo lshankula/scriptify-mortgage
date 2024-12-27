@@ -29,6 +29,18 @@ export const Navigation = () => {
     return () => subscription.unsubscribe();
   }, []);
 
+  // Prevent body scroll when mobile menu is open
+  useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'unset';
+    }
+    return () => {
+      document.body.style.overflow = 'unset';
+    };
+  }, [isOpen]);
+
   const handleLogout = async () => {
     await supabase.auth.signOut();
     navigate('/login');
@@ -53,7 +65,7 @@ export const Navigation = () => {
   };
 
   return (
-    <nav className="fixed top-0 left-0 right-0 z-10 bg-white border-b">
+    <nav className="fixed top-0 left-0 right-0 z-50 bg-white border-b">
       <div className="max-w-7xl mx-auto px-4">
         <div className="flex justify-between items-center h-16">
           {/* Left section */}
@@ -102,9 +114,9 @@ export const Navigation = () => {
           <button
             onClick={() => setIsOpen(!isOpen)}
             className="md:hidden inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-primary"
-            aria-expanded="false"
+            aria-expanded={isOpen}
+            aria-label="Toggle navigation menu"
           >
-            <span className="sr-only">Open main menu</span>
             {isOpen ? (
               <X className="block h-6 w-6" aria-hidden="true" />
             ) : (
