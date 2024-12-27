@@ -135,7 +135,7 @@ const Login = () => {
               }}
               theme="light"
               providers={[]}
-              redirectTo={window.location.origin}
+              redirectTo={`${window.location.origin}/onboarding`}
               view="sign_in"
               showLinks={true}
               onlyThirdPartyProviders={false}
