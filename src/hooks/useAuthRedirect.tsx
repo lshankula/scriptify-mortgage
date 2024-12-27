@@ -31,17 +31,22 @@ export const useAuthRedirect = () => {
         return;
       }
 
+      const currentPath = window.location.pathname;
+      
+      // Allow access to auth-related pages when not logged in
+      if (!session?.user) {
+        console.log("No session, checking if on auth page");
+        // If not on an auth page, redirect to login
+        if (!['/login', '/signup', '/'].includes(currentPath)) {
+          console.log("Not on auth page, redirecting to login");
+          navigate("/login");
+        }
+        return;
+      }
+
       setIsRedirecting(true);
 
       try {
-        // If no session, redirect to login
-        if (!session?.user) {
-          console.log("No session, redirecting to login");
-          navigate("/login");
-          return;
-        }
-
-        const currentPath = window.location.pathname;
         const hasCompletedOnboarding = await checkOnboardingStatus(session.user.id);
 
         console.log("Redirect check:", {
@@ -52,16 +57,16 @@ export const useAuthRedirect = () => {
 
         // Handle redirects based on onboarding status
         if (hasCompletedOnboarding) {
-          if (currentPath === "/onboarding") {
-            console.log("Onboarding complete, redirecting to home");
+          if (['/login', '/signup', '/onboarding'].includes(currentPath)) {
+            console.log("Auth complete, redirecting to home");
             navigate("/");
           }
         } else {
-          if (currentPath !== "/onboarding") {
+          if (currentPath !== "/onboarding" && !['/login', '/signup'].includes(currentPath)) {
             console.log("Onboarding incomplete, redirecting to onboarding");
             navigate("/onboarding");
           } else {
-            console.log("Already on onboarding page, no redirect needed");
+            console.log("On appropriate page, no redirect needed");
           }
         }
       } catch (error) {
