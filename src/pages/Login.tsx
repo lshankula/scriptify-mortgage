@@ -40,15 +40,17 @@ const Login = () => {
         description: "Failed to check onboarding status",
         variant: "destructive",
       });
+    } finally {
+      setIsLoading(false);
     }
   };
 
   useEffect(() => {
     console.log("Login component mounted");
     
-    // Check if user is already logged in
     const checkSession = async () => {
       try {
+        setIsLoading(true);
         console.log("Checking initial session...");
         const { data: { session }, error } = await supabase.auth.getSession();
         
@@ -62,11 +64,12 @@ const Login = () => {
           return;
         }
         
-        if (session) {
+        if (session?.user) {
           console.log("User already logged in, checking onboarding status for:", session.user.email);
           await handleSignedInUser(session.user.id);
         } else {
           console.log("No active session found");
+          setIsLoading(false);
         }
       } catch (error) {
         console.error("Unexpected error checking session:", error);
@@ -75,6 +78,7 @@ const Login = () => {
           description: "An unexpected error occurred",
           variant: "destructive",
         });
+        setIsLoading(false);
       }
     };
 
@@ -82,10 +86,10 @@ const Login = () => {
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
       console.log("Auth state changed:", event, session?.user?.email);
-      setIsLoading(true);
       
       try {
-        if (event === "SIGNED_IN" && session) {
+        if (event === "SIGNED_IN" && session?.user) {
+          setIsLoading(true);
           console.log("Sign in successful, checking onboarding status...");
           await handleSignedInUser(session.user.id);
         } else if (event === "SIGNED_OUT") {
@@ -99,7 +103,6 @@ const Login = () => {
           description: "An unexpected error occurred during authentication",
           variant: "destructive",
         });
-      } finally {
         setIsLoading(false);
       }
     });
