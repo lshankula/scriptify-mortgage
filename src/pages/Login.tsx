@@ -32,11 +32,18 @@ const Login = () => {
         }
         
         if (session) {
-          console.log("User already logged in, redirecting...");
+          console.log("User already logged in, checking onboarding status for:", session.user.email);
           handleSignedInUser(session.user.id);
+        } else {
+          console.log("No active session found");
         }
       } catch (error) {
         console.error("Unexpected error checking session:", error);
+        toast({
+          title: "Error",
+          description: "An unexpected error occurred",
+          variant: "destructive",
+        });
       }
     };
 
@@ -50,9 +57,7 @@ const Login = () => {
         if (event === "SIGNED_IN" && session) {
           console.log("Sign in successful, checking onboarding status...");
           await handleSignedInUser(session.user.id);
-        }
-        
-        if (event === "SIGNED_OUT") {
+        } else if (event === "SIGNED_OUT") {
           console.log("User signed out");
           navigate("/login");
         }
