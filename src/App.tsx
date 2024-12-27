@@ -4,6 +4,7 @@ import Login from "./pages/Login";
 import Onboarding from "./pages/Onboarding";
 import Features from "./pages/Features";
 import Pricing from "./pages/Pricing";
+import Dashboard from "./pages/Dashboard";
 
 function App() {
   return (
@@ -15,6 +16,7 @@ function App() {
         <Route path="/onboarding" element={<Onboarding />} />
         <Route path="/features" element={<Features />} />
         <Route path="/pricing" element={<Pricing />} />
+        <Route path="/dashboard" element={<Dashboard />} />
       </Routes>
     </Router>
   );
