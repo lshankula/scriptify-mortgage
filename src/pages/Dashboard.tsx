@@ -1,8 +1,6 @@
 import React, { useState } from 'react';
-import { 
-  Home, Layout, Users, BarChart, Settings, Plus, Trophy,
-  Calendar, Bell, Search, Star, Zap, Target, TrendingUp
-} from 'lucide-react';
+import { Plus, Bell, Search, Star, Target, TrendingUp, Users, Zap } from 'lucide-react';
+import { NavigationMenu } from '@/components/navigation/NavigationMenu';
 
 const Dashboard = () => {
   const [notifications, setNotifications] = useState(3);
@@ -29,16 +27,16 @@ const Dashboard = () => {
             {/* Right section */}
             <div className="flex items-center gap-4">
               {/* Quick Create Button */}
-              <button className="bg-primary text-white px-4 py-2 rounded-lg flex items-center gap-2 hover:bg-primary-dark">
+              <button className="bg-primary text-white px-4 py-2 rounded-lg flex items-center gap-2 hover:bg-primary/90">
                 <Plus className="w-4 h-4" />
                 Create Content
               </button>
               
               {/* Notifications */}
-              <button className="relative p-2 hover:bg-gray-100 rounded-lg">
+              <button className="relative p-2 hover:bg-accent rounded-lg">
                 <Bell className="w-5 h-5" />
                 {notifications > 0 && (
-                  <span className="absolute top-1 right-1 bg-red-500 text-white text-xs w-4 h-4 rounded-full flex items-center justify-center">
+                  <span className="absolute top-1 right-1 bg-destructive text-destructive-foreground text-xs w-4 h-4 rounded-full flex items-center justify-center">
                     {notifications}
                   </span>
                 )}
@@ -54,23 +52,10 @@ const Dashboard = () => {
       </nav>
 
       {/* Side Navigation */}
-      <div className="fixed left-0 top-16 h-full w-64 bg-white border-r">
-        <div className="p-4">
-          <nav className="space-y-1">
-            <NavItem icon={<Home />} text="Dashboard" active />
-            <NavItem icon={<Layout />} text="Content Hub" />
-            <NavItem icon={<Users />} text="Co-Marketing" />
-            <NavItem icon={<Calendar />} text="Calendar" />
-            <NavItem icon={<BarChart />} text="Analytics" />
-            <NavItem icon={<Trophy />} text="Achievements" />
-            <NavItem icon={<Settings />} text="Settings" />
-          </nav>
-        </div>
-      </div>
+      <NavigationMenu />
 
       {/* Main Dashboard Content */}
       <main className="ml-64 p-8">
-        {/* Level Progress Bar */}
         <div className="bg-white p-6 rounded-lg border mb-6">
           <div className="flex items-center justify-between mb-4">
             <div>
@@ -185,17 +170,6 @@ const Dashboard = () => {
     </div>
   );
 };
-
-const NavItem = ({ icon, text, active }: { icon: React.ReactNode; text: string; active?: boolean }) => (
-  <button
-    className={`flex items-center gap-3 w-full p-3 rounded-lg ${
-      active ? 'bg-primary/10 text-primary' : 'hover:bg-gray-50'
-    }`}
-  >
-    {icon}
-    <span>{text}</span>
-  </button>
-);
 
 const Mission = ({ text, xp, progress }: { text: string; xp: number; progress: number }) => (
   <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
