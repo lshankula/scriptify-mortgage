@@ -1,9 +1,29 @@
-import React, { useState } from 'react';
+import React, { useState, createContext, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Home, Calendar, Settings } from 'lucide-react';
+import { Home, Layout, Users, BarChart, Settings, Calendar, Trophy } from 'lucide-react';
 import { NavItem } from './NavItem';
 import { NavigationSection } from './NavigationSection';
 import { menuItems } from './navigationData';
+
+// Create context for sidebar state
+const SidebarContext = createContext<{
+  isOpen: boolean;
+  setIsOpen: (open: boolean) => void;
+}>({
+  isOpen: false,
+  setIsOpen: () => {},
+});
+
+export const useSidebar = () => useContext(SidebarContext);
+
+export const SidebarProvider = ({ children }: { children: React.ReactNode }) => {
+  const [isOpen, setIsOpen] = useState(false);
+  return (
+    <SidebarContext.Provider value={{ isOpen, setIsOpen }}>
+      {children}
+    </SidebarContext.Provider>
+  );
+};
 
 export const NavigationMenu = () => {
   const [activeMenu, setActiveMenu] = useState<string | null>(null);
@@ -15,9 +35,9 @@ export const NavigationMenu = () => {
       <div className="p-4">
         <NavItem 
           icon={<Home className="w-5 h-5" />} 
-          label="Learning Center" 
+          label="Dashboard" 
           isSimple 
-          onClick={() => navigate('/learning')}
+          onClick={() => navigate('/dashboard')}
         />
         
         {Object.entries(menuItems).map(([key, menu]) => (
