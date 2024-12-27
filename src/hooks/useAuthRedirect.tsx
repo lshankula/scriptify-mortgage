@@ -3,6 +3,8 @@ import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 
+const TOTAL_QUESTIONS = 10; // Total number of questions in onboarding
+
 export const useAuthRedirect = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
@@ -14,8 +16,7 @@ export const useAuthRedirect = () => {
       const { data: existingResponses, error } = await supabase
         .from("onboarding_responses")
         .select("*")
-        .eq("user_id", userId)
-        .limit(1);
+        .eq("user_id", userId);
 
       if (error) {
         console.error("Error checking onboarding status:", error);
@@ -24,8 +25,12 @@ export const useAuthRedirect = () => {
 
       console.log("Onboarding responses:", existingResponses);
 
-      if (existingResponses && existingResponses.length > 0) {
-        console.log("User has completed onboarding, redirecting to home");
+      // Check if user has completed all questions
+      const hasCompletedOnboarding = existingResponses && existingResponses.length === TOTAL_QUESTIONS;
+      console.log("Has completed onboarding:", hasCompletedOnboarding, "Response count:", existingResponses?.length);
+
+      if (hasCompletedOnboarding) {
+        console.log("User has completed all questions, redirecting to home");
         navigate("/");
       } else {
         console.log("User needs to complete onboarding, redirecting to onboarding");
