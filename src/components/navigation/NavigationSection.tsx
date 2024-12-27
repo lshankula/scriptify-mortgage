@@ -51,10 +51,11 @@ export const NavigationSection = ({
       } else {
         navigate('/onboarding');
       }
+    } else if (subitem === "Learning Center Home") {
+      navigate('/learning');
     } else if (subitem === "Social Post") {
       navigate('/social');
     }
-    // Add other mappings as needed
     console.log('Subitem clicked:', subitem);
   };
 

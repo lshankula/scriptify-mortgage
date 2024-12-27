@@ -37,7 +37,7 @@ export const NavigationMenu = () => {
           icon={<Home className="w-5 h-5" />} 
           label="Dashboard" 
           isSimple 
-          onClick={() => navigate('/dashboard')}
+          onClick={() => navigate('/learning')}
         />
         
         {Object.entries(menuItems).map(([key, menu]) => (
