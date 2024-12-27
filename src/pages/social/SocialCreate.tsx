@@ -23,7 +23,6 @@ const SocialCreate = () => {
       
       <h1 className="text-2xl font-bold mt-4">Create New Social Post</h1>
       
-      {/* Add your social post creation form here */}
       <div className="mt-8">
         <p className="text-muted-foreground">Social post creation form coming soon...</p>
       </div>

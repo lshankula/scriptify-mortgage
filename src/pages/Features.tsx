@@ -1,5 +1,5 @@
+import { DashboardLayout } from "@/components/layouts/DashboardLayout";
 import { Button } from "@/components/ui/button";
-import { Navigation } from "@/components/Navigation";
 import { Link } from "react-router-dom";
 import { 
   Video, 
@@ -56,35 +56,39 @@ const Features = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-white">
-      <Navigation />
-      
-      {/* Hero Section */}
-      <div className="relative py-20 bg-gradient-to-b from-primary/5 to-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center">
-            <h1 className="text-4xl font-heading font-extrabold text-primary sm:text-5xl md:text-6xl">
-              Create Better Content,{" "}
-              <span className="text-accent">Faster</span>
-            </h1>
-            <p className="mt-3 max-w-2xl mx-auto text-xl text-gray-500 sm:mt-4">
-              Transform your mortgage business content strategy with AI-powered tools trained on viral content that actually converts.
-            </p>
-            <div className="mt-8">
-              <Link to="/login">
-                <Button size="lg" className="px-8">
-                  Get Started Now
-                  <ArrowRight className="ml-2 h-5 w-5" />
-                </Button>
-              </Link>
+    <DashboardLayout>
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        {/* Hero Section */}
+        <div className="relative py-20">
+          <div className="max-w-7xl mx-auto">
+            <div className="relative z-10 pb-8 bg-white sm:pb-16 md:pb-20 lg:max-w-2xl lg:w-full lg:pb-28 xl:pb-32">
+              <main className="mt-10 mx-auto max-w-7xl px-4 sm:mt-12 sm:px-6 md:mt-16 lg:mt-20 lg:px-8 xl:mt-28">
+                <div className="sm:text-center lg:text-left">
+                  <h1 className="text-4xl tracking-tight font-heading font-extrabold text-primary sm:text-5xl md:text-6xl">
+                    <span className="block">Features That Empower</span>
+                    <span className="block text-accent">Your Content Strategy</span>
+                  </h1>
+                  <p className="mt-3 text-base text-gray-500 sm:mt-5 sm:text-lg sm:max-w-xl sm:mx-auto md:mt-5 md:text-xl lg:mx-0">
+                    Discover the tools that will transform your content creation process and elevate your marketing efforts.
+                  </p>
+                  <div className="mt-5 sm:mt-8 sm:flex sm:justify-center lg:justify-start">
+                    <div className="rounded-md shadow">
+                      <Link to="/signup">
+                        <Button className="w-full flex items-center justify-center px-8 py-3 text-base font-medium">
+                          Get Started
+                          <ArrowRight className="ml-2 h-4 w-4" />
+                        </Button>
+                      </Link>
+                    </div>
+                  </div>
+                </div>
+              </main>
             </div>
           </div>
         </div>
-      </div>
 
-      {/* Main Features Grid */}
-      <div className="py-24 bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        {/* Main Features Grid */}
+        <div className="py-24">
           <div className="text-center mb-16">
             <h2 className="text-3xl font-heading font-bold text-primary">
               Everything You Need to Create Engaging Content
@@ -117,11 +121,9 @@ const Features = () => {
             ))}
           </div>
         </div>
-      </div>
 
-      {/* Benefits Section */}
-      <div className="py-24 bg-gray-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        {/* Benefits Section */}
+        <div className="py-24 bg-gray-50">
           <div className="lg:grid lg:grid-cols-2 lg:gap-16 items-center">
             <div>
               <h2 className="text-3xl font-heading font-bold text-primary">
@@ -156,28 +158,28 @@ const Features = () => {
             </div>
           </div>
         </div>
-      </div>
 
-      {/* CTA Section */}
-      <div className="bg-primary">
-        <div className="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:py-16 lg:px-8 lg:flex lg:items-center lg:justify-between">
-          <h2 className="text-3xl font-heading font-extrabold tracking-tight text-white sm:text-4xl">
-            <span className="block">Ready to transform your content?</span>
-            <span className="block text-accent">Get started in minutes.</span>
-          </h2>
-          <div className="mt-8 flex lg:mt-0 lg:flex-shrink-0">
-            <div className="inline-flex rounded-md shadow">
-              <Link to="/login">
-                <Button className="bg-accent hover:bg-accent-dark">
-                  Get Started
-                  <ArrowRight className="ml-2 h-4 w-4" />
-                </Button>
-              </Link>
+        {/* CTA Section */}
+        <div className="bg-primary">
+          <div className="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:py-16 lg:px-8 lg:flex lg:items-center lg:justify-between">
+            <h2 className="text-3xl font-heading font-extrabold tracking-tight text-white sm:text-4xl">
+              <span className="block">Ready to transform your content?</span>
+              <span className="block text-accent">Get started in minutes.</span>
+            </h2>
+            <div className="mt-8 flex lg:mt-0 lg:flex-shrink-0">
+              <div className="inline-flex rounded-md shadow">
+                <Link to="/signup">
+                  <Button className="bg-accent hover:bg-accent-dark">
+                    Get Started
+                    <ArrowRight className="ml-2 h-4 w-4" />
+                  </Button>
+                </Link>
+              </div>
             </div>
           </div>
         </div>
       </div>
-    </div>
+    </DashboardLayout>
   );
 };
 

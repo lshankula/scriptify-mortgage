@@ -23,7 +23,6 @@ const SocialAnalytics = () => {
       
       <h1 className="text-2xl font-bold mt-4">Social Analytics</h1>
       
-      {/* Add your analytics content here */}
       <div className="mt-8">
         <p className="text-muted-foreground">Analytics dashboard coming soon...</p>
       </div>

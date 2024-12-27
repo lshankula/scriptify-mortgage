@@ -1,4 +1,4 @@
-import { Navigation } from "@/components/Navigation";
+import { DashboardLayout } from "@/components/layouts/DashboardLayout";
 import { Button } from "@/components/ui/button";
 import { Check, ArrowRight } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
@@ -127,8 +127,7 @@ const Pricing = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-background">
-      <Navigation />
+    <DashboardLayout>
       <div className="py-16 px-4 sm:px-6 lg:px-8">
         <div className="text-center">
           <h2 className="text-3xl font-bold tracking-tight font-heading sm:text-4xl lg:text-5xl">
@@ -156,7 +155,7 @@ const Pricing = () => {
           </p>
         </div>
       </div>
-    </div>
+    </DashboardLayout>
   );
 };
 
