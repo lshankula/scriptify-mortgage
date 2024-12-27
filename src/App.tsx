@@ -6,6 +6,8 @@ import Features from "./pages/Features";
 import Pricing from "./pages/Pricing";
 import Dashboard from "./pages/Dashboard";
 import SocialHub from "./pages/SocialHub";
+import SocialCreate from "./pages/social/SocialCreate";
+import SocialAnalytics from "./pages/social/SocialAnalytics";
 
 function App() {
   return (
@@ -19,6 +21,8 @@ function App() {
         <Route path="/pricing" element={<Pricing />} />
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/social" element={<SocialHub />} />
+        <Route path="/social/create" element={<SocialCreate />} />
+        <Route path="/social/analytics" element={<SocialAnalytics />} />
       </Routes>
     </Router>
   );

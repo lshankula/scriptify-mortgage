@@ -1,10 +1,44 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import { 
   Plus, BarChart2, FileText, 
   Archive, Settings, ChevronRight
 } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
 import { Navigation } from "@/components/Navigation";
+import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from "@/components/ui/breadcrumb";
+
+interface PostItemProps {
+  title: string;
+  type: string;
+  time: string;
+  status: 'published' | 'draft';
+}
+
+interface TemplateItemProps {
+  title: string;
+  description: string;
+}
+
+const PostItem = ({ title, type, time, status }: PostItemProps) => (
+  <div className="flex items-center justify-between p-3 hover:bg-accent rounded-lg">
+    <div>
+      <h3 className="font-medium">{title}</h3>
+      <p className="text-sm text-muted-foreground">{type} • {time}</p>
+    </div>
+    <span className={`text-sm ${
+      status === 'published' ? 'text-green-600' : 'text-muted-foreground'
+    }`}>
+      {status === 'published' ? 'Published' : 'Draft'}
+    </span>
+  </div>
+);
+
+const TemplateItem = ({ title, description }: TemplateItemProps) => (
+  <button className="w-full text-left p-3 hover:bg-accent rounded-lg">
+    <h3 className="font-medium">{title}</h3>
+    <p className="text-sm text-muted-foreground">{description}</p>
+  </button>
+);
 
 const SocialHub = () => {
   const navigate = useNavigate();
@@ -12,22 +46,29 @@ const SocialHub = () => {
   return (
     <div className="min-h-screen bg-background">
       <Navigation />
-      <div className="pl-64 pt-16"> {/* Adjust for fixed navigation */}
+      <div className="pl-64 pt-16">
         <div className="max-w-6xl mx-auto p-6">
           {/* Header */}
-          <div className="mb-8">
-            <div className="flex items-center gap-2 text-sm text-muted-foreground mb-2">
-              <span>Dashboard</span>
-              <ChevronRight className="w-4 h-4" />
-              <span>Content Hub</span>
-              <ChevronRight className="w-4 h-4" />
-              <span className="text-foreground">Social Content</span>
-            </div>
-            <h1 className="text-2xl font-bold">Social Content Hub</h1>
-          </div>
+          <Breadcrumb>
+            <BreadcrumbList>
+              <BreadcrumbItem>
+                <BreadcrumbLink href="/dashboard">Dashboard</BreadcrumbLink>
+              </BreadcrumbItem>
+              <BreadcrumbSeparator />
+              <BreadcrumbItem>
+                <BreadcrumbLink href="/social">Content Hub</BreadcrumbLink>
+              </BreadcrumbItem>
+              <BreadcrumbSeparator />
+              <BreadcrumbItem>
+                <BreadcrumbPage>Social Content</BreadcrumbPage>
+              </BreadcrumbItem>
+            </BreadcrumbList>
+          </Breadcrumb>
+          
+          <h1 className="text-2xl font-bold mt-4">Social Content Hub</h1>
 
           {/* Quick Actions */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8 mt-8">
             <button
               onClick={() => navigate('/social/create')}
               className="p-6 border rounded-lg bg-primary/5 border-primary/20 hover:bg-primary/10 transition-colors"
@@ -138,38 +179,5 @@ const SocialHub = () => {
     </div>
   );
 };
-
-interface PostItemProps {
-  title: string;
-  type: string;
-  time: string;
-  status: 'published' | 'draft';
-}
-
-const PostItem = ({ title, type, time, status }: PostItemProps) => (
-  <div className="flex items-center justify-between p-3 hover:bg-accent rounded-lg">
-    <div>
-      <h3 className="font-medium">{title}</h3>
-      <p className="text-sm text-muted-foreground">{type} • {time}</p>
-    </div>
-    <span className={`text-sm ${
-      status === 'published' ? 'text-green-600' : 'text-muted-foreground'
-    }`}>
-      {status === 'published' ? 'Published' : 'Draft'}
-    </span>
-  </div>
-);
-
-interface TemplateItemProps {
-  title: string;
-  description: string;
-}
-
-const TemplateItem = ({ title, description }: TemplateItemProps) => (
-  <button className="w-full text-left p-3 hover:bg-accent rounded-lg">
-    <h3 className="font-medium">{title}</h3>
-    <p className="text-sm text-muted-foreground">{description}</p>
-  </button>
-);
 
 export default SocialHub;
