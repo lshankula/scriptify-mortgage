@@ -13,7 +13,12 @@ export const menuItems: MenuItems = {
       { 
         label: "Onboarding", 
         icon: <ClipboardList className="w-4 h-4" />, 
-        subitems: ["Basic Onboarding", "Advanced Training", "Learning Center"] 
+        subitems: ["Basic Onboarding", "Advanced Training"] 
+      },
+      { 
+        label: "Learning Center",
+        icon: <GraduationCap className="w-4 h-4" />,
+        subitems: ["Learning Center"]
       }
     ]
   },
