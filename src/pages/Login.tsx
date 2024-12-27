@@ -12,7 +12,17 @@ const Login = () => {
   const { toast } = useToast();
 
   useEffect(() => {
+    // Check if user is already logged in
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      if (session) {
+        console.log("User already logged in, redirecting...");
+        navigate("/");
+      }
+    });
+
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
+      console.log("Auth state changed:", event, session?.user?.email);
+      
       if (event === "SIGNED_IN") {
         // Check if user has completed onboarding
         const { data: existingResponses } = await supabase
@@ -21,13 +31,16 @@ const Login = () => {
           .limit(1);
 
         if (existingResponses && existingResponses.length > 0) {
+          console.log("User has completed onboarding, redirecting to home");
           navigate("/");
         } else {
+          console.log("User needs to complete onboarding");
           navigate("/onboarding");
         }
       }
       
       if (event === "SIGNED_OUT") {
+        console.log("User signed out");
         navigate("/login");
       }
       
