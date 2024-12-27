@@ -3,8 +3,9 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { QuestionForm } from "@/components/onboarding/QuestionForm";
 import { useToast } from "@/hooks/use-toast";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { AlertCircle } from "lucide-react";
 
-// Define the questions for the onboarding process
 const basicQuestions = [
   {
     id: 1,
@@ -86,12 +87,14 @@ const advancedQuestions = [
   }
 ];
 
+type OnboardingMode = 'basic' | 'edit' | 'advanced';
+
 const Onboarding = () => {
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const navigate = useNavigate();
   const [userId, setUserId] = useState<string | null>(null);
   const [searchParams] = useSearchParams();
-  const mode = searchParams.get('mode');
+  const mode = (searchParams.get('mode') || 'basic') as OnboardingMode;
   const { toast } = useToast();
   const [existingResponses, setExistingResponses] = useState<any[]>([]);
 
@@ -133,18 +136,27 @@ const Onboarding = () => {
   if (!userId) return null;
 
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-gray-50 py-12 sm:px-6 lg:px-8">
       <div className="sm:mx-auto sm:w-full sm:max-w-md">
         <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
           {mode === 'advanced' ? 'Advanced Training' : 
            mode === 'edit' ? 'Edit Your Responses' : 
            'Welcome to MortgageContent.ai'}
         </h2>
-        <p className="mt-2 text-center text-sm text-gray-600">
+        <p className="mt-2 text-center text-sm text-gray-600 mb-6">
           {mode === 'advanced' ? 'Let\'s dive deeper into your expertise' :
            mode === 'edit' ? 'Update your previous responses' :
            'Let\'s get to know you better'}
         </p>
+
+        {(mode === 'edit' || mode === 'advanced') && (
+          <Alert variant="destructive" className="mb-6">
+            <AlertCircle className="h-4 w-4" />
+            <AlertDescription>
+              Note: New answers will override your previous responses for each question.
+            </AlertDescription>
+          </Alert>
+        )}
       </div>
 
       <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
@@ -160,7 +172,7 @@ const Onboarding = () => {
           }}
           onPrevious={() => setCurrentQuestion((prev) => Math.max(0, prev - 1))}
           userId={userId}
-          mode={mode || 'basic'}
+          mode={mode}
         />
       </div>
     </div>
