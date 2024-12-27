@@ -47,27 +47,10 @@ export const useAuthRedirect = () => {
       setIsRedirecting(true);
 
       try {
-        const hasCompletedOnboarding = await checkOnboardingStatus(session.user.id);
-
-        console.log("Redirect check:", {
-          hasCompletedOnboarding,
-          currentPath,
-          userId: session.user.id
-        });
-
-        // Handle redirects based on onboarding status
-        if (hasCompletedOnboarding) {
-          if (['/login', '/signup', '/onboarding'].includes(currentPath)) {
-            console.log("Auth complete, redirecting to home");
-            navigate("/");
-          }
-        } else {
-          if (currentPath !== "/onboarding" && !['/login', '/signup'].includes(currentPath)) {
-            console.log("Onboarding incomplete, redirecting to onboarding");
-            navigate("/onboarding");
-          } else {
-            console.log("On appropriate page, no redirect needed");
-          }
+        // If user is on login/signup pages and is authenticated, redirect to home
+        if (['/login', '/signup'].includes(currentPath)) {
+          console.log("Auth complete, redirecting to home");
+          navigate("/");
         }
       } catch (error) {
         console.error("Error during redirect check:", error);
@@ -77,7 +60,7 @@ export const useAuthRedirect = () => {
     };
 
     handleRedirect();
-  }, [session, navigate, checkOnboardingStatus, isLoadingSession, isCheckingStatus, isRedirecting]);
+  }, [session, navigate, isLoadingSession, isCheckingStatus, isRedirecting]);
 
   return { isLoading: isLoadingSession || isCheckingStatus };
 };
