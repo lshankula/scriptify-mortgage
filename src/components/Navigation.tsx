@@ -1,9 +1,12 @@
 import { useState, useEffect } from 'react';
 import { Button } from "@/components/ui/button";
-import { Menu, X, LogOut } from 'lucide-react';
+import { Menu, X } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { NavigationLinks } from './navigation/NavigationLinks';
+import { UserMenu } from './navigation/UserMenu';
+import { MobileMenu } from './navigation/MobileMenu';
 
 export const Navigation = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -58,33 +61,12 @@ export const Navigation = () => {
           </div>
           
           <div className="hidden sm:flex sm:items-center sm:space-x-8">
-            <Link to="/features" className="text-gray-600 hover:text-primary px-3 py-2 text-sm font-medium">Features</Link>
-            <Link to="/pricing" className="text-gray-600 hover:text-primary px-3 py-2 text-sm font-medium">Pricing</Link>
-            {user ? (
-              <>
-                <span className="text-gray-600 px-3 py-2 text-sm font-medium">{user.email}</span>
-                <Button 
-                  variant="outline" 
-                  className="flex items-center gap-2"
-                  onClick={handleLogout}
-                >
-                  <LogOut className="h-4 w-4" />
-                  Log Out
-                </Button>
-              </>
-            ) : (
-              <>
-                <Link to="/login">
-                  <Button variant="outline" className="ml-4">Log In</Button>
-                </Link>
-                <Button 
-                  onClick={handleGetStarted}
-                  className="bg-primary hover:bg-primary-dark"
-                >
-                  Get Started
-                </Button>
-              </>
-            )}
+            <NavigationLinks />
+            <UserMenu 
+              user={user} 
+              onLogout={handleLogout} 
+              onGetStarted={handleGetStarted}
+            />
           </div>
 
           <div className="flex items-center sm:hidden">
@@ -98,53 +80,12 @@ export const Navigation = () => {
         </div>
       </div>
 
-      {/* Mobile menu */}
-      {isOpen && (
-        <div className="sm:hidden">
-          <div className="pt-2 pb-3 space-y-1">
-            <Link
-              to="/features"
-              className="block px-3 py-2 text-base font-medium text-gray-600 hover:text-primary hover:bg-gray-50"
-            >
-              Features
-            </Link>
-            <Link
-              to="/pricing"
-              className="block px-3 py-2 text-base font-medium text-gray-600 hover:text-primary hover:bg-gray-50"
-            >
-              Pricing
-            </Link>
-            {user ? (
-              <>
-                <span className="block px-3 py-2 text-base font-medium text-gray-600">
-                  {user.email}
-                </span>
-                <button
-                  onClick={handleLogout}
-                  className="block w-full text-left px-3 py-2 text-base font-medium text-red-600 hover:text-red-700 hover:bg-gray-50"
-                >
-                  Log Out
-                </button>
-              </>
-            ) : (
-              <>
-                <Link
-                  to="/login"
-                  className="block px-3 py-2 text-base font-medium text-gray-600 hover:text-primary hover:bg-gray-50"
-                >
-                  Log In
-                </Link>
-                <button
-                  onClick={handleGetStarted}
-                  className="block w-full text-left px-3 py-2 text-base font-medium text-primary hover:text-primary-dark hover:bg-gray-50"
-                >
-                  Get Started
-                </button>
-              </>
-            )}
-          </div>
-        </div>
-      )}
+      <MobileMenu 
+        isOpen={isOpen}
+        user={user}
+        onLogout={handleLogout}
+        onGetStarted={handleGetStarted}
+      />
     </nav>
   );
 };
