@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Button } from "@/components/ui/button";
-import { Menu, X, Plus, Bell, Search } from 'lucide-react';
+import { Menu, X, Plus, Bell, Search, UserCircle2 } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
@@ -85,11 +85,6 @@ export const Navigation = () => {
             )}
             {user && (
               <>
-                <Link to="/dashboard">
-                  <Button variant="ghost" className="text-gray-600 hover:text-primary">
-                    Dashboard
-                  </Button>
-                </Link>
                 <Button 
                   className="bg-primary text-white hover:bg-primary/90 flex items-center gap-2"
                   onClick={() => navigate('/social/create')}
@@ -105,6 +100,9 @@ export const Navigation = () => {
                     </span>
                   )}
                 </button>
+                <div className="flex items-center gap-2">
+                  <UserCircle2 className="w-5 h-5 text-gray-600" />
+                </div>
               </>
             )}
             <UserMenu 
