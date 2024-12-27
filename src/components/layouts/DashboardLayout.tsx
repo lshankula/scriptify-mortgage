@@ -1,7 +1,16 @@
 import React from 'react';
 import { 
   SidebarProvider, 
+  Sidebar, 
+  SidebarContent,
+  SidebarGroup,
+  SidebarGroupContent,
+  SidebarGroupLabel,
+  SidebarMenu,
+  SidebarMenuButton,
+  SidebarMenuItem,
   SidebarTrigger,
+  SidebarHeader,
 } from "@/components/ui/sidebar";
 import { NavigationMenu } from "@/components/navigation/NavigationMenu";
 import { Navigation } from "@/components/Navigation";
@@ -19,7 +28,6 @@ export const DashboardLayout = ({ children }: DashboardLayoutProps) => {
           <NavigationMenu />
           <main className="flex-1">
             <div className="container mx-auto p-6">
-              <SidebarTrigger className="mb-4 md:hidden" />
               {children}
             </div>
           </main>
