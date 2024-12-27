@@ -78,6 +78,11 @@ export const QuestionForm = ({
 
     try {
       setIsSubmitting(true);
+      console.log('Saving response:', {
+        question_number: questions[currentQuestion].id,
+        text_response: currentResponse,
+        user_id: userId
+      });
       
       const { error } = await supabase
         .from("onboarding_responses")
@@ -89,14 +94,17 @@ export const QuestionForm = ({
           onConflict: 'user_id,question_number'
         });
 
-      if (error) throw error;
+      if (error) {
+        console.error('Error saving response:', error);
+        throw error;
+      }
 
       onNext();
-    } catch (error) {
+    } catch (error: any) {
       console.error("Error saving response:", error);
       toast({
         title: "Error",
-        description: "Failed to save your response. Please try again.",
+        description: error.message || "Failed to save your response. Please try again.",
         variant: "destructive",
       });
     } finally {
@@ -123,19 +131,31 @@ export const QuestionForm = ({
                 const file = new File([blob], `voice_${Date.now()}.webm`, { type: blob.type });
                 const url = await handleMediaUpload(file, 'voice');
                 if (url) {
-                  await supabase
-                    .from("onboarding_responses")
-                    .upsert({
-                      question_number: currentQ.id,
-                      user_id: userId,
-                      voice_url: url
-                    }, {
-                      onConflict: 'user_id,question_number'
+                  try {
+                    const { error } = await supabase
+                      .from("onboarding_responses")
+                      .upsert({
+                        question_number: currentQ.id,
+                        user_id: userId,
+                        voice_url: url
+                      }, {
+                        onConflict: 'user_id,question_number'
+                      });
+                    
+                    if (error) throw error;
+                    
+                    toast({
+                      title: "Voice Note Saved",
+                      description: "Your voice note has been uploaded successfully.",
                     });
-                  toast({
-                    title: "Voice Note Saved",
-                    description: "Your voice note has been uploaded successfully.",
-                  });
+                  } catch (error: any) {
+                    console.error('Error saving voice note:', error);
+                    toast({
+                      title: "Error",
+                      description: error.message || "Failed to save voice note. Please try again.",
+                      variant: "destructive",
+                    });
+                  }
                 }
               }}
               type="voice"
@@ -145,19 +165,31 @@ export const QuestionForm = ({
                 const file = new File([blob], `video_${Date.now()}.webm`, { type: blob.type });
                 const url = await handleMediaUpload(file, 'video');
                 if (url) {
-                  await supabase
-                    .from("onboarding_responses")
-                    .upsert({
-                      question_number: currentQ.id,
-                      user_id: userId,
-                      video_url: url
-                    }, {
-                      onConflict: 'user_id,question_number'
+                  try {
+                    const { error } = await supabase
+                      .from("onboarding_responses")
+                      .upsert({
+                        question_number: currentQ.id,
+                        user_id: userId,
+                        video_url: url
+                      }, {
+                        onConflict: 'user_id,question_number'
+                      });
+                    
+                    if (error) throw error;
+                    
+                    toast({
+                      title: "Video Saved",
+                      description: "Your video has been uploaded successfully.",
                     });
-                  toast({
-                    title: "Video Saved",
-                    description: "Your video has been uploaded successfully.",
-                  });
+                  } catch (error: any) {
+                    console.error('Error saving video:', error);
+                    toast({
+                      title: "Error",
+                      description: error.message || "Failed to save video. Please try again.",
+                      variant: "destructive",
+                    });
+                  }
                 }
               }}
               type="video"
