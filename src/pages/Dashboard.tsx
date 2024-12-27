@@ -2,9 +2,12 @@ import React, { useState } from 'react';
 import { Plus, Bell, Search, Star, Target, TrendingUp, Users, Zap } from 'lucide-react';
 import { NavigationMenu } from '@/components/navigation/NavigationMenu';
 import { OnboardingDialog } from '@/components/onboarding/OnboardingDialog';
+import { OnboardingCenter } from '@/components/onboarding/OnboardingCenter';
+import { useOnboardingStatus } from '@/hooks/useOnboardingStatus';
 
 const Dashboard = () => {
   const [notifications, setNotifications] = useState(3);
+  const { checkOnboardingStatus } = useOnboardingStatus();
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -60,27 +63,10 @@ const Dashboard = () => {
       {/* Main Dashboard Content */}
       <main className="pt-16 pl-64">
         <div className="p-8">
-          <div className="bg-white p-6 rounded-lg border mb-6">
-            <div className="flex items-center justify-between mb-4">
-              <div>
-                <h2 className="text-xl font-bold flex items-center gap-2">
-                  <Star className="w-5 h-5 text-accent" />
-                  Content Master Level 3
-                </h2>
-                <p className="text-gray-600">Complete daily tasks to level up!</p>
-              </div>
-              <div className="text-right">
-                <div className="text-2xl font-bold text-primary">2,450 XP</div>
-                <p className="text-sm text-gray-600">Next level: 550 XP needed</p>
-              </div>
-            </div>
-            <div className="w-full bg-gray-200 rounded-full h-2">
-              <div className="bg-primary rounded-full h-2 w-4/5"></div>
-            </div>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
-            {/* Quick Stats */}
+          <OnboardingCenter />
+          
+          {/* Quick Stats */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-6">
             <div className="bg-white p-6 rounded-lg border">
               <div className="flex items-center gap-3 mb-4">
                 <div className="p-2 bg-green-100 rounded-lg">
@@ -122,8 +108,7 @@ const Dashboard = () => {
           </div>
 
           {/* Main Content Sections */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {/* Daily Missions */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
             <div className="bg-white p-6 rounded-lg border">
               <h3 className="text-lg font-bold mb-4 flex items-center gap-2">
                 <Zap className="w-5 h-5 text-accent" />
