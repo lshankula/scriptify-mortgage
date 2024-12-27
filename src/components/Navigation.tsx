@@ -4,8 +4,13 @@ import { Menu, X, Plus, Bell, Search, UserCircle2 } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
-import { UserMenu } from './navigation/UserMenu';
 import { MobileMenu } from './navigation/MobileMenu';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 export const Navigation = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -48,6 +53,16 @@ export const Navigation = () => {
     } else {
       navigate('/signup'); // Not logged in, go to signup
     }
+  };
+
+  // Function to get user initials from email
+  const getUserInitials = (email: string) => {
+    if (!email) return '??';
+    const parts = email.split('@')[0].split(/[._-]/);
+    if (parts.length >= 2) {
+      return (parts[0][0] + parts[1][0]).toUpperCase();
+    }
+    return parts[0].slice(0, 2).toUpperCase();
   };
 
   return (
@@ -100,16 +115,36 @@ export const Navigation = () => {
                     </span>
                   )}
                 </button>
-                <div className="flex items-center gap-2">
-                  <UserCircle2 className="w-5 h-5 text-gray-600" />
-                </div>
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button 
+                      variant="ghost" 
+                      className="w-10 h-10 rounded-full bg-primary/10 hover:bg-primary/20"
+                    >
+                      {getUserInitials(user?.email || '')}
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end" className="w-56">
+                    <DropdownMenuItem onClick={handleLogout}>
+                      Log out
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
               </>
             )}
-            <UserMenu 
-              user={user} 
-              onLogout={handleLogout} 
-              onGetStarted={handleGetStarted}
-            />
+            {!user && (
+              <>
+                <Link to="/login">
+                  <Button variant="outline" className="ml-4">Log In</Button>
+                </Link>
+                <Button 
+                  onClick={handleGetStarted}
+                  className="bg-primary hover:bg-primary-dark"
+                >
+                  Get Started
+                </Button>
+              </>
+            )}
           </div>
 
           <div className="flex items-center sm:hidden">
