@@ -1,13 +1,14 @@
 import React, { useState } from 'react';
 import { Plus, Bell, Search, Star, Target, TrendingUp, Users, Zap } from 'lucide-react';
 import { NavigationMenu } from '@/components/navigation/NavigationMenu';
+import { OnboardingDialog } from '@/components/onboarding/OnboardingDialog';
 
 const Dashboard = () => {
   const [notifications, setNotifications] = useState(3);
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Top Navigation Bar */}
+      <OnboardingDialog />
       <nav className="fixed top-0 left-0 right-0 z-10 bg-white border-b">
         <div className="max-w-7xl mx-auto px-4">
           <div className="flex justify-between items-center h-16">

@@ -9,6 +9,7 @@ import { UserAvatar } from './navigation/UserAvatar';
 import { SearchBar } from './navigation/SearchBar';
 import { NotificationButton } from './navigation/NotificationButton';
 import { CreateContentButton } from './navigation/CreateContentButton';
+import { OnboardingButton } from './navigation/OnboardingButton';
 
 export const Navigation = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -90,6 +91,7 @@ export const Navigation = () => {
             )}
             {user && (
               <>
+                <OnboardingButton />
                 <CreateContentButton />
                 <NotificationButton count={notifications} />
                 <UserAvatar email={user?.email} onLogout={handleLogout} />
