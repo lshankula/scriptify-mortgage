@@ -23,9 +23,18 @@ export const useOnboardingStatus = () => {
         throw error;
       }
 
+      // Count unique question numbers to handle potential duplicates
+      const uniqueQuestionCount = new Set(
+        existingResponses?.map(response => response.question_number)
+      ).size;
+
       console.log("Onboarding responses:", existingResponses);
-      const hasCompletedOnboarding = existingResponses && existingResponses.length === TOTAL_QUESTIONS;
-      console.log("Has completed onboarding:", hasCompletedOnboarding, "Response count:", existingResponses?.length);
+      console.log("Unique question count:", uniqueQuestionCount);
+      
+      const hasCompletedOnboarding = uniqueQuestionCount === TOTAL_QUESTIONS;
+      console.log("Has completed onboarding:", hasCompletedOnboarding, 
+        "Response count:", uniqueQuestionCount,
+        "Required questions:", TOTAL_QUESTIONS);
 
       return hasCompletedOnboarding;
     } catch (error) {
