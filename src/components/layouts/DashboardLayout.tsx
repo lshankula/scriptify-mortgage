@@ -1,16 +1,7 @@
 import React from 'react';
 import { 
-  SidebarProvider, 
-  Sidebar, 
-  SidebarContent,
-  SidebarGroup,
-  SidebarGroupContent,
-  SidebarGroupLabel,
-  SidebarMenu,
-  SidebarMenuButton,
-  SidebarMenuItem,
-  SidebarTrigger,
-  SidebarHeader,
+  SidebarProvider,
+  SidebarInset
 } from "@/components/ui/sidebar";
 import { NavigationMenu } from "@/components/navigation/NavigationMenu";
 import { Navigation } from "@/components/Navigation";
@@ -23,14 +14,14 @@ export const DashboardLayout = ({ children }: DashboardLayoutProps) => {
   return (
     <div className="min-h-screen bg-background">
       <Navigation />
-      <SidebarProvider>
+      <SidebarProvider defaultOpen={true}>
         <div className="flex min-h-[calc(100vh-4rem)] w-full pt-16">
           <NavigationMenu />
-          <main className="flex-1">
+          <SidebarInset>
             <div className="container mx-auto p-6">
               {children}
             </div>
-          </main>
+          </SidebarInset>
         </div>
       </SidebarProvider>
     </div>
