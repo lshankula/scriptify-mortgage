@@ -51,10 +51,11 @@ export const NavigationSection = ({
       } else {
         navigate('/onboarding');
       }
+    } else if (subitem === "Learning Center") {
+      navigate('/learning');
     } else if (subitem === "Social Post") {
       navigate('/social');
     }
-    // Add other mappings as needed
     console.log('Subitem clicked:', subitem);
   };
 
@@ -64,7 +65,13 @@ export const NavigationSection = ({
         icon={menu.icon}
         label={menu.label}
         isActive={activeMenu === menuKey}
-        onClick={() => setActiveMenu(activeMenu === menuKey ? null : menuKey)}
+        onClick={() => {
+          if (menu.label === "Learning Center") {
+            navigate('/learning');
+          } else {
+            setActiveMenu(activeMenu === menuKey ? null : menuKey);
+          }
+        }}
         hasDropdown
       />
       
