@@ -1,4 +1,4 @@
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route, useLocation } from "react-router-dom";
 import Index from "./pages/Index";
 import Login from "./pages/Login";
 import Onboarding from "./pages/Onboarding";
@@ -12,12 +12,24 @@ import LearningCenter from "./pages/LearningCenter";
 import { Navigation } from "./components/Navigation";
 import { useSession } from "./hooks/useSession";
 
+// Helper component to handle navigation visibility logic
+const NavigationWrapper = () => {
+  const { session } = useSession();
+  const location = useLocation();
+  const publicRoutes = ['/', '/login', '/signup', '/features', '/pricing'];
+  
+  // Only show navigation for authenticated users and non-public routes
+  const shouldShowNavigation = session && !publicRoutes.includes(location.pathname);
+  
+  return shouldShowNavigation ? <Navigation /> : null;
+};
+
 function App() {
   const { session } = useSession();
 
   return (
     <Router>
-      {session && <Navigation />}
+      <NavigationWrapper />
       <Routes>
         <Route path="/" element={<Index />} />
         <Route path="/login" element={<Login />} />

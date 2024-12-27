@@ -5,6 +5,7 @@ import { QuestionForm } from "@/components/onboarding/QuestionForm";
 import { useToast } from "@/hooks/use-toast";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { AlertCircle } from "lucide-react";
+import { DashboardLayout } from "@/components/layouts/DashboardLayout";
 
 const basicQuestions = [
   {
@@ -136,46 +137,48 @@ const Onboarding = () => {
   if (!userId) return null;
 
   return (
-    <div className="min-h-screen bg-gray-50 py-12 sm:px-6 lg:px-8">
-      <div className="sm:mx-auto sm:w-full sm:max-w-md">
-        <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
-          {mode === 'advanced' ? 'Advanced Training' : 
-           mode === 'edit' ? 'Edit Your Responses' : 
-           'Welcome to MortgageContent.ai'}
-        </h2>
-        <p className="mt-2 text-center text-sm text-gray-600 mb-6">
-          {mode === 'advanced' ? 'Let\'s dive deeper into your expertise' :
-           mode === 'edit' ? 'Update your previous responses' :
-           'Let\'s get to know you better'}
-        </p>
+    <DashboardLayout>
+      <div className="min-h-screen bg-gray-50 py-12 sm:px-6 lg:px-8">
+        <div className="sm:mx-auto sm:w-full sm:max-w-md">
+          <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
+            {mode === 'advanced' ? 'Advanced Training' : 
+             mode === 'edit' ? 'Edit Your Responses' : 
+             'Welcome to MortgageContent.ai'}
+          </h2>
+          <p className="mt-2 text-center text-sm text-gray-600 mb-6">
+            {mode === 'advanced' ? 'Let\'s dive deeper into your expertise' :
+             mode === 'edit' ? 'Update your previous responses' :
+             'Let\'s get to know you better'}
+          </p>
 
-        {(mode === 'edit' || mode === 'advanced') && (
-          <Alert variant="destructive" className="mb-6">
-            <AlertCircle className="h-4 w-4" />
-            <AlertDescription>
-              Note: New answers will override your previous responses for each question.
-            </AlertDescription>
-          </Alert>
-        )}
-      </div>
+          {(mode === 'edit' || mode === 'advanced') && (
+            <Alert variant="destructive" className="mb-6">
+              <AlertCircle className="h-4 w-4" />
+              <AlertDescription>
+                Note: New answers will override your previous responses for each question.
+              </AlertDescription>
+            </Alert>
+          )}
+        </div>
 
-      <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
-        <QuestionForm
-          currentQuestion={currentQuestion}
-          questions={questions}
-          onNext={() => {
-            if (currentQuestion < questions.length - 1) {
-              setCurrentQuestion((prev) => prev + 1);
-            } else {
-              navigate("/learning");
-            }
-          }}
-          onPrevious={() => setCurrentQuestion((prev) => Math.max(0, prev - 1))}
-          userId={userId}
-          mode={mode}
-        />
+        <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
+          <QuestionForm
+            currentQuestion={currentQuestion}
+            questions={questions}
+            onNext={() => {
+              if (currentQuestion < questions.length - 1) {
+                setCurrentQuestion((prev) => prev + 1);
+              } else {
+                navigate("/learning");
+              }
+            }}
+            onPrevious={() => setCurrentQuestion((prev) => Math.max(0, prev - 1))}
+            userId={userId}
+            mode={mode}
+          />
+        </div>
       </div>
-    </div>
+    </DashboardLayout>
   );
 };
 

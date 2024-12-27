@@ -3,7 +3,6 @@ import {
   SidebarProvider, 
   NavigationMenu 
 } from "@/components/navigation/NavigationMenu";
-import { Navigation } from "@/components/Navigation";
 
 interface DashboardLayoutProps {
   children: React.ReactNode;
@@ -12,7 +11,6 @@ interface DashboardLayoutProps {
 export const DashboardLayout = ({ children }: DashboardLayoutProps) => {
   return (
     <div className="min-h-screen bg-background">
-      <Navigation />
       <SidebarProvider>
         <div className="flex min-h-[calc(100vh-4rem)] w-full pt-16">
           <div className="hidden md:block">
