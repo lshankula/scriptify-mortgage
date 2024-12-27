@@ -111,14 +111,9 @@ const Login = () => {
               theme="light"
               providers={[]}
               redirectTo={window.location.origin}
-              onError={(error) => {
-                console.error("Auth error:", error);
-                toast({
-                  title: "Authentication Error",
-                  description: error.message,
-                  variant: "destructive",
-                });
-              }}
+              view="sign_in"
+              showLinks={true}
+              onlyThirdPartyProviders={false}
             />
           </Card>
         </div>
