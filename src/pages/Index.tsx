@@ -1,17 +1,25 @@
-import { PublicNavigation } from "@/components/navigation/PublicNavigation";
-import { HeroSection } from "@/components/landing/HeroSection";
-import { FeaturesSection } from "@/components/landing/FeaturesSection";
-import { BenefitsSection } from "@/components/landing/BenefitsSection";
-import { CtaSection } from "@/components/landing/CtaSection";
+import { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { useSession } from "@/hooks/useSession";
+import { OnboardingCenter } from "@/components/onboarding/OnboardingCenter";
+import { OnboardingDialog } from "@/components/onboarding/OnboardingDialog";
 
 const Index = () => {
+  const { session } = useSession();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (!session) {
+      navigate("/login");
+    }
+  }, [session, navigate]);
+
+  if (!session) return null;
+
   return (
-    <div className="min-h-screen bg-white">
-      <PublicNavigation />
-      <HeroSection />
-      <FeaturesSection />
-      <BenefitsSection />
-      <CtaSection />
+    <div className="min-h-screen bg-background pt-16">
+      <OnboardingCenter />
+      <OnboardingDialog />
     </div>
   );
 };
