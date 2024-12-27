@@ -1,18 +1,8 @@
 import React from 'react';
 import { 
   SidebarProvider, 
-  Sidebar, 
-  SidebarContent,
-  SidebarGroup,
-  SidebarGroupContent,
-  SidebarGroupLabel,
-  SidebarMenu,
-  SidebarMenuButton,
-  SidebarMenuItem,
-  SidebarTrigger,
-  SidebarHeader,
-} from "@/components/ui/sidebar";
-import { NavigationMenu } from "@/components/navigation/NavigationMenu";
+  NavigationMenu 
+} from "@/components/navigation/NavigationMenu";
 import { Navigation } from "@/components/Navigation";
 
 interface DashboardLayoutProps {
@@ -25,7 +15,9 @@ export const DashboardLayout = ({ children }: DashboardLayoutProps) => {
       <Navigation />
       <SidebarProvider>
         <div className="flex min-h-[calc(100vh-4rem)] w-full pt-16">
-          <NavigationMenu />
+          <div className="hidden md:block">
+            <NavigationMenu />
+          </div>
           <main className="flex-1">
             <div className="container mx-auto p-6">
               {children}

@@ -1,9 +1,10 @@
 import { Link } from 'react-router-dom';
-import { Plus, Bell, Search, FileText, Image, Layout, Video, Mail } from 'lucide-react';
+import { Plus, Bell, Search, FileText, Image, Layout, Video, Mail, Home, Calendar, Settings } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { UserMenu } from './UserMenu';
 import { SearchBar } from './SearchBar';
 import { Separator } from "@/components/ui/separator";
+import { menuItems } from './navigationData';
 
 interface MobileMenuProps {
   isOpen: boolean;
@@ -20,12 +21,58 @@ export const MobileMenu = ({ isOpen, user, onLogout, onGetStarted }: MobileMenuP
       <div className="fixed inset-0 bg-white z-50 overflow-y-auto">
         <div className="px-4 py-6 space-y-6">
           {user && (
-            <div className="mb-6">
-              <SearchBar />
-            </div>
+            <>
+              <div className="mb-6">
+                <SearchBar />
+              </div>
+              
+              <Link to="/dashboard" className="flex items-center px-3 py-2 text-base font-medium text-gray-600 hover:text-primary hover:bg-gray-50 rounded-md">
+                <Home className="w-5 h-5 mr-3" />
+                Dashboard
+              </Link>
+              
+              {Object.entries(menuItems).map(([key, section]) => (
+                <div key={key} className="space-y-2">
+                  <div className="flex items-center px-3">
+                    {section.icon}
+                    <h3 className="ml-2 text-sm font-semibold text-gray-900">{section.label}</h3>
+                  </div>
+                  
+                  {section.items.map((item, index) => (
+                    <div key={index} className="ml-5">
+                      <div className="flex items-center px-3 py-2 text-sm text-gray-600">
+                        {item.icon}
+                        <span className="ml-2">{item.label}</span>
+                      </div>
+                      {item.subitems?.map((subitem, subIndex) => (
+                        <Link
+                          key={subIndex}
+                          to="#"
+                          className="block ml-8 px-3 py-2 text-sm text-gray-500 hover:text-primary hover:bg-gray-50 rounded-md"
+                        >
+                          {subitem}
+                        </Link>
+                      ))}
+                    </div>
+                  ))}
+                  <Separator className="my-2" />
+                </div>
+              ))}
+              
+              <div className="space-y-2">
+                <Link to="/calendar" className="flex items-center px-3 py-2 text-base font-medium text-gray-600 hover:text-primary hover:bg-gray-50 rounded-md">
+                  <Calendar className="w-5 h-5 mr-3" />
+                  Calendar
+                </Link>
+                <Link to="/settings" className="flex items-center px-3 py-2 text-base font-medium text-gray-600 hover:text-primary hover:bg-gray-50 rounded-md">
+                  <Settings className="w-5 h-5 mr-3" />
+                  Settings
+                </Link>
+              </div>
+            </>
           )}
           
-          {!user ? (
+          {!user && (
             <>
               <Link to="/features" className="block px-3 py-2 text-base font-medium text-gray-600 hover:text-primary hover:bg-gray-50 rounded-md">
                 Features
@@ -33,56 +80,6 @@ export const MobileMenu = ({ isOpen, user, onLogout, onGetStarted }: MobileMenuP
               <Link to="/pricing" className="block px-3 py-2 text-base font-medium text-gray-600 hover:text-primary hover:bg-gray-50 rounded-md">
                 Pricing
               </Link>
-            </>
-          ) : (
-            <>
-              <div className="space-y-2">
-                <h3 className="text-sm font-semibold text-gray-500 px-3">Content Hub</h3>
-                <div className="space-y-1">
-                  <div className="px-3">
-                    <h4 className="text-sm font-medium text-gray-900 mb-2">Create New</h4>
-                    <div className="space-y-1 ml-4">
-                      <Link to="/social/create" className="flex items-center px-3 py-2 text-sm text-gray-600 hover:text-primary rounded-md">
-                        <FileText className="w-4 h-4 mr-3" />
-                        Social Post
-                      </Link>
-                      <Link to="/blog/create" className="flex items-center px-3 py-2 text-sm text-gray-600 hover:text-primary rounded-md">
-                        <Layout className="w-4 h-4 mr-3" />
-                        Blog Article
-                      </Link>
-                      <Link to="/video/create" className="flex items-center px-3 py-2 text-sm text-gray-600 hover:text-primary rounded-md">
-                        <Video className="w-4 h-4 mr-3" />
-                        Video Script
-                      </Link>
-                    </div>
-                  </div>
-                  
-                  <Separator className="my-4" />
-                  
-                  <div className="px-3">
-                    <h4 className="text-sm font-medium text-gray-900 mb-2">Visual Content</h4>
-                    <div className="space-y-1 ml-4">
-                      <Link to="/visual/infographics" className="flex items-center px-3 py-2 text-sm text-gray-600 hover:text-primary rounded-md">
-                        <Image className="w-4 h-4 mr-3" />
-                        Infographics
-                      </Link>
-                      <Link to="/visual/charts" className="flex items-center px-3 py-2 text-sm text-gray-600 hover:text-primary rounded-md">
-                        <Layout className="w-4 h-4 mr-3" />
-                        Charts
-                      </Link>
-                    </div>
-                  </div>
-                  
-                  <Separator className="my-4" />
-                  
-                  <div className="px-3">
-                    <Link to="/notifications" className="flex items-center px-3 py-2 text-sm text-gray-600 hover:text-primary rounded-md">
-                      <Bell className="w-4 h-4 mr-3" />
-                      Notifications
-                    </Link>
-                  </div>
-                </div>
-              </div>
             </>
           )}
           
