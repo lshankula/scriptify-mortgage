@@ -15,7 +15,7 @@ export const DashboardLayout = ({ children }: DashboardLayoutProps) => {
     <div className="min-h-screen bg-background">
       <Navigation />
       <SidebarProvider defaultOpen={true}>
-        <div className="flex min-h-[calc(100vh-4rem)] w-full pt-16">
+        <div className="flex min-h-[calc(100vh-4rem)] w-full pt-24">
           <NavigationMenu />
           <SidebarInset>
             <div className="container mx-auto p-6">
