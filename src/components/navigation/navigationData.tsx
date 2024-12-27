@@ -1,54 +1,96 @@
 import { 
-  LayoutDashboard, 
-  Settings, 
-  Users, 
-  Share2, 
-  BarChart, 
-  FileText,
-  MessageSquare,
-  GraduationCap,
-  Book
-} from "lucide-react";
+  Layout, Users, BarChart, Trophy, FileText, 
+  Image, DollarSign, PieChart, Star 
+} from 'lucide-react';
+import { MenuItems } from './types';
 
-export const menuItems = {
-  content: {
-    label: "Content",
-    icon: <FileText className="w-5 h-5" />,
+export const menuItems: MenuItems = {
+  contentHub: {
+    icon: <Layout className="w-5 h-5" />,
+    label: "Content Hub",
     items: [
-      {
-        label: "Social Media",
-        icon: <Share2 className="w-5 h-5" />,
-        subitems: ["Social Post", "Social Calendar", "Social Analytics"]
+      { 
+        label: "Create New", 
+        icon: <FileText className="w-4 h-4" />, 
+        subitems: ["Social Post", "Blog Article", "Video Script", "Email Template"] 
       },
-      {
-        label: "Blog Posts",
-        icon: <MessageSquare className="w-5 h-5" />,
-        subitems: ["Create Post", "Blog Calendar", "Blog Analytics"]
+      { 
+        label: "Visual Content", 
+        icon: <Image className="w-4 h-4" />,
+        subitems: ["Infographics", "Charts", "Graphics", "Presentations"] 
+      },
+      { 
+        label: "Templates", 
+        icon: <Layout className="w-4 h-4" />,
+        subitems: ["Social Media", "Email", "Video", "Marketing"] 
+      },
+      { 
+        label: "My Content", 
+        icon: <FileText className="w-4 h-4" />,
+        subitems: ["Drafts", "Published", "Archived", "Shared"] 
       }
     ]
   },
-  learning: {
-    label: "Learning",
-    icon: <GraduationCap className="w-5 h-5" />,
+  coMarketing: {
+    icon: <Users className="w-5 h-5" />,
+    label: "Co-Marketing",
     items: [
-      {
-        label: "Learning Center",
-        icon: <Book className="w-5 h-5" />,
-        path: "/learning"
+      { 
+        label: "Agent Portal", 
+        icon: <Users className="w-4 h-4" />,
+        subitems: ["Partner Directory", "Invitations", "Joint Content", "Settings"] 
+      },
+      { 
+        label: "Cost Sharing", 
+        icon: <DollarSign className="w-4 h-4" />,
+        subitems: ["Expenses", "Reports", "Settings", "History"] 
+      },
+      { 
+        label: "Campaigns", 
+        icon: <Layout className="w-4 h-4" />,
+        subitems: ["Active", "Scheduled", "Completed", "Analytics"] 
       }
     ]
   },
   analytics: {
-    label: "Analytics",
     icon: <BarChart className="w-5 h-5" />,
+    label: "Analytics",
     items: [
-      {
-        label: "Overview",
-        icon: <LayoutDashboard className="w-5 h-5" />
+      { 
+        label: "Performance", 
+        icon: <PieChart className="w-4 h-4" />,
+        subitems: ["Content Stats", "Engagement", "Growth", "Trends"] 
       },
-      {
-        label: "Team",
-        icon: <Users className="w-5 h-5" />
+      { 
+        label: "Reports", 
+        icon: <FileText className="w-4 h-4" />,
+        subitems: ["Overview", "Custom", "Scheduled", "Archived"] 
+      },
+      { 
+        label: "ROI Tracking", 
+        icon: <DollarSign className="w-4 h-4" />,
+        subitems: ["Campaign ROI", "Content ROI", "Partner ROI"] 
+      }
+    ]
+  },
+  achievements: {
+    icon: <Trophy className="w-5 h-5" />,
+    label: "Achievements",
+    items: [
+      { 
+        label: "Missions", 
+        icon: <Star className="w-4 h-4" />,
+        subitems: ["Daily", "Weekly", "Special Events"] 
+      },
+      { 
+        label: "Badges", 
+        icon: <Trophy className="w-4 h-4" />,
+        subitems: ["Content", "Engagement", "Partnership", "Expert"] 
+      },
+      { 
+        label: "Leaderboard", 
+        icon: <Users className="w-4 h-4" />,
+        subitems: ["Team", "Global", "Partners"] 
       }
     ]
   }

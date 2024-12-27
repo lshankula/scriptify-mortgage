@@ -80,7 +80,7 @@ const Onboarding = () => {
         .order("question_number");
 
       if (existingResponses && existingResponses.length > 0) {
-        navigate("/dashboard");
+        navigate("/");
       }
     };
 
@@ -108,7 +108,7 @@ const Onboarding = () => {
             if (currentQuestion < questions.length - 1) {
               setCurrentQuestion((prev) => prev + 1);
             } else {
-              navigate("/dashboard");
+              navigate("/");
             }
           }}
           onPrevious={() => setCurrentQuestion((prev) => Math.max(0, prev - 1))}
