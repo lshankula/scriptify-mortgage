@@ -12,6 +12,37 @@ const Login = () => {
   const { toast } = useToast();
   const [isLoading, setIsLoading] = useState(false);
 
+  const handleSignedInUser = async (userId: string) => {
+    try {
+      console.log("Checking onboarding status for user:", userId);
+      const { data: existingResponses, error } = await supabase
+        .from("onboarding_responses")
+        .select("*")
+        .eq("user_id", userId)
+        .limit(1);
+
+      if (error) {
+        console.error("Error checking onboarding status:", error);
+        throw error;
+      }
+
+      if (existingResponses && existingResponses.length > 0) {
+        console.log("User has completed onboarding, redirecting to home");
+        navigate("/");
+      } else {
+        console.log("User needs to complete onboarding");
+        navigate("/onboarding");
+      }
+    } catch (error) {
+      console.error("Error handling signed in user:", error);
+      toast({
+        title: "Error",
+        description: "Failed to check onboarding status",
+        variant: "destructive",
+      });
+    }
+  };
+
   useEffect(() => {
     console.log("Login component mounted");
     
@@ -33,7 +64,7 @@ const Login = () => {
         
         if (session) {
           console.log("User already logged in, checking onboarding status for:", session.user.email);
-          handleSignedInUser(session.user.id);
+          await handleSignedInUser(session.user.id);
         } else {
           console.log("No active session found");
         }
@@ -79,37 +110,6 @@ const Login = () => {
     };
   }, [navigate, toast]);
 
-  const handleSignedInUser = async (userId: string) => {
-    try {
-      console.log("Checking onboarding status for user:", userId);
-      const { data: existingResponses, error } = await supabase
-        .from("onboarding_responses")
-        .select("*")
-        .eq("user_id", userId)
-        .limit(1);
-
-      if (error) {
-        console.error("Error checking onboarding status:", error);
-        throw error;
-      }
-
-      if (existingResponses && existingResponses.length > 0) {
-        console.log("User has completed onboarding, redirecting to home");
-        navigate("/");
-      } else {
-        console.log("User needs to complete onboarding");
-        navigate("/onboarding");
-      }
-    } catch (error) {
-      console.error("Error handling signed in user:", error);
-      toast({
-        title: "Error",
-        description: "Failed to check onboarding status",
-        variant: "destructive",
-      });
-    }
-  };
-
   return (
     <div className="min-h-screen bg-gray-50">
       <Navigation />
@@ -140,7 +140,7 @@ const Login = () => {
               }}
               theme="light"
               providers={[]}
-              redirectTo={`${window.location.origin}/onboarding`}
+              redirectTo={window.location.origin}
               view="sign_in"
               showLinks={true}
               onlyThirdPartyProviders={false}
