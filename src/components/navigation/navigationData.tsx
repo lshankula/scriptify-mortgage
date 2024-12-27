@@ -1,10 +1,32 @@
 import { 
   Layout, Users, BarChart, Trophy, FileText, 
-  Image, DollarSign, PieChart, Star, GraduationCap
+  Image, DollarSign, PieChart, Star, GraduationCap,
+  ClipboardList
 } from 'lucide-react';
 import { MenuItems } from './types';
 
 export const menuItems: MenuItems = {
+  learning: {
+    icon: <GraduationCap className="w-5 h-5" />,
+    label: "Learning Center",
+    items: [
+      { 
+        label: "Onboarding", 
+        icon: <ClipboardList className="w-4 h-4" />, 
+        subitems: ["Basic Onboarding", "Advanced Training"] 
+      },
+      { 
+        label: "Quick Start", 
+        icon: <FileText className="w-4 h-4" />, 
+        subitems: ["Platform Overview", "Content Creation", "Publishing"] 
+      },
+      { 
+        label: "Feature Mastery", 
+        icon: <Star className="w-4 h-4" />,
+        subitems: ["Visual Content", "Co-Marketing", "Analytics"] 
+      }
+    ]
+  },
   contentHub: {
     icon: <Layout className="w-5 h-5" />,
     label: "Content Hub",
@@ -94,25 +116,4 @@ export const menuItems: MenuItems = {
       }
     ]
   },
-  learning: {
-    icon: <GraduationCap className="w-5 h-5" />,
-    label: "Learning Center",
-    items: [
-      { 
-        label: "Quick Start", 
-        icon: <FileText className="w-4 h-4" />,
-        subitems: ["Platform Overview", "Content Creation", "Publishing"] 
-      },
-      { 
-        label: "Feature Mastery", 
-        icon: <Star className="w-4 h-4" />,
-        subitems: ["Visual Content", "Co-Marketing", "Analytics"] 
-      },
-      { 
-        label: "Achievements", 
-        icon: <Trophy className="w-4 h-4" />,
-        subitems: ["Content Creator", "Team Player", "Analytics Pro"] 
-      }
-    ]
-  }
 };

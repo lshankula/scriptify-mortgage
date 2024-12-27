@@ -1,10 +1,11 @@
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { QuestionForm } from "@/components/onboarding/QuestionForm";
+import { useToast } from "@/hooks/use-toast";
 
 // Define the questions for the onboarding process
-const questions = [
+const basicQuestions = [
   {
     id: 1,
     question: "What inspired you to get into the mortgage industry, and what keeps you motivated today?",
@@ -57,10 +58,44 @@ const questions = [
   },
 ];
 
+const advancedQuestions = [
+  {
+    id: 11,
+    question: "What specific marketing strategies have been most effective for you in the past?",
+    placeholder: "Share your successful marketing approaches",
+  },
+  {
+    id: 12,
+    question: "How do you typically structure your follow-up process with clients?",
+    placeholder: "Describe your follow-up methodology",
+  },
+  {
+    id: 13,
+    question: "What tools or technologies do you currently use in your mortgage business?",
+    placeholder: "List the tools and technologies you rely on",
+  },
+  {
+    id: 14,
+    question: "How do you handle objections from potential clients?",
+    placeholder: "Share your approach to handling objections",
+  },
+  {
+    id: 15,
+    question: "What's your preferred method for generating new leads?",
+    placeholder: "Describe your lead generation strategy",
+  }
+];
+
 const Onboarding = () => {
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const navigate = useNavigate();
   const [userId, setUserId] = useState<string | null>(null);
+  const [searchParams] = useSearchParams();
+  const mode = searchParams.get('mode');
+  const { toast } = useToast();
+  const [existingResponses, setExistingResponses] = useState<any[]>([]);
+
+  const questions = mode === 'advanced' ? advancedQuestions : basicQuestions;
 
   useEffect(() => {
     const checkOnboardingStatus = async () => {
@@ -73,19 +108,27 @@ const Onboarding = () => {
       
       setUserId(session.user.id);
 
-      const { data: existingResponses } = await supabase
+      const { data: responses } = await supabase
         .from("onboarding_responses")
         .select("*")
         .eq("user_id", session.user.id)
         .order("question_number");
 
-      if (existingResponses && existingResponses.length > 0) {
-        navigate("/");
+      if (responses) {
+        setExistingResponses(responses);
+        
+        if (mode !== 'edit' && mode !== 'advanced' && responses.length > 0) {
+          toast({
+            title: "Onboarding Already Completed",
+            description: "You can edit your responses or take the advanced training.",
+          });
+          navigate("/learning");
+        }
       }
     };
 
     checkOnboardingStatus();
-  }, [navigate]);
+  }, [navigate, mode, toast]);
 
   if (!userId) return null;
 
@@ -93,10 +136,14 @@ const Onboarding = () => {
     <div className="min-h-screen bg-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
       <div className="sm:mx-auto sm:w-full sm:max-w-md">
         <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
-          Welcome to MortgageContent.ai
+          {mode === 'advanced' ? 'Advanced Training' : 
+           mode === 'edit' ? 'Edit Your Responses' : 
+           'Welcome to MortgageContent.ai'}
         </h2>
         <p className="mt-2 text-center text-sm text-gray-600">
-          Let's get to know you better
+          {mode === 'advanced' ? 'Let\'s dive deeper into your expertise' :
+           mode === 'edit' ? 'Update your previous responses' :
+           'Let\'s get to know you better'}
         </p>
       </div>
 
@@ -108,11 +155,13 @@ const Onboarding = () => {
             if (currentQuestion < questions.length - 1) {
               setCurrentQuestion((prev) => prev + 1);
             } else {
-              navigate("/");
+              navigate("/learning");
             }
           }}
           onPrevious={() => setCurrentQuestion((prev) => Math.max(0, prev - 1))}
           userId={userId}
+          existingResponses={existingResponses}
+          mode={mode || 'basic'}
         />
       </div>
     </div>

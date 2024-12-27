@@ -3,6 +3,8 @@ import { useNavigate } from 'react-router-dom';
 import { NavItem } from './NavItem';
 import { SubNavItem } from './SubNavItem';
 import { MenuItem } from './types';
+import { useOnboardingStatus } from "@/hooks/useOnboardingStatus";
+import { useSession } from "@/hooks/useSession";
 
 interface NavigationSectionProps {
   menuKey: string;
@@ -22,10 +24,34 @@ export const NavigationSection = ({
   setExpandedItem,
 }: NavigationSectionProps) => {
   const navigate = useNavigate();
+  const { session } = useSession();
+  const { checkOnboardingStatus } = useOnboardingStatus();
+  const [hasCompletedOnboarding, setHasCompletedOnboarding] = React.useState(false);
 
-  const handleSubitemClick = (subitem: string) => {
-    // Map specific subitems to routes
-    if (subitem === "Social Post") {
+  React.useEffect(() => {
+    const checkStatus = async () => {
+      if (session?.user?.id) {
+        const completed = await checkOnboardingStatus(session.user.id);
+        setHasCompletedOnboarding(completed);
+      }
+    };
+    checkStatus();
+  }, [session?.user?.id, checkOnboardingStatus]);
+
+  const handleSubitemClick = async (subitem: string) => {
+    if (subitem === "Basic Onboarding") {
+      if (hasCompletedOnboarding) {
+        navigate('/onboarding?mode=edit');
+      } else {
+        navigate('/onboarding');
+      }
+    } else if (subitem === "Advanced Training") {
+      if (hasCompletedOnboarding) {
+        navigate('/onboarding?mode=advanced');
+      } else {
+        navigate('/onboarding');
+      }
+    } else if (subitem === "Social Post") {
       navigate('/social');
     }
     // Add other mappings as needed
