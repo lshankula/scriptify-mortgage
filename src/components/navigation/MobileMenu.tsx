@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { ChevronDown, ChevronUp, X } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { UserMenu } from './UserMenu';
@@ -18,7 +18,6 @@ interface MobileMenuProps {
 export const MobileMenu = ({ isOpen, user, onLogout, onGetStarted, onClose }: MobileMenuProps) => {
   const [expandedSections, setExpandedSections] = useState<string[]>([]);
   const [expandedItems, setExpandedItems] = useState<string[]>([]);
-  const navigate = useNavigate();
 
   if (!isOpen) return null;
 
@@ -38,28 +37,8 @@ export const MobileMenu = ({ isOpen, user, onLogout, onGetStarted, onClose }: Mo
     );
   };
 
-  const handleNavigation = (path: string) => {
-    console.log('Navigating to:', path);
-    navigate(path);
+  const handleNavigation = () => {
     onClose();
-  };
-
-  const handleSubitemClick = (subitem: string) => {
-    console.log('Handling subitem click:', subitem);
-    switch (subitem) {
-      case "Basic Onboarding":
-        handleNavigation('/onboarding');
-        break;
-      case "Advanced Training":
-        handleNavigation('/onboarding?mode=advanced');
-        break;
-      case "Social Post":
-        handleNavigation('/social/create');
-        break;
-      default:
-        // For now, other subitems will navigate to their parent section
-        handleNavigation('/dashboard');
-    }
   };
 
   return (
@@ -81,12 +60,13 @@ export const MobileMenu = ({ isOpen, user, onLogout, onGetStarted, onClose }: Mo
                 <SearchBar />
               </div>
               
-              <button 
-                onClick={() => handleNavigation('/dashboard')}
-                className="flex items-center w-full px-3 py-2 text-base font-medium text-gray-600 hover:text-primary hover:bg-gray-50 rounded-md"
+              <Link 
+                to="/dashboard" 
+                className="flex items-center px-3 py-2 text-base font-medium text-gray-600 hover:text-primary hover:bg-gray-50 rounded-md"
+                onClick={handleNavigation}
               >
                 Dashboard
-              </button>
+              </Link>
               
               {Object.entries(menuItems).map(([key, section]) => (
                 <div key={key} className="space-y-2">
@@ -109,49 +89,36 @@ export const MobileMenu = ({ isOpen, user, onLogout, onGetStarted, onClose }: Mo
                     <div className="ml-4 space-y-1">
                       {section.items.map((item, index) => (
                         <div key={index} className="space-y-1">
-                          {item.link ? (
-                            <button
-                              onClick={() => handleNavigation(item.link)}
-                              className="flex items-center justify-between w-full px-3 py-2 text-sm text-gray-600 hover:text-primary hover:bg-gray-50 rounded-md"
-                            >
-                              <div className="flex items-center gap-2">
-                                {item.icon}
-                                <span>{item.label}</span>
-                              </div>
-                            </button>
-                          ) : (
-                            <>
-                              <button
-                                onClick={() => toggleItem(`${key}-${index}`)}
-                                className="flex items-center justify-between w-full px-3 py-2 text-sm text-gray-600 hover:text-primary hover:bg-gray-50 rounded-md"
-                              >
-                                <div className="flex items-center gap-2">
-                                  {item.icon}
-                                  <span>{item.label}</span>
-                                </div>
-                                {item.subitems && (
-                                  expandedItems.includes(`${key}-${index}`) ? (
-                                    <ChevronUp className="h-3 w-3" />
-                                  ) : (
-                                    <ChevronDown className="h-3 w-3" />
-                                  )
-                                )}
-                              </button>
-                              
-                              {expandedItems.includes(`${key}-${index}`) && item.subitems && (
-                                <div className="ml-6 space-y-1">
-                                  {item.subitems.map((subitem, subIndex) => (
-                                    <button
-                                      key={subIndex}
-                                      onClick={() => handleSubitemClick(subitem)}
-                                      className="block w-full text-left px-3 py-2 text-sm text-gray-500 hover:text-primary hover:bg-gray-50 rounded-md"
-                                    >
-                                      {subitem}
-                                    </button>
-                                  ))}
-                                </div>
-                              )}
-                            </>
+                          <button
+                            onClick={() => toggleItem(`${key}-${index}`)}
+                            className="flex items-center justify-between w-full px-3 py-2 text-sm text-gray-600 hover:text-primary hover:bg-gray-50 rounded-md"
+                          >
+                            <div className="flex items-center gap-2">
+                              {item.icon}
+                              <span>{item.label}</span>
+                            </div>
+                            {item.subitems && (
+                              expandedItems.includes(`${key}-${index}`) ? (
+                                <ChevronUp className="h-3 w-3" />
+                              ) : (
+                                <ChevronDown className="h-3 w-3" />
+                              )
+                            )}
+                          </button>
+                          
+                          {expandedItems.includes(`${key}-${index}`) && item.subitems && (
+                            <div className="ml-6 space-y-1">
+                              {item.subitems.map((subitem, subIndex) => (
+                                <Link
+                                  key={subIndex}
+                                  to="#"
+                                  className="block px-3 py-2 text-sm text-gray-500 hover:text-primary hover:bg-gray-50 rounded-md"
+                                  onClick={handleNavigation}
+                                >
+                                  {subitem}
+                                </Link>
+                              ))}
+                            </div>
                           )}
                         </div>
                       ))}
@@ -162,18 +129,20 @@ export const MobileMenu = ({ isOpen, user, onLogout, onGetStarted, onClose }: Mo
               ))}
               
               <div className="space-y-2">
-                <button 
-                  onClick={() => handleNavigation('/calendar')}
-                  className="flex items-center w-full px-3 py-2 text-base font-medium text-gray-600 hover:text-primary hover:bg-gray-50 rounded-md"
+                <Link 
+                  to="/calendar" 
+                  className="flex items-center px-3 py-2 text-base font-medium text-gray-600 hover:text-primary hover:bg-gray-50 rounded-md"
+                  onClick={handleNavigation}
                 >
                   Calendar
-                </button>
-                <button 
-                  onClick={() => handleNavigation('/settings')}
-                  className="flex items-center w-full px-3 py-2 text-base font-medium text-gray-600 hover:text-primary hover:bg-gray-50 rounded-md"
+                </Link>
+                <Link 
+                  to="/settings" 
+                  className="flex items-center px-3 py-2 text-base font-medium text-gray-600 hover:text-primary hover:bg-gray-50 rounded-md"
+                  onClick={handleNavigation}
                 >
                   Settings
-                </button>
+                </Link>
               </div>
             </>
           )}
@@ -183,14 +152,14 @@ export const MobileMenu = ({ isOpen, user, onLogout, onGetStarted, onClose }: Mo
               <Link 
                 to="/features" 
                 className="block px-3 py-2 text-base font-medium text-gray-600 hover:text-primary hover:bg-gray-50 rounded-md"
-                onClick={onClose}
+                onClick={handleNavigation}
               >
                 Features
               </Link>
               <Link 
                 to="/pricing" 
                 className="block px-3 py-2 text-base font-medium text-gray-600 hover:text-primary hover:bg-gray-50 rounded-md"
-                onClick={onClose}
+                onClick={handleNavigation}
               >
                 Pricing
               </Link>
