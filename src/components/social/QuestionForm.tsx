@@ -3,13 +3,21 @@ import { Button } from "@/components/ui/button";
 import { questions } from '@/data/questions';
 import { Answers } from '@/types/social';
 import { postTypes } from '@/data/postTypes';
-import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import { 
   Facebook, 
   Instagram, 
   Linkedin, 
-  Twitter
+  Twitter,
+  ChevronDown,
+  Lightbulb
 } from "lucide-react";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 
 interface QuestionFormProps {
@@ -37,48 +45,66 @@ export const QuestionForm = ({
         <h2 className="text-2xl font-bold mb-6">Create Content</h2>
         <p className="text-gray-600 mb-6">Create engaging content for your audience</p>
         
-        <div className="flex gap-4 mb-8">
-          <div className="flex-1">
-            <ToggleGroup 
-              type="single" 
-              value={postType}
-              onValueChange={(value) => value && onChangePostType(value)}
-              className="justify-start border rounded-lg p-2 bg-white"
-            >
-              {Object.entries(postTypes).map(([key, type]) => (
-                <ToggleGroupItem 
-                  key={key} 
-                  value={key}
-                  className="flex items-center gap-2 data-[state=on]:bg-blue-50"
-                >
-                  {type.icon}
-                  <span>{type.title}</span>
-                </ToggleGroupItem>
-              ))}
-            </ToggleGroup>
+        <div className="flex flex-wrap gap-4 mb-8">
+          <div className="flex-1 min-w-[200px]">
+            <Select value={postType} onValueChange={onChangePostType}>
+              <SelectTrigger className="w-full bg-white">
+                <SelectValue placeholder="Select content purpose" />
+              </SelectTrigger>
+              <SelectContent>
+                {Object.entries(postTypes).map(([key, type]) => (
+                  <SelectItem key={key} value={key} className="flex items-center gap-2">
+                    <span className="flex items-center gap-2">
+                      {type.icon}
+                      {type.title}
+                    </span>
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           </div>
           
-          <div className="flex-1">
-            <ToggleGroup 
-              type="single"
-              value={selectedPlatform}
-              onValueChange={(value) => value && setSelectedPlatform(value)}
-              className="justify-start border rounded-lg p-2 bg-white"
-            >
-              <ToggleGroupItem value="linkedin" className="data-[state=on]:bg-blue-50">
-                <Linkedin className="h-5 w-5" />
-              </ToggleGroupItem>
-              <ToggleGroupItem value="facebook" className="data-[state=on]:bg-blue-50">
-                <Facebook className="h-5 w-5" />
-              </ToggleGroupItem>
-              <ToggleGroupItem value="instagram" className="data-[state=on]:bg-blue-50">
-                <Instagram className="h-5 w-5" />
-              </ToggleGroupItem>
-              <ToggleGroupItem value="twitter" className="data-[state=on]:bg-blue-50">
-                <Twitter className="h-5 w-5" />
-              </ToggleGroupItem>
-            </ToggleGroup>
+          <div className="flex-1 min-w-[200px]">
+            <Select value={selectedPlatform} onValueChange={setSelectedPlatform}>
+              <SelectTrigger className="w-full bg-white">
+                <SelectValue placeholder="Select platform" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="linkedin">
+                  <span className="flex items-center gap-2">
+                    <Linkedin className="h-4 w-4" />
+                    LinkedIn
+                  </span>
+                </SelectItem>
+                <SelectItem value="facebook">
+                  <span className="flex items-center gap-2">
+                    <Facebook className="h-4 w-4" />
+                    Facebook
+                  </span>
+                </SelectItem>
+                <SelectItem value="instagram">
+                  <span className="flex items-center gap-2">
+                    <Instagram className="h-4 w-4" />
+                    Instagram
+                  </span>
+                </SelectItem>
+                <SelectItem value="twitter">
+                  <span className="flex items-center gap-2">
+                    <Twitter className="h-4 w-4" />
+                    Twitter
+                  </span>
+                </SelectItem>
+              </SelectContent>
+            </Select>
           </div>
+
+          <Button 
+            variant="outline" 
+            className="bg-yellow-50 hover:bg-yellow-100 border-yellow-200"
+          >
+            <Lightbulb className="mr-2 h-4 w-4" />
+            Need Content Ideas?
+          </Button>
         </div>
       </div>
 
@@ -91,22 +117,21 @@ export const QuestionForm = ({
                 {q.question}
               </label>
               {q.type === 'select' ? (
-                <ToggleGroup 
-                  type="single"
-                  value={answers[q.id]}
-                  onValueChange={(value) => value && onAnswerChange(q.id, value)}
-                  className="justify-start flex-wrap gap-2"
+                <Select 
+                  value={answers[q.id]} 
+                  onValueChange={(value) => onAnswerChange(q.id, value)}
                 >
-                  {q.options?.map((option) => (
-                    <ToggleGroupItem
-                      key={option}
-                      value={option}
-                      className="border rounded px-4 py-2 data-[state=on]:bg-blue-50 data-[state=on]:border-blue-500"
-                    >
-                      {option}
-                    </ToggleGroupItem>
-                  ))}
-                </ToggleGroup>
+                  <SelectTrigger className="w-full bg-white">
+                    <SelectValue placeholder="Select an option" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {q.options?.map((option) => (
+                      <SelectItem key={option} value={option}>
+                        {option}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
               ) : (
                 <Textarea
                   className="w-full"
