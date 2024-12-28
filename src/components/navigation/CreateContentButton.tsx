@@ -1,16 +1,16 @@
-import { Plus } from 'lucide-react';
+import { Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from "react-router-dom";
 
 export const CreateContentButton = () => {
   const navigate = useNavigate();
-  
+
   return (
-    <Button 
-      className="bg-primary text-white hover:bg-primary/90 flex items-center gap-2"
-      onClick={() => navigate('/social/create')}
+    <Button
+      onClick={() => navigate("/social/create")}
+      className="bg-primary hover:bg-primary-dark flex items-center gap-2"
     >
-      <Plus className="w-4 h-4" />
+      <Plus className="h-4 w-4" />
       Create Content
     </Button>
   );
