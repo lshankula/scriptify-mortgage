@@ -34,17 +34,17 @@ export const menuItems: MenuItems = {
       { 
         label: "Visual Content", 
         icon: <Image className="w-4 h-4" />,
-        link: '/content-hub/visual'
+        subitems: ["Infographics", "Charts", "Graphics", "Presentations"] 
       },
       { 
         label: "Templates", 
         icon: <Layout className="w-4 h-4" />,
-        link: '/content-hub/templates'
+        subitems: ["Social Media", "Email", "Video", "Marketing"] 
       },
       { 
         label: "My Content", 
         icon: <FileText className="w-4 h-4" />,
-        link: '/content-hub/my-content'
+        subitems: ["Drafts", "Published", "Archived", "Shared"] 
       }
     ]
   },
@@ -55,17 +55,17 @@ export const menuItems: MenuItems = {
       { 
         label: "Agent Portal", 
         icon: <Users className="w-4 h-4" />,
-        link: '/co-marketing/portal'
+        subitems: ["Partner Directory", "Invitations", "Joint Content", "Settings"] 
       },
       { 
         label: "Cost Sharing", 
         icon: <DollarSign className="w-4 h-4" />,
-        link: '/co-marketing/cost-sharing'
+        subitems: ["Expenses", "Reports", "Settings", "History"] 
       },
       { 
         label: "Campaigns", 
         icon: <Layout className="w-4 h-4" />,
-        link: '/co-marketing/campaigns'
+        subitems: ["Active", "Scheduled", "Completed", "Analytics"] 
       }
     ]
   },
@@ -76,17 +76,17 @@ export const menuItems: MenuItems = {
       { 
         label: "Performance", 
         icon: <PieChart className="w-4 h-4" />,
-        link: '/analytics/performance'
+        subitems: ["Content Stats", "Engagement", "Growth", "Trends"] 
       },
       { 
         label: "Reports", 
         icon: <FileText className="w-4 h-4" />,
-        link: '/analytics/reports'
+        subitems: ["Overview", "Custom", "Scheduled", "Archived"] 
       },
       { 
         label: "ROI Tracking", 
         icon: <DollarSign className="w-4 h-4" />,
-        link: '/analytics/roi'
+        subitems: ["Campaign ROI", "Content ROI", "Partner ROI"] 
       }
     ]
   },
@@ -97,17 +97,17 @@ export const menuItems: MenuItems = {
       { 
         label: "Missions", 
         icon: <Star className="w-4 h-4" />,
-        link: '/achievements/missions'
+        subitems: ["Daily", "Weekly", "Special Events"] 
       },
       { 
         label: "Badges", 
         icon: <Trophy className="w-4 h-4" />,
-        link: '/achievements/badges'
+        subitems: ["Content", "Engagement", "Partnership", "Expert"] 
       },
       { 
         label: "Leaderboard", 
         icon: <Users className="w-4 h-4" />,
-        link: '/achievements/leaderboard'
+        subitems: ["Team", "Global", "Partners"] 
       }
     ]
   },
