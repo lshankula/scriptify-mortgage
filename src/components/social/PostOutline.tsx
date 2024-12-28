@@ -1,6 +1,7 @@
 import React from 'react';
 import { Button } from "@/components/ui/button";
 import { Answers } from '@/types/social';
+import { useNavigate } from 'react-router-dom';
 
 interface PostOutlineProps {
   answers: Answers;
@@ -9,6 +10,15 @@ interface PostOutlineProps {
 }
 
 export const PostOutline = ({ answers, onBack, onSubmit }: PostOutlineProps) => {
+  const navigate = useNavigate();
+
+  const handleSubmit = () => {
+    onSubmit();
+    // For now, we'll navigate to a dummy post ID
+    // In the real implementation, this would be the actual post ID
+    navigate('/social/post/1');
+  };
+
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4">
       <div className="bg-white rounded-lg max-w-2xl w-full p-6">
@@ -42,7 +52,7 @@ export const PostOutline = ({ answers, onBack, onSubmit }: PostOutlineProps) => 
           >
             Edit Details
           </Button>
-          <Button onClick={onSubmit}>
+          <Button onClick={handleSubmit}>
             Generate Post
           </Button>
         </div>
