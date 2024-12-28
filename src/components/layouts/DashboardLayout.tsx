@@ -1,28 +1,16 @@
-import React from 'react';
-import { 
-  SidebarProvider, 
-  NavigationMenu 
-} from "@/components/navigation/NavigationMenu";
+import { NavigationMenu } from "@/components/navigation/NavigationMenu";
+import { Navigation } from "@/components/Navigation";
 
-interface DashboardLayoutProps {
-  children: React.ReactNode;
-}
-
-export const DashboardLayout = ({ children }: DashboardLayoutProps) => {
+export const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
   return (
-    <div className="min-h-screen bg-background">
-      <SidebarProvider>
-        <div className="flex min-h-[calc(100vh-4rem)] w-full pt-16">
-          <div className="hidden md:block">
-            <NavigationMenu />
-          </div>
-          <main className="flex-1">
-            <div className="container mx-auto p-6">
-              {children}
-            </div>
-          </main>
+    <div className="min-h-screen bg-gray-50">
+      <Navigation />
+      <div className="flex pt-16">
+        <div className="hidden md:block">
+          <NavigationMenu />
         </div>
-      </SidebarProvider>
+        <main className="flex-1 p-4">{children}</main>
+      </div>
     </div>
   );
 };

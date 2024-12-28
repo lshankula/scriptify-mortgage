@@ -45,6 +45,7 @@ export const Navigation = () => {
   const handleLogout = async () => {
     await supabase.auth.signOut();
     navigate('/login');
+    setIsOpen(false); // Close mobile menu after logout
   };
 
   const handleGetStarted = async () => {
@@ -63,6 +64,7 @@ export const Navigation = () => {
     } else {
       navigate('/signup'); // Not logged in, go to signup
     }
+    setIsOpen(false); // Close mobile menu after navigation
   };
 
   return (
@@ -71,7 +73,7 @@ export const Navigation = () => {
         <div className="flex justify-between items-center h-16">
           {/* Left section */}
           <div className="flex items-center gap-8">
-            <Link to="/" className="font-bold text-xl text-primary">
+            <Link to="/" className="font-bold text-xl text-primary" onClick={() => setIsOpen(false)}>
               MortgageContent.ai
             </Link>
             {user && <div className="hidden md:block"><SearchBar /></div>}
@@ -134,6 +136,7 @@ export const Navigation = () => {
         user={user}
         onLogout={handleLogout}
         onGetStarted={handleGetStarted}
+        onClose={() => setIsOpen(false)}
       />
     </nav>
   );

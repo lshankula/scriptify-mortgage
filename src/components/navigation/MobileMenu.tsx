@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { ChevronDown, ChevronUp } from 'lucide-react';
+import { ChevronDown, ChevronUp, X } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { UserMenu } from './UserMenu';
 import { SearchBar } from './SearchBar';
@@ -12,9 +12,10 @@ interface MobileMenuProps {
   user: any;
   onLogout: () => void;
   onGetStarted: () => void;
+  onClose: () => void;
 }
 
-export const MobileMenu = ({ isOpen, user, onLogout, onGetStarted }: MobileMenuProps) => {
+export const MobileMenu = ({ isOpen, user, onLogout, onGetStarted, onClose }: MobileMenuProps) => {
   const [expandedSections, setExpandedSections] = useState<string[]>([]);
   const [expandedItems, setExpandedItems] = useState<string[]>([]);
 
@@ -36,10 +37,23 @@ export const MobileMenu = ({ isOpen, user, onLogout, onGetStarted }: MobileMenuP
     );
   };
 
+  const handleNavigation = () => {
+    onClose();
+  };
+
   return (
     <div className="md:hidden">
       <div className="fixed inset-0 bg-white z-50 overflow-y-auto">
         <div className="px-4 py-6 space-y-6">
+          {/* Close button */}
+          <button
+            onClick={onClose}
+            className="absolute top-4 right-4 p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-primary"
+            aria-label="Close menu"
+          >
+            <X className="h-6 w-6" />
+          </button>
+
           {user && (
             <>
               <div className="mb-6">
@@ -49,6 +63,7 @@ export const MobileMenu = ({ isOpen, user, onLogout, onGetStarted }: MobileMenuP
               <Link 
                 to="/dashboard" 
                 className="flex items-center px-3 py-2 text-base font-medium text-gray-600 hover:text-primary hover:bg-gray-50 rounded-md"
+                onClick={handleNavigation}
               >
                 Dashboard
               </Link>
@@ -98,6 +113,7 @@ export const MobileMenu = ({ isOpen, user, onLogout, onGetStarted }: MobileMenuP
                                   key={subIndex}
                                   to="#"
                                   className="block px-3 py-2 text-sm text-gray-500 hover:text-primary hover:bg-gray-50 rounded-md"
+                                  onClick={handleNavigation}
                                 >
                                   {subitem}
                                 </Link>
@@ -116,12 +132,14 @@ export const MobileMenu = ({ isOpen, user, onLogout, onGetStarted }: MobileMenuP
                 <Link 
                   to="/calendar" 
                   className="flex items-center px-3 py-2 text-base font-medium text-gray-600 hover:text-primary hover:bg-gray-50 rounded-md"
+                  onClick={handleNavigation}
                 >
                   Calendar
                 </Link>
                 <Link 
                   to="/settings" 
                   className="flex items-center px-3 py-2 text-base font-medium text-gray-600 hover:text-primary hover:bg-gray-50 rounded-md"
+                  onClick={handleNavigation}
                 >
                   Settings
                 </Link>
@@ -134,12 +152,14 @@ export const MobileMenu = ({ isOpen, user, onLogout, onGetStarted }: MobileMenuP
               <Link 
                 to="/features" 
                 className="block px-3 py-2 text-base font-medium text-gray-600 hover:text-primary hover:bg-gray-50 rounded-md"
+                onClick={handleNavigation}
               >
                 Features
               </Link>
               <Link 
                 to="/pricing" 
                 className="block px-3 py-2 text-base font-medium text-gray-600 hover:text-primary hover:bg-gray-50 rounded-md"
+                onClick={handleNavigation}
               >
                 Pricing
               </Link>
