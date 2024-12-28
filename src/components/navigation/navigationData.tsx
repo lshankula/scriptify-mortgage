@@ -29,7 +29,13 @@ export const menuItems: MenuItems = {
       { 
         label: "Create New", 
         icon: <FileText className="w-4 h-4" />, 
-        subitems: ["Social Post", "Blog Article", "Video Script", "Email Template"] 
+        subitems: ["Social Post", "Blog Article", "Video Script", "Email Template"],
+        links: {
+          "Social Post": "/social/create",
+          "Blog Article": "/content/blog/create",
+          "Video Script": "/content/video/create",
+          "Email Template": "/content/email/create"
+        }
       },
       { 
         label: "Visual Content", 

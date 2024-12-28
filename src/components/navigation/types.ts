@@ -5,6 +5,7 @@ export interface SubMenuItem {
   icon?: ReactNode;
   subitems?: string[];
   link?: string;
+  links?: Record<string, string>;
 }
 
 export interface MenuItem {

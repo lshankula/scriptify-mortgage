@@ -38,7 +38,7 @@ export const NavigationSection = ({
     checkStatus();
   }, [session?.user?.id, checkOnboardingStatus]);
 
-  const handleSubitemClick = async (subitem: string) => {
+  const handleSubitemClick = async (subitem: string, links?: Record<string, string>) => {
     if (subitem === "Basic Onboarding") {
       if (hasCompletedOnboarding) {
         navigate('/onboarding?mode=edit');
@@ -51,6 +51,8 @@ export const NavigationSection = ({
       } else {
         navigate('/onboarding');
       }
+    } else if (links && links[subitem]) {
+      navigate(links[subitem]);
     }
   };
 
@@ -91,7 +93,7 @@ export const NavigationSection = ({
                           key={subIndex}
                           label={subitem}
                           isSubitem
-                          onClick={() => handleSubitemClick(subitem)}
+                          onClick={() => handleSubitemClick(subitem, item.links)}
                         />
                       ))}
                     </div>
