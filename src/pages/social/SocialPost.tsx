@@ -1,73 +1,125 @@
-import React, { useState } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
-import { DashboardLayout } from "@/components/layouts/DashboardLayout";
-import { Button } from "@/components/ui/button";
-import { PlatformSelect } from "@/components/social/PlatformSelect";
-import { RefreshCw } from "lucide-react";
+import { useParams } from 'react-router-dom';
+import { useQuery } from '@tanstack/react-query';
+import { supabase } from '@/integrations/supabase/client';
+import { Post } from '@/integrations/supabase/types';
+import { Button } from '@/components/ui/button';
+import { useNavigate } from 'react-router-dom';
+import { useToast } from '@/components/ui/use-toast';
 
-const SocialPost = () => {
+export default function SocialPost() {
   const { id } = useParams();
   const navigate = useNavigate();
-  const [showPlatformSelect, setShowPlatformSelect] = useState(false);
-  const [selectedPlatform, setSelectedPlatform] = useState('');
+  const { toast } = useToast();
 
-  // Placeholder post data - this would come from your database in a real implementation
-  const post = {
-    topic: "First-time homebuyer tips",
-    content: "Here are 5 essential tips for first-time homebuyers...",
-    platform: "linkedin"
-  };
+  const { data: post, isLoading } = useQuery({
+    queryKey: ['post', id],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('posts')
+        .select('*')
+        .eq('id', id)
+        .single();
 
-  const handleRemix = () => {
-    if (selectedPlatform) {
-      // Navigate to create page with platform pre-selected
-      navigate(`/social/create?platform=${selectedPlatform}&remixFrom=${id}`);
+      if (error) {
+        console.error('Error fetching post:', error);
+        toast({
+          title: 'Error',
+          description: 'Failed to load post',
+          variant: 'destructive',
+        });
+        throw error;
+      }
+
+      return data as Post;
+    },
+  });
+
+  const handleRemix = async (platform: string) => {
+    try {
+      const { data: session } = await supabase.auth.getSession();
+      if (!session?.session?.user) {
+        toast({
+          title: 'Error',
+          description: 'You must be logged in to remix posts',
+          variant: 'destructive',
+        });
+        return;
+      }
+
+      const { data, error } = await supabase
+        .from('posts')
+        .insert({
+          user_id: session.session.user.id,
+          title: `${post?.title} (Remix)`,
+          content: post?.content,
+          platform,
+          remixed_from: post?.id,
+        })
+        .select()
+        .single();
+
+      if (error) {
+        console.error('Error remixing post:', error);
+        toast({
+          title: 'Error',
+          description: 'Failed to remix post',
+          variant: 'destructive',
+        });
+        return;
+      }
+
+      toast({
+        title: 'Success',
+        description: 'Post remixed successfully',
+      });
+
+      navigate(`/social/post/${data.id}`);
+    } catch (error) {
+      console.error('Error in remix handler:', error);
+      toast({
+        title: 'Error',
+        description: 'An unexpected error occurred',
+        variant: 'destructive',
+      });
     }
   };
 
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
+
+  if (!post) {
+    return <div>Post not found</div>;
+  }
+
   return (
-    <DashboardLayout>
-      <div className="max-w-4xl mx-auto py-8">
-        <div className="bg-white rounded-lg shadow-sm p-6">
-          <div className="flex justify-between items-center mb-6">
-            <h1 className="text-2xl font-bold">{post.topic}</h1>
-            <Button
-              variant="outline"
-              onClick={() => setShowPlatformSelect(!showPlatformSelect)}
-              className="flex items-center gap-2"
-            >
-              <RefreshCw className="w-4 h-4" />
-              Remix for Another Channel
-            </Button>
+    <div className="container mx-auto px-4 py-8">
+      <div className="max-w-2xl mx-auto">
+        <h1 className="text-3xl font-bold mb-4">{post.title}</h1>
+        <div className="bg-white rounded-lg shadow-md p-6 mb-6">
+          <p className="text-gray-700 whitespace-pre-wrap">{post.content}</p>
+          <div className="mt-4 text-sm text-gray-500">
+            Platform: {post.platform}
           </div>
+        </div>
 
-          {showPlatformSelect && (
-            <div className="mb-6 p-4 border rounded-lg bg-gray-50">
-              <h3 className="text-sm font-medium mb-2">Select Platform to Remix For</h3>
-              <div className="flex gap-4">
-                <div className="w-64">
-                  <PlatformSelect
-                    value={selectedPlatform}
-                    onValueChange={setSelectedPlatform}
-                  />
-                </div>
+        <div className="space-y-4">
+          <h2 className="text-xl font-semibold">Remix for another platform</h2>
+          <div className="flex flex-wrap gap-4">
+            {['Twitter', 'LinkedIn', 'Facebook', 'Instagram'].map((platform) => (
+              platform !== post.platform && (
                 <Button
-                  onClick={handleRemix}
-                  disabled={!selectedPlatform}
+                  key={platform}
+                  onClick={() => handleRemix(platform)}
+                  variant="outline"
                 >
-                  Continue
+                  Remix for {platform}
                 </Button>
-              </div>
-            </div>
-          )}
-
-          <div className="prose max-w-none">
-            <p>{post.content}</p>
+              )
+            ))}
           </div>
         </div>
       </div>
-    </DashboardLayout>
+    </div>
   );
-};
-
-export default SocialPost;
+}

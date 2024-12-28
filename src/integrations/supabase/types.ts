@@ -39,6 +39,50 @@ export type Database = {
         }
         Relationships: []
       }
+      posts: {
+        Row: {
+          content: string
+          created_at: string
+          id: string
+          platform: string
+          remixed_from: string | null
+          status: Database["public"]["Enums"]["post_status"] | null
+          title: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          content: string
+          created_at?: string
+          id?: string
+          platform: string
+          remixed_from?: string | null
+          status?: Database["public"]["Enums"]["post_status"] | null
+          title: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          content?: string
+          created_at?: string
+          id?: string
+          platform?: string
+          remixed_from?: string | null
+          status?: Database["public"]["Enums"]["post_status"] | null
+          title?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "posts_remixed_from_fkey"
+            columns: ["remixed_from"]
+            isOneToOne: false
+            referencedRelation: "posts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       subscriptions: {
         Row: {
           created_at: string
@@ -77,6 +121,7 @@ export type Database = {
       [_ in never]: never
     }
     Enums: {
+      post_status: "draft" | "published"
       subscription_tier: "free" | "pro" | "enterprise"
     }
     CompositeTypes: {
