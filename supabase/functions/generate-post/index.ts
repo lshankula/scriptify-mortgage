@@ -1,6 +1,5 @@
 import "https://deno.land/x/xhr@0.1.0/mod.ts";
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
-import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.39.3';
 
 const openAIApiKey = Deno.env.get('OPENAI_API_KEY');
 const anthropicApiKey = Deno.env.get('ANTHROPIC_API_KEY');
@@ -19,7 +18,7 @@ serve(async (req) => {
     const { userId, postRequirements } = await req.json();
     
     if (!userId || !postRequirements) {
-      console.error('Missing required fields');
+      console.error('Missing required fields:', { userId, postRequirements });
       return new Response(
         JSON.stringify({ error: 'Missing required fields' }),
         { 
@@ -48,7 +47,7 @@ serve(async (req) => {
       Include the key messages naturally within the content.
       End with a clear call to action.
       Keep hashtags minimal and relevant.
-    `.split('\n').map(line => line.trim()).filter(Boolean).join('\n');
+    `;
 
     console.log('Attempting OpenAI request');
     try {
@@ -59,7 +58,7 @@ serve(async (req) => {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          model: 'gpt-4',
+          model: 'gpt-4o-mini',
           messages: [
             {
               role: 'system',
