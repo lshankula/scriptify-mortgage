@@ -9,8 +9,7 @@ import {
   Facebook, 
   Instagram, 
   Linkedin, 
-  Twitter,
-  Settings2
+  Twitter
 } from "lucide-react";
 
 interface QuestionFormProps {
@@ -19,6 +18,7 @@ interface QuestionFormProps {
   onAnswerChange: (questionId: string, answer: string) => void;
   onChangePostType: (type: string) => void;
   onNext: () => void;
+  onSaveDraft?: () => void;
 }
 
 export const QuestionForm = ({
@@ -26,7 +26,8 @@ export const QuestionForm = ({
   postType,
   onAnswerChange,
   onChangePostType,
-  onNext
+  onNext,
+  onSaveDraft
 }: QuestionFormProps) => {
   const [selectedPlatform, setSelectedPlatform] = React.useState<string>("linkedin");
   
@@ -89,23 +90,16 @@ export const QuestionForm = ({
           onChange={(e) => onAnswerChange('content', e.target.value)}
         />
         
-        <div className="flex items-center justify-between">
-          <Button
+        <div className="flex items-center justify-end gap-3">
+          <Button 
             variant="outline"
-            className="flex items-center gap-2"
+            onClick={onSaveDraft}
           >
-            <Settings2 className="h-4 w-4" />
-            Advanced Settings
+            Save Draft
           </Button>
-          
-          <div className="flex gap-3">
-            <Button variant="outline">
-              Save Draft
-            </Button>
-            <Button onClick={onNext}>
-              Create Post
-            </Button>
-          </div>
+          <Button onClick={onNext}>
+            Review Post
+          </Button>
         </div>
       </div>
 
