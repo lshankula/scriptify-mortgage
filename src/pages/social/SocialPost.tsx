@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from "@/components/ui/breadcrumb";
 import { PlatformSelect } from '@/components/social/PlatformSelect';
 import { Label } from '@/components/ui/label';
-import { Remix } from 'lucide-react';
+import { RefreshCw } from 'lucide-react';
 
 const SocialPost = () => {
   const navigate = useNavigate();
@@ -69,7 +69,7 @@ const SocialPost = () => {
               onClick={handleRemix}
               className="w-full sm:w-auto flex items-center gap-2"
             >
-              <Remix className="w-4 h-4" />
+              <RefreshCw className="w-4 h-4" />
               Remix for {selectedPlatform.charAt(0).toUpperCase() + selectedPlatform.slice(1)}
             </Button>
           </div>
