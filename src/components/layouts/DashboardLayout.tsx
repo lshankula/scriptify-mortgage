@@ -1,5 +1,6 @@
 import { NavigationMenu } from "@/components/navigation/NavigationMenu";
 import { Navigation } from "@/components/Navigation";
+import { MobileCreateButton } from "@/components/social/MobileCreateButton";
 
 export const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
   return (
@@ -15,6 +16,7 @@ export const DashboardLayout = ({ children }: { children: React.ReactNode }) => 
           </div>
         </main>
       </div>
+      <MobileCreateButton />
     </div>
   );
 };
