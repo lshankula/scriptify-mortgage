@@ -12,12 +12,12 @@ export interface Post {
   updated_at: string;
 }
 
-export type PostInsert = Omit<Post, 'id' | 'created_at' | 'updated_at'> & {
+export interface PostInsert extends Omit<Post, 'id' | 'created_at' | 'updated_at'> {
   id?: string;
   created_at?: string;
   updated_at?: string;
-};
+}
 
-export type PostUpdate = Partial<PostInsert> & {
+export interface PostUpdate extends Partial<PostInsert> {
   id?: string;
-};
+}
