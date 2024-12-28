@@ -83,27 +83,6 @@ export const QuestionForm = ({
       </div>
 
       <div className="bg-white border rounded-lg p-6">
-        <Textarea
-          className="w-full min-h-[200px] mb-6"
-          placeholder="Write your post content..."
-          value={answers['content'] || ''}
-          onChange={(e) => onAnswerChange('content', e.target.value)}
-        />
-        
-        <div className="flex items-center justify-end gap-3">
-          <Button 
-            variant="outline"
-            onClick={onSaveDraft}
-          >
-            Save Draft
-          </Button>
-          <Button onClick={onNext}>
-            Review Post
-          </Button>
-        </div>
-      </div>
-
-      <div className="bg-white border rounded-lg p-6">
         <h3 className="text-lg font-medium mb-4">Additional Details</h3>
         <div className="space-y-6">
           {questions.map((q) => (
@@ -139,6 +118,28 @@ export const QuestionForm = ({
             </div>
           ))}
         </div>
+      </div>
+
+      <div className="bg-white border rounded-lg p-6">
+        <h3 className="text-lg font-medium mb-4">Post Content</h3>
+        <Textarea
+          className="w-full min-h-[200px] mb-6"
+          placeholder="Write your post content..."
+          value={answers['content'] || ''}
+          onChange={(e) => onAnswerChange('content', e.target.value)}
+        />
+      </div>
+
+      <div className="flex items-center justify-end gap-3">
+        <Button 
+          variant="outline"
+          onClick={onSaveDraft}
+        >
+          Save Draft
+        </Button>
+        <Button onClick={onNext}>
+          Review Post
+        </Button>
       </div>
     </div>
   );
