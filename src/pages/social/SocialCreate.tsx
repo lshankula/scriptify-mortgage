@@ -5,6 +5,7 @@ import { PostTypeSelection } from '@/components/social/PostTypeSelection';
 import { QuestionForm } from '@/components/social/QuestionForm';
 import { PostOutline } from '@/components/social/PostOutline';
 import { Answers } from '@/types/social';
+import { questions } from '@/data/questions';
 
 const SocialCreate = () => {
   const [step, setStep] = useState('type');
@@ -58,7 +59,7 @@ const SocialCreate = () => {
         </BreadcrumbList>
       </Breadcrumb>
 
-      <div className="max-w-4xl mx-auto py-6">
+      <div className="max-w-4xl mx-auto py-8">
         {step === 'type' && (
           <PostTypeSelection onSelect={handlePostTypeSelect} />
         )}

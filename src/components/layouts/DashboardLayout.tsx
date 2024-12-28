@@ -9,7 +9,7 @@ export const DashboardLayout = ({ children }: { children: React.ReactNode }) => 
         <aside className="hidden md:block w-64 fixed h-[calc(100vh-4rem)]">
           <NavigationMenu className="h-full w-64" />
         </aside>
-        <main className="flex-1 md:ml-64">
+        <main className="flex-1 md:ml-64 p-8">
           {children}
         </main>
       </div>
