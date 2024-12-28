@@ -83,6 +83,39 @@ export type Database = {
           },
         ]
       }
+      prompt_templates: {
+        Row: {
+          content_type: Database["public"]["Enums"]["content_type"]
+          created_at: string
+          description: string | null
+          id: string
+          system_prompt: string
+          title: string
+          updated_at: string
+          user_prompt_template: string
+        }
+        Insert: {
+          content_type: Database["public"]["Enums"]["content_type"]
+          created_at?: string
+          description?: string | null
+          id?: string
+          system_prompt: string
+          title: string
+          updated_at?: string
+          user_prompt_template: string
+        }
+        Update: {
+          content_type?: Database["public"]["Enums"]["content_type"]
+          created_at?: string
+          description?: string | null
+          id?: string
+          system_prompt?: string
+          title?: string
+          updated_at?: string
+          user_prompt_template?: string
+        }
+        Relationships: []
+      }
       subscriptions: {
         Row: {
           created_at: string
@@ -121,6 +154,16 @@ export type Database = {
       [_ in never]: never
     }
     Enums: {
+      content_type:
+        | "facebook_long"
+        | "facebook_short"
+        | "linkedin_article"
+        | "linkedin_post"
+        | "video_short"
+        | "video_long"
+        | "instagram_post"
+        | "instagram_reel"
+        | "twitter_post"
       post_status: "draft" | "published"
       subscription_tier: "free" | "pro" | "enterprise"
     }
