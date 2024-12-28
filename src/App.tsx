@@ -8,6 +8,7 @@ import Dashboard from "./pages/Dashboard";
 import ContentHub from "./pages/ContentHub";
 import SocialHub from "./pages/SocialHub";
 import SocialCreate from "./pages/social/SocialCreate";
+import SocialPost from "./pages/social/SocialPost";
 import SocialAnalytics from "./pages/social/SocialAnalytics";
 import LearningCenter from "./pages/LearningCenter";
 import { Navigation } from "./components/Navigation";
@@ -42,6 +43,7 @@ function App() {
         <Route path="/content" element={<ContentHub />} />
         <Route path="/social" element={<SocialHub />} />
         <Route path="/social/create" element={<SocialCreate />} />
+        <Route path="/social/post/:id" element={<SocialPost />} />
         <Route path="/social/analytics" element={<SocialAnalytics />} />
         <Route path="/learning" element={session ? <LearningCenter /> : <Login />} />
       </Routes>
