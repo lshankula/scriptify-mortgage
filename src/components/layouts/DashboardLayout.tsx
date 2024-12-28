@@ -1,4 +1,5 @@
-import { NavigationMenu } from "../navigation/NavigationMenu";
+import { Navigation } from "@/components/Navigation";
+import { MobileCreateButton } from "@/components/social/MobileCreateButton";
 
 interface DashboardLayoutProps {
   children: React.ReactNode;
@@ -6,11 +7,16 @@ interface DashboardLayoutProps {
 
 export const DashboardLayout = ({ children }: DashboardLayoutProps) => {
   return (
-    <div className="flex h-screen pt-16">
-      <NavigationMenu />
-      <main className="flex-1 overflow-y-auto bg-gray-50 p-4">
-        {children}
-      </main>
+    <div className="min-h-screen bg-gray-50">
+      <Navigation />
+      <div className="flex pt-16">
+        <main className="flex-1 px-4 md:px-8 py-6 w-full max-w-[1400px] mx-auto">
+          <div className="max-w-7xl mx-auto">
+            {children}
+          </div>
+        </main>
+      </div>
+      <MobileCreateButton />
     </div>
   );
 };
