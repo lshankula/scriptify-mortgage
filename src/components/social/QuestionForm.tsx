@@ -7,6 +7,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { PlatformSelect } from './PlatformSelect';
 import { PostTypeSelect } from './PostTypeSelect';
 import { ContentIdeasDialog } from './ContentIdeasDialog';
+import { Label } from "@/components/ui/label";
 
 interface QuestionFormProps {
   answers: Answers;
@@ -48,28 +49,32 @@ export const QuestionForm = ({
         <p className="text-gray-600 mb-6">Create engaging content for your audience</p>
         
         <div className="flex flex-wrap gap-4 mb-8">
-          <div className="flex-1 min-w-[200px]">
+          <div className="flex-1 min-w-[200px] space-y-2">
+            <Label>Select Purpose</Label>
             <PostTypeSelect 
               value={postType} 
               onValueChange={onChangePostType} 
             />
           </div>
           
-          <div className="flex-1 min-w-[200px]">
+          <div className="flex-1 min-w-[200px] space-y-2">
+            <Label>Select Platform</Label>
             <PlatformSelect 
               value={selectedPlatform} 
               onValueChange={setSelectedPlatform} 
             />
           </div>
 
-          <Button 
-            variant="outline" 
-            className="bg-yellow-50 hover:bg-yellow-100 border-yellow-200 text-yellow-800"
-            onClick={() => setShowIdeasDialog(true)}
-          >
-            <Lightbulb className="mr-2 h-4 w-4" />
-            Need Content Ideas?
-          </Button>
+          <div className="flex items-end">
+            <Button 
+              variant="outline" 
+              className="bg-yellow-50 hover:bg-yellow-100 border-yellow-200 text-yellow-800"
+              onClick={() => setShowIdeasDialog(true)}
+            >
+              <Lightbulb className="mr-2 h-4 w-4" />
+              Need Content Ideas?
+            </Button>
+          </div>
         </div>
       </div>
 
