@@ -4,7 +4,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { Post } from '@/integrations/supabase/types';
 import { Button } from '@/components/ui/button';
 import { useNavigate } from 'react-router-dom';
-import { useToast } from '@/components/ui/use-toast';
+import { useToast } from '@/hooks/use-toast';
 
 export default function SocialPost() {
   const { id } = useParams();
