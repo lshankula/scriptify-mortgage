@@ -12,12 +12,25 @@ export interface Post {
   updated_at: string;
 }
 
-export interface PostInsert extends Omit<Post, 'id' | 'created_at' | 'updated_at'> {
+export interface PostInsert {
   id?: string;
+  user_id: string;
+  title: string;
+  content: string;
+  platform: string;
+  status?: PostStatus | null;
+  remixed_from?: string | null;
   created_at?: string;
   updated_at?: string;
 }
 
-export interface PostUpdate extends Partial<PostInsert> {
+export interface PostUpdate {
   id?: string;
+  user_id?: string;
+  title?: string;
+  content?: string;
+  platform?: string;
+  status?: PostStatus | null;
+  remixed_from?: string | null;
+  updated_at?: string;
 }
