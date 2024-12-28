@@ -9,17 +9,32 @@ export const useOnboardingStatus = () => {
   const { toast } = useToast();
 
   const checkOnboardingStatus = useCallback(async (userId: string) => {
-    console.log("Checking onboarding status for userId:", userId);
+    console.log("Starting onboarding status check for userId:", userId);
     setIsCheckingStatus(true);
     
     try {
+      // First verify the session is valid
+      const { data: { session }, error: sessionError } = await supabase.auth.getSession();
+      
+      if (sessionError) {
+        console.error("Session error:", sessionError);
+        throw sessionError;
+      }
+
+      if (!session) {
+        console.log("No active session found");
+        return false;
+      }
+
+      console.log("Session verified, fetching onboarding responses");
+      
       const { data: existingResponses, error } = await supabase
         .from("onboarding_responses")
         .select("*")
         .eq("user_id", userId);
 
       if (error) {
-        console.error("Error checking onboarding status:", error);
+        console.error("Error fetching onboarding responses:", error);
         throw error;
       }
 
@@ -40,8 +55,8 @@ export const useOnboardingStatus = () => {
     } catch (error) {
       console.error("Error in checkOnboardingStatus:", error);
       toast({
-        title: "Error",
-        description: "Failed to check onboarding status",
+        title: "Authentication Error",
+        description: "Please sign in again to continue",
         variant: "destructive",
       });
       return false;

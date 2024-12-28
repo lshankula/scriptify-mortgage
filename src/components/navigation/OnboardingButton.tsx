@@ -13,9 +13,19 @@ export const OnboardingButton = () => {
   useEffect(() => {
     const checkStatus = async () => {
       const { data: { session } } = await supabase.auth.getSession();
-      if (session?.user) {
+      if (!session?.user) {
+        console.log("No active session found in OnboardingButton");
+        setShowButton(false);
+        return;
+      }
+
+      console.log("Checking onboarding status for user:", session.user.id);
+      try {
         const hasCompletedOnboarding = await checkOnboardingStatus(session.user.id);
         setShowButton(!hasCompletedOnboarding);
+      } catch (error) {
+        console.error("Error checking onboarding status:", error);
+        setShowButton(false);
       }
     };
 
