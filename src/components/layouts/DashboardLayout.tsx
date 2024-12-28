@@ -6,10 +6,8 @@ export const DashboardLayout = ({ children }: { children: React.ReactNode }) => 
     <div className="min-h-screen bg-gray-50">
       <Navigation />
       <div className="flex pt-16">
-        <div className="hidden md:block">
-          <NavigationMenu />
-        </div>
-        <main className="flex-1 p-4">{children}</main>
+        <NavigationMenu className="hidden md:block fixed h-[calc(100vh-4rem)]" />
+        <main className="flex-1 p-4 md:ml-64">{children}</main>
       </div>
     </div>
   );

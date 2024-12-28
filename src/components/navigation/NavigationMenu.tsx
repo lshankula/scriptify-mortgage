@@ -1,37 +1,22 @@
-import React, { useState, createContext, useContext } from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Home, Calendar, Settings } from 'lucide-react';
 import { NavItem } from './NavItem';
 import { NavigationSection } from './NavigationSection';
 import { menuItems } from './navigationData';
+import { cn } from "@/lib/utils";
 
-// Create context for sidebar state
-const SidebarContext = createContext<{
-  isOpen: boolean;
-  setIsOpen: (open: boolean) => void;
-}>({
-  isOpen: false,
-  setIsOpen: () => {},
-});
+interface NavigationMenuProps {
+  className?: string;
+}
 
-export const useSidebar = () => useContext(SidebarContext);
-
-export const SidebarProvider = ({ children }: { children: React.ReactNode }) => {
-  const [isOpen, setIsOpen] = useState(false);
-  return (
-    <SidebarContext.Provider value={{ isOpen, setIsOpen }}>
-      {children}
-    </SidebarContext.Provider>
-  );
-};
-
-export const NavigationMenu = () => {
+export const NavigationMenu = ({ className }: NavigationMenuProps) => {
   const [activeMenu, setActiveMenu] = useState<string | null>(null);
   const [expandedItem, setExpandedItem] = useState<string | null>(null);
   const navigate = useNavigate();
 
   return (
-    <div className="w-64 bg-white border-r h-[calc(100vh-4rem)]">
+    <div className={cn("w-64 bg-white border-r", className)}>
       <div className="p-4">
         <NavItem 
           icon={<Home className="w-5 h-5" />} 
