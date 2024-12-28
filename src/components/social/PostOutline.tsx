@@ -2,6 +2,8 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from "@/components/ui/button";
 import { Answers } from '@/types/social';
+import { useToast } from "@/hooks/use-toast";
+import { supabase } from "@/integrations/supabase/client";
 
 interface PostOutlineProps {
   answers: Answers;
@@ -11,12 +13,69 @@ interface PostOutlineProps {
 
 export const PostOutline = ({ answers, onBack, onSubmit }: PostOutlineProps) => {
   const navigate = useNavigate();
+  const { toast } = useToast();
 
   const handleSubmit = async () => {
-    onSubmit();
-    // After generating the post, navigate to the post view page
-    // In a real implementation, you would use the actual post ID
-    navigate('/social/post/1');
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session?.user) {
+        toast({
+          title: "Authentication Error",
+          description: "Please log in to create posts",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      // Generate content using AI
+      const response = await fetch('/functions/v1/generate-post', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${session.access_token}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          userId: session.user.id,
+          postRequirements: answers,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to generate post content');
+      }
+
+      const { content } = await response.json();
+
+      // Save the post to the database
+      const { data: post, error: saveError } = await supabase
+        .from('posts')
+        .insert({
+          user_id: session.user.id,
+          title: answers.topic,
+          content,
+          platform: answers.platform || 'linkedin',
+          status: 'draft'
+        })
+        .select()
+        .single();
+
+      if (saveError) throw saveError;
+
+      toast({
+        title: "Success",
+        description: "Your post has been generated and saved",
+      });
+
+      onSubmit();
+      navigate(`/social/post/${post.id}`);
+    } catch (error) {
+      console.error('Error generating post:', error);
+      toast({
+        title: "Error",
+        description: "Failed to generate post. Please try again.",
+        variant: "destructive",
+      });
+    }
   };
 
   return (
