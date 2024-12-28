@@ -39,8 +39,27 @@ export const MobileMenu = ({ isOpen, user, onLogout, onGetStarted, onClose }: Mo
   };
 
   const handleNavigation = (path: string) => {
+    console.log('Navigating to:', path);
     navigate(path);
     onClose();
+  };
+
+  const handleSubitemClick = (subitem: string) => {
+    console.log('Handling subitem click:', subitem);
+    switch (subitem) {
+      case "Basic Onboarding":
+        handleNavigation('/onboarding');
+        break;
+      case "Advanced Training":
+        handleNavigation('/onboarding?mode=advanced');
+        break;
+      case "Social Post":
+        handleNavigation('/social/create');
+        break;
+      default:
+        // For now, other subitems will navigate to their parent section
+        handleNavigation('/dashboard');
+    }
   };
 
   return (
@@ -124,7 +143,7 @@ export const MobileMenu = ({ isOpen, user, onLogout, onGetStarted, onClose }: Mo
                                   {item.subitems.map((subitem, subIndex) => (
                                     <button
                                       key={subIndex}
-                                      onClick={() => handleNavigation('/social/create')}
+                                      onClick={() => handleSubitemClick(subitem)}
                                       className="block w-full text-left px-3 py-2 text-sm text-gray-500 hover:text-primary hover:bg-gray-50 rounded-md"
                                     >
                                       {subitem}
