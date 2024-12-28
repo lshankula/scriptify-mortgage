@@ -16,7 +16,7 @@ export const NavigationMenu = ({ className }: NavigationMenuProps) => {
   const navigate = useNavigate();
 
   return (
-    <div className={cn("w-64 bg-white border-r", className)}>
+    <div className={cn("hidden md:block w-64 bg-white border-r", className)}>
       <div className="p-4">
         <NavItem 
           icon={<Home className="w-5 h-5" />} 
