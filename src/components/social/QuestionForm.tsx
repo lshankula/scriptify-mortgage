@@ -1,8 +1,7 @@
 import React from 'react';
 import { Button } from "@/components/ui/button";
-import { Textarea } from "@/components/ui/textarea";
 import { questions } from '@/data/questions';
-import { Question, Answers } from '@/types/social';
+import { Answers } from '@/types/social';
 import { postTypes } from '@/data/postTypes';
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import { 
@@ -11,6 +10,7 @@ import {
   Linkedin, 
   Twitter
 } from "lucide-react";
+import { Textarea } from "@/components/ui/textarea";
 
 interface QuestionFormProps {
   answers: Answers;
@@ -83,7 +83,7 @@ export const QuestionForm = ({
       </div>
 
       <div className="bg-white border rounded-lg p-6">
-        <h3 className="text-lg font-medium mb-4">Additional Details</h3>
+        <h3 className="text-lg font-medium mb-4">Post Content</h3>
         <div className="space-y-6">
           {questions.map((q) => (
             <div key={q.id}>
@@ -118,16 +118,6 @@ export const QuestionForm = ({
             </div>
           ))}
         </div>
-      </div>
-
-      <div className="bg-white border rounded-lg p-6">
-        <h3 className="text-lg font-medium mb-4">Post Content</h3>
-        <Textarea
-          className="w-full min-h-[200px] mb-6"
-          placeholder="Write your post content..."
-          value={answers['content'] || ''}
-          onChange={(e) => onAnswerChange('content', e.target.value)}
-        />
       </div>
 
       <div className="flex items-center justify-end gap-3">
