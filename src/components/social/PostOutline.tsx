@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Answers } from '@/types/social';
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 interface PostOutlineProps {
   answers: Answers;
@@ -79,32 +80,36 @@ export const PostOutline = ({ answers, onBack, onSubmit }: PostOutlineProps) => 
   };
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4">
-      <div className="bg-white rounded-lg max-w-2xl w-full p-6">
-        <h2 className="text-xl font-bold mb-4">Post Overview</h2>
-        <div className="space-y-4 mb-6">
-          <div className="p-4 border rounded-lg">
-            <h3 className="font-medium mb-2">Topic</h3>
-            <p className="text-gray-600">{answers.topic}</p>
-          </div>
-          <div className="p-4 border rounded-lg">
-            <h3 className="font-medium mb-2">Brand Voice</h3>
-            <p className="text-gray-600">{answers.brandVoice}</p>
-          </div>
-          <div className="p-4 border rounded-lg">
-            <h3 className="font-medium mb-2">Key Messages</h3>
-            <div className="text-gray-600">
-              {answers.keyMessages?.split('\n').map((point, index) => (
-                <p key={index}>• {point}</p>
-              ))}
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 overflow-y-auto">
+      <div className="bg-white rounded-lg max-w-2xl w-full max-h-[90vh] flex flex-col">
+        <div className="p-6">
+          <h2 className="text-xl font-bold mb-4">Post Overview</h2>
+          <ScrollArea className="h-[calc(90vh-12rem)]">
+            <div className="space-y-4 pr-4">
+              <div className="p-4 border rounded-lg">
+                <h3 className="font-medium mb-2">Topic</h3>
+                <p className="text-gray-600">{answers.topic}</p>
+              </div>
+              <div className="p-4 border rounded-lg">
+                <h3 className="font-medium mb-2">Brand Voice</h3>
+                <p className="text-gray-600">{answers.brandVoice}</p>
+              </div>
+              <div className="p-4 border rounded-lg">
+                <h3 className="font-medium mb-2">Key Messages</h3>
+                <div className="text-gray-600">
+                  {answers.keyMessages?.split('\n').map((point, index) => (
+                    <p key={index}>• {point}</p>
+                  ))}
+                </div>
+              </div>
+              <div className="p-4 border rounded-lg">
+                <h3 className="font-medium mb-2">Call to Action</h3>
+                <p className="text-gray-600">{answers.callToAction}</p>
+              </div>
             </div>
-          </div>
-          <div className="p-4 border rounded-lg">
-            <h3 className="font-medium mb-2">Call to Action</h3>
-            <p className="text-gray-600">{answers.callToAction}</p>
-          </div>
+          </ScrollArea>
         </div>
-        <div className="flex justify-end gap-3">
+        <div className="border-t p-4 flex justify-end gap-3 bg-white">
           <Button
             variant="outline"
             onClick={onBack}
