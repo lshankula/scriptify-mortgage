@@ -1,44 +1,22 @@
 import React, { useState } from 'react';
 import { DashboardLayout } from "@/components/layouts/DashboardLayout";
 import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from "@/components/ui/breadcrumb";
-import { PostTypeSelection } from '@/components/social/PostTypeSelection';
 import { QuestionForm } from '@/components/social/QuestionForm';
 import { PostOutline } from '@/components/social/PostOutline';
 import { Answers } from '@/types/social';
 import { questions } from '@/data/questions';
 
 const SocialCreate = () => {
-  const [step, setStep] = useState('type');
-  const [postType, setPostType] = useState<string | null>(null);
-  const [currentQuestion, setCurrentQuestion] = useState(0);
+  const [postType, setPostType] = useState('social');
   const [answers, setAnswers] = useState<Answers>({});
   const [showOutline, setShowOutline] = useState(false);
-
-  const handlePostTypeSelect = (type: string) => {
-    setPostType(type);
-    setStep('questions');
-  };
 
   const handleAnswerChange = (questionId: string, answer: string) => {
     setAnswers({ ...answers, [questionId]: answer });
   };
 
-  const handleBack = () => {
-    setCurrentQuestion(curr => curr - 1);
-  };
-
-  const handleNext = () => {
-    if (currentQuestion < questions.length - 1) {
-      setCurrentQuestion(curr => curr + 1);
-    } else {
-      setShowOutline(true);
-    }
-  };
-
-  const handleChangePostType = () => {
-    setStep('type');
-    setPostType(null);
-    setCurrentQuestion(0);
+  const handleChangePostType = (type: string) => {
+    setPostType(type);
   };
 
   return (
@@ -60,21 +38,15 @@ const SocialCreate = () => {
       </Breadcrumb>
 
       <div className="max-w-4xl mx-auto py-8">
-        {step === 'type' && (
-          <PostTypeSelection onSelect={handlePostTypeSelect} />
-        )}
-        {step === 'questions' && postType && (
+        {!showOutline ? (
           <QuestionForm
-            currentQuestion={currentQuestion}
             answers={answers}
             postType={postType}
             onAnswerChange={handleAnswerChange}
-            onBack={handleBack}
-            onNext={handleNext}
             onChangePostType={handleChangePostType}
+            onNext={() => setShowOutline(true)}
           />
-        )}
-        {showOutline && (
+        ) : (
           <PostOutline
             answers={answers}
             onBack={() => setShowOutline(false)}
