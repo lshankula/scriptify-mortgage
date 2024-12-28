@@ -1,10 +1,9 @@
 import "https://deno.land/x/xhr@0.1.0/mod.ts";
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.39.3';
 
 const openAIApiKey = Deno.env.get('OPENAI_API_KEY');
 const anthropicApiKey = Deno.env.get('ANTHROPIC_API_KEY');
-const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
-const supabaseServiceRoleKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -12,34 +11,44 @@ const corsHeaders = {
 };
 
 serve(async (req) => {
-  // Handle CORS preflight requests
   if (req.method === 'OPTIONS') {
-    return new Response(null, { headers: corsHeaders });
+    return new Response('ok', { headers: corsHeaders });
   }
 
   try {
     const { userId, postRequirements } = await req.json();
-    console.log('Received request:', { userId, postRequirements });
     
-    // Initialize Supabase client
-    const supabase = createClient(supabaseUrl, supabaseServiceRoleKey);
-    
-    // Fetch user's onboarding responses
-    const { data: onboardingResponses, error: onboardingError } = await supabase
-      .from('onboarding_responses')
-      .select('question_number, text_response')
-      .eq('user_id', userId)
-      .order('question_number');
-
-    if (onboardingError) {
-      console.error('Error fetching onboarding responses:', onboardingError);
-      throw new Error('Failed to fetch onboarding responses');
+    if (!userId || !postRequirements) {
+      console.error('Missing required fields');
+      return new Response(
+        JSON.stringify({ error: 'Missing required fields' }),
+        { 
+          status: 400,
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+        }
+      );
     }
 
-    // Create a context from onboarding responses
-    const userContext = onboardingResponses.map(response => 
-      `Question ${response.question_number}: ${response.text_response}`
-    ).join('\n');
+    console.log('Generating post with requirements:', postRequirements);
+
+    const prompt = `
+      Create a social media post with the following requirements:
+      Topic: ${postRequirements.topic}
+      Brand Voice: ${postRequirements.brandVoice}
+      Key Messages: ${postRequirements.keyMessages}
+      Call to Action: ${postRequirements.callToAction}
+      
+      Please write a compelling and engaging post that incorporates all these elements.
+    `;
+
+    const systemPrompt = `
+      You are a professional social media content creator.
+      Create content that is engaging, authentic, and aligned with the brand voice.
+      Focus on clarity and impact while maintaining a conversational tone.
+      Include the key messages naturally within the content.
+      End with a clear call to action.
+      Keep hashtags minimal and relevant.
+    `.split('\n').map(line => line.trim()).filter(Boolean).join('\n');
 
     console.log('Attempting OpenAI request');
     try {
@@ -50,26 +59,24 @@ serve(async (req) => {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          model: 'gpt-4o',
+          model: 'gpt-4',
           messages: [
             {
               role: 'system',
-              content: `You are a professional content writer specializing in creating engaging social media content. 
-                       Use the following information about the mortgage professional to create authentic, personalized content.
-                       Their background information:
-                       ${userContext}`
+              content: systemPrompt,
             },
             {
               role: 'user',
-              content: `Create a social media post for ${postRequirements.platform} about: ${postRequirements.topic}
-                       Style: ${postRequirements.brandVoice}
-                       Key messages to include: ${postRequirements.keyMessages}
-                       Call to action: ${postRequirements.callToAction}`
-            }
+              content: prompt,
+            },
           ],
           temperature: 0.7,
         }),
       });
+
+      if (!completion.ok) {
+        throw new Error(`OpenAI API error: ${completion.statusText}`);
+      }
 
       const result = await completion.json();
       console.log('OpenAI response received');
@@ -78,12 +85,11 @@ serve(async (req) => {
         JSON.stringify({ content: result.choices[0].message.content }),
         { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       );
-    } catch (openAIError) {
-      console.error('OpenAI Error:', openAIError);
-      
-      // Fallback to Claude if OpenAI fails
-      if (anthropicApiKey) {
-        console.log('Attempting Claude fallback');
+    } catch (error) {
+      console.error('OpenAI error:', error);
+      console.log('Falling back to Claude');
+
+      try {
         const claudeResponse = await fetch('https://api.anthropic.com/v1/messages', {
           method: 'POST',
           headers: {
@@ -92,34 +98,39 @@ serve(async (req) => {
             'content-type': 'application/json',
           },
           body: JSON.stringify({
-            model: 'claude-3-opus-20240229',
-            max_tokens: 1000,
-            messages: [{
-              role: 'user',
-              content: `Using this background information about a mortgage professional:
-                       ${userContext}
-                       
-                       Create a social media post for ${postRequirements.platform} about: ${postRequirements.topic}
-                       Style: ${postRequirements.brandVoice}
-                       Key messages to include: ${postRequirements.keyMessages}
-                       Call to action: ${postRequirements.callToAction}`
-            }]
+            model: 'claude-3-sonnet-20240229',
+            max_tokens: 1024,
+            messages: [
+              {
+                role: 'system',
+                content: systemPrompt,
+              },
+              {
+                role: 'user',
+                content: prompt,
+              },
+            ],
           }),
         });
 
-        const claudeResult = await claudeResult.json();
+        if (!claudeResponse.ok) {
+          throw new Error(`Claude API error: ${claudeResponse.statusText}`);
+        }
+
+        const claudeResult = await claudeResponse.json();
         console.log('Claude response received');
         
         return new Response(
           JSON.stringify({ content: claudeResult.content[0].text }),
           { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
         );
+      } catch (claudeError) {
+        console.error('Claude error:', claudeError);
+        throw new Error('Both OpenAI and Claude failed to generate content');
       }
-      
-      throw new Error('Both AI services failed to generate content');
     }
   } catch (error) {
-    console.error('Error in generate-post function:', error);
+    console.error('Error:', error);
     return new Response(
       JSON.stringify({ error: error.message }),
       { 
