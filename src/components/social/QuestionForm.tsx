@@ -1,13 +1,9 @@
 import React, { useState } from 'react';
-import { Button } from "@/components/ui/button";
-import { questions } from '@/data/questions';
 import { Answers } from '@/types/social';
-import { Lightbulb } from "lucide-react";
-import { Textarea } from "@/components/ui/textarea";
-import { PlatformSelect } from './PlatformSelect';
-import { PostTypeSelect } from './PostTypeSelect';
 import { ContentIdeasDialog } from './ContentIdeasDialog';
-import { Label } from "@/components/ui/label";
+import { FormHeader } from './form/FormHeader';
+import { QuestionsSection } from './form/QuestionsSection';
+import { FormActions } from './form/FormActions';
 
 interface QuestionFormProps {
   answers: Answers;
@@ -44,39 +40,13 @@ export const QuestionForm = ({
   
   return (
     <div className="space-y-8">
-      <div>
-        <h2 className="text-2xl font-bold mb-6">Create Content</h2>
-        <p className="text-gray-600 mb-6">Create engaging content for your audience</p>
-        
-        <div className="flex flex-wrap gap-4 mb-8">
-          <div className="flex-1 min-w-[200px] space-y-2">
-            <Label>Select Purpose</Label>
-            <PostTypeSelect 
-              value={postType} 
-              onValueChange={onChangePostType} 
-            />
-          </div>
-          
-          <div className="flex-1 min-w-[200px] space-y-2">
-            <Label>Select Platform</Label>
-            <PlatformSelect 
-              value={selectedPlatform} 
-              onValueChange={setSelectedPlatform} 
-            />
-          </div>
-
-          <div className="flex items-end">
-            <Button 
-              variant="outline" 
-              className="bg-yellow-50 hover:bg-yellow-100 border-yellow-200 text-yellow-800"
-              onClick={() => setShowIdeasDialog(true)}
-            >
-              <Lightbulb className="mr-2 h-4 w-4" />
-              Need Content Ideas?
-            </Button>
-          </div>
-        </div>
-      </div>
+      <FormHeader
+        postType={postType}
+        selectedPlatform={selectedPlatform}
+        onChangePostType={onChangePostType}
+        setSelectedPlatform={setSelectedPlatform}
+        setShowIdeasDialog={setShowIdeasDialog}
+      />
 
       <ContentIdeasDialog
         open={showIdeasDialog}
@@ -85,36 +55,15 @@ export const QuestionForm = ({
         ideas={quickIdeas}
       />
 
-      <div className="bg-white border rounded-lg p-6">
-        <h3 className="text-lg font-medium mb-4">Post Content</h3>
-        <div className="space-y-6">
-          {questions.map((q) => (
-            <div key={q.id}>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                {q.question}
-              </label>
-              <Textarea
-                className="w-full"
-                placeholder={q.placeholder}
-                value={answers[q.id] || ''}
-                onChange={(e) => onAnswerChange(q.id, e.target.value)}
-              />
-            </div>
-          ))}
-        </div>
-      </div>
+      <QuestionsSection 
+        answers={answers}
+        onAnswerChange={onAnswerChange}
+      />
 
-      <div className="flex items-center justify-end gap-3">
-        <Button 
-          variant="outline"
-          onClick={onSaveDraft}
-        >
-          Save Draft
-        </Button>
-        <Button onClick={onNext}>
-          Review Post
-        </Button>
-      </div>
+      <FormActions 
+        onSaveDraft={onSaveDraft}
+        onNext={onNext}
+      />
     </div>
   );
 };
