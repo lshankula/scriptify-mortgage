@@ -47,7 +47,7 @@ const Pricing = () => {
   return (
     <div className="min-h-screen bg-white">
       <PublicNavigation />
-      <div className="py-16 px-4 sm:px-6 lg:px-8 pt-16">
+      <div className="py-24 px-4 sm:px-6 lg:px-8">
         <PricingHeader />
         <div className="mt-16 grid gap-8 max-w-7xl mx-auto md:grid-cols-3">
           {pricingTiers.map((tier) => (
