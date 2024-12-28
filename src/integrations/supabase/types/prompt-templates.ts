@@ -24,12 +24,23 @@ export interface PromptTemplate {
   updated_at: string;
 }
 
-export interface PromptTemplateInsert extends Omit<PromptTemplate, 'id' | 'created_at' | 'updated_at'> {
+export interface PromptTemplateInsert {
   id?: string;
+  content_type: ContentType;
+  title: string;
+  description?: string | null;
+  system_prompt: string;
+  user_prompt_template: string;
   created_at?: string;
   updated_at?: string;
 }
 
-export interface PromptTemplateUpdate extends Partial<PromptTemplateInsert> {
+export interface PromptTemplateUpdate {
   id?: string;
+  content_type?: ContentType;
+  title?: string;
+  description?: string | null;
+  system_prompt?: string;
+  user_prompt_template?: string;
+  updated_at?: string;
 }

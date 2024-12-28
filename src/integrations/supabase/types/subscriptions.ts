@@ -10,12 +10,21 @@ export interface Subscription {
   updated_at: string;
 }
 
-export interface SubscriptionInsert extends Omit<Subscription, 'id' | 'created_at' | 'updated_at'> {
+export interface SubscriptionInsert {
   id?: string;
+  user_id: string;
+  tier?: SubscriptionTier | null;
+  stripe_subscription_id?: string | null;
+  stripe_customer_id?: string | null;
   created_at?: string;
   updated_at?: string;
 }
 
-export interface SubscriptionUpdate extends Partial<SubscriptionInsert> {
+export interface SubscriptionUpdate {
   id?: string;
+  user_id?: string;
+  tier?: SubscriptionTier | null;
+  stripe_subscription_id?: string | null;
+  stripe_customer_id?: string | null;
+  updated_at?: string;
 }

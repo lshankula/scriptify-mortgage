@@ -32,5 +32,6 @@ export interface PostUpdate {
   platform?: string;
   status?: PostStatus | null;
   remixed_from?: string | null;
+  created_at?: string;
   updated_at?: string;
 }
