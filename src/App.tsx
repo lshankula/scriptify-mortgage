@@ -11,6 +11,7 @@ import SocialAnalytics from "./pages/social/SocialAnalytics";
 import LearningCenter from "./pages/LearningCenter";
 import { Navigation } from "./components/Navigation";
 import { useSession } from "./hooks/useSession";
+import { DashboardLayout } from "./components/layouts/DashboardLayout";
 
 // Helper component to handle navigation visibility logic
 const NavigationWrapper = () => {
@@ -24,6 +25,12 @@ const NavigationWrapper = () => {
   return shouldShowNavigation ? <Navigation /> : null;
 };
 
+// Helper component to wrap authenticated routes with DashboardLayout
+const AuthenticatedRoute = ({ children }: { children: React.ReactNode }) => {
+  const { session } = useSession();
+  return session ? <DashboardLayout>{children}</DashboardLayout> : <Login />;
+};
+
 function App() {
   const { session } = useSession();
 
@@ -34,14 +41,16 @@ function App() {
         <Route path="/" element={<Index />} />
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Login />} /> {/* Using Login component for signup too */}
-        <Route path="/onboarding" element={session ? <Onboarding /> : <Login />} />
         <Route path="/features" element={<Features />} />
         <Route path="/pricing" element={<Pricing />} />
-        <Route path="/dashboard" element={<Dashboard />} />
-        <Route path="/social" element={<SocialHub />} />
-        <Route path="/social/create" element={<SocialCreate />} />
-        <Route path="/social/analytics" element={<SocialAnalytics />} />
-        <Route path="/learning" element={session ? <LearningCenter /> : <Login />} />
+        
+        {/* Authenticated routes wrapped with DashboardLayout */}
+        <Route path="/onboarding" element={<AuthenticatedRoute><Onboarding /></AuthenticatedRoute>} />
+        <Route path="/dashboard" element={<AuthenticatedRoute><Dashboard /></AuthenticatedRoute>} />
+        <Route path="/social" element={<AuthenticatedRoute><SocialHub /></AuthenticatedRoute>} />
+        <Route path="/social/create" element={<AuthenticatedRoute><SocialCreate /></AuthenticatedRoute>} />
+        <Route path="/social/analytics" element={<AuthenticatedRoute><SocialAnalytics /></AuthenticatedRoute>} />
+        <Route path="/learning" element={<AuthenticatedRoute><LearningCenter /></AuthenticatedRoute>} />
       </Routes>
     </Router>
   );
