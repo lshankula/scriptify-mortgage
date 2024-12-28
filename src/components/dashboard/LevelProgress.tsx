@@ -2,7 +2,7 @@ import { Star } from 'lucide-react';
 
 export const LevelProgress = () => {
   return (
-    <div className="bg-white p-6 rounded-lg shadow-sm border mb-6 w-full max-w-full mt-2">
+    <div className="bg-white p-6 rounded-lg shadow-sm border mb-6 w-full max-w-full mt-8">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-4">
         <div className="flex-1">
           <h2 className="text-xl font-bold flex items-center gap-2 text-primary">
