@@ -5,6 +5,7 @@ import Onboarding from "./pages/Onboarding";
 import Features from "./pages/Features";
 import Pricing from "./pages/Pricing";
 import Dashboard from "./pages/Dashboard";
+import ContentHub from "./pages/ContentHub";
 import SocialHub from "./pages/SocialHub";
 import SocialCreate from "./pages/social/SocialCreate";
 import SocialAnalytics from "./pages/social/SocialAnalytics";
@@ -33,11 +34,12 @@ function App() {
       <Routes>
         <Route path="/" element={<Index />} />
         <Route path="/login" element={<Login />} />
-        <Route path="/signup" element={<Login />} /> {/* Using Login component for signup too */}
+        <Route path="/signup" element={<Login />} />
         <Route path="/onboarding" element={session ? <Onboarding /> : <Login />} />
         <Route path="/features" element={<Features />} />
         <Route path="/pricing" element={<Pricing />} />
         <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="/content" element={<ContentHub />} />
         <Route path="/social" element={<SocialHub />} />
         <Route path="/social/create" element={<SocialCreate />} />
         <Route path="/social/analytics" element={<SocialAnalytics />} />
