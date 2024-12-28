@@ -13,12 +13,14 @@ const corsHeaders = {
 };
 
 serve(async (req) => {
+  // Handle CORS preflight requests
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders });
   }
 
   try {
     const { userId, postRequirements } = await req.json();
+    console.log('Received request:', { userId, postRequirements });
     
     // Initialize Supabase client
     const supabase = createClient(supabaseUrl, supabaseServiceRoleKey);
@@ -30,13 +32,17 @@ serve(async (req) => {
       .eq('user_id', userId)
       .order('question_number');
 
-    if (onboardingError) throw new Error('Failed to fetch onboarding responses');
+    if (onboardingError) {
+      console.error('Error fetching onboarding responses:', onboardingError);
+      throw new Error('Failed to fetch onboarding responses');
+    }
 
     // Create a context from onboarding responses
     const userContext = onboardingResponses.map(response => 
       `Question ${response.question_number}: ${response.text_response}`
     ).join('\n');
 
+    console.log('Attempting OpenAI request');
     // Try OpenAI first
     try {
       const completion = await fetch('https://api.openai.com/v1/chat/completions', {
@@ -68,6 +74,7 @@ serve(async (req) => {
       });
 
       const result = await completion.json();
+      console.log('OpenAI response received');
       return new Response(
         JSON.stringify({ content: result.choices[0].message.content }),
         { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
@@ -77,6 +84,7 @@ serve(async (req) => {
       
       // Fallback to Claude if OpenAI fails
       if (anthropicApiKey) {
+        console.log('Attempting Claude fallback');
         const claudeResponse = await fetch('https://api.anthropic.com/v1/messages', {
           method: 'POST',
           headers: {
@@ -101,6 +109,7 @@ serve(async (req) => {
         });
 
         const claudeResult = await claudeResponse.json();
+        console.log('Claude response received');
         return new Response(
           JSON.stringify({ content: claudeResult.content[0].text }),
           { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
@@ -110,7 +119,7 @@ serve(async (req) => {
       throw new Error('Both AI services failed to generate content');
     }
   } catch (error) {
-    console.error('Error:', error);
+    console.error('Error in generate-post function:', error);
     return new Response(
       JSON.stringify({ error: error.message }),
       { 
