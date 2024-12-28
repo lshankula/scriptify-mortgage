@@ -164,6 +164,10 @@ export type Database = {
         | "instagram_post"
         | "instagram_reel"
         | "twitter_post"
+        | "email_newsletter"
+        | "email_drip"
+        | "blog_post"
+        | "blog_article"
       post_status: "draft" | "published"
       subscription_tier: "free" | "pro" | "enterprise"
     }
