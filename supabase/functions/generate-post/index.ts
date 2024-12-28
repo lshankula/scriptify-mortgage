@@ -1,6 +1,5 @@
 import "https://deno.land/x/xhr@0.1.0/mod.ts";
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
-import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.39.3';
 
 const openAIApiKey = Deno.env.get('OPENAI_API_KEY');
 const anthropicApiKey = Deno.env.get('ANTHROPIC_API_KEY');
@@ -43,7 +42,6 @@ serve(async (req) => {
     ).join('\n');
 
     console.log('Attempting OpenAI request');
-    // Try OpenAI first
     try {
       const completion = await fetch('https://api.openai.com/v1/chat/completions', {
         method: 'POST',
@@ -75,6 +73,7 @@ serve(async (req) => {
 
       const result = await completion.json();
       console.log('OpenAI response received');
+      
       return new Response(
         JSON.stringify({ content: result.choices[0].message.content }),
         { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
@@ -108,8 +107,9 @@ serve(async (req) => {
           }),
         });
 
-        const claudeResult = await claudeResponse.json();
+        const claudeResult = await claudeResult.json();
         console.log('Claude response received');
+        
         return new Response(
           JSON.stringify({ content: claudeResult.content[0].text }),
           { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
