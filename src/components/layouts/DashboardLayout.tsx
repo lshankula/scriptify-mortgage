@@ -6,7 +6,9 @@ export const DashboardLayout = ({ children }: { children: React.ReactNode }) => 
     <div className="min-h-screen bg-gray-50">
       <Navigation />
       <div className="flex pt-16">
-        <NavigationMenu className="hidden md:block fixed h-[calc(100vh-4rem)]" />
+        <aside className="hidden md:block">
+          <NavigationMenu className="fixed h-[calc(100vh-4rem)] w-64" />
+        </aside>
         <main className="flex-1 p-4 md:ml-64">{children}</main>
       </div>
     </div>
