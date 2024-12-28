@@ -5,7 +5,7 @@ export const DashboardLayout = ({ children }: { children: React.ReactNode }) => 
   return (
     <div className="min-h-screen bg-gray-50">
       <Navigation />
-      <div className="flex flex-col md:flex-row pt-35">
+      <div className="flex flex-col md:flex-row pt-45">
         <aside className="hidden md:block w-64 shrink-0">
           <NavigationMenu className="fixed h-[calc(100vh-4rem)] w-64" />
         </aside>
