@@ -52,8 +52,13 @@ export default function SocialPost() {
           user_id: session.session.user.id,
           title: `${post?.title} (Remix)`,
           content: post?.content,
-          platform,
-          remixed_from: post?.id,
+          type: post?.type || 'thoughtLeadership',
+          metadata: {
+            ...post?.metadata,
+            platform,
+            isRemix: true,
+            originalPostId: post?.id
+          }
         })
         .select()
         .single();
@@ -92,6 +97,8 @@ export default function SocialPost() {
     return <div>Post not found</div>;
   }
 
+  const platform = post.metadata?.platform || 'linkedin';
+
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="max-w-2xl mx-auto">
@@ -99,21 +106,21 @@ export default function SocialPost() {
         <div className="bg-white rounded-lg shadow-md p-6 mb-6">
           <p className="text-gray-700 whitespace-pre-wrap">{post.content}</p>
           <div className="mt-4 text-sm text-gray-500">
-            Platform: {post.platform}
+            Platform: {platform}
           </div>
         </div>
 
         <div className="space-y-4">
           <h2 className="text-xl font-semibold">Remix for another platform</h2>
           <div className="flex flex-wrap gap-4">
-            {['Twitter', 'LinkedIn', 'Facebook', 'Instagram'].map((platform) => (
-              platform !== post.platform && (
+            {['Twitter', 'LinkedIn', 'Facebook', 'Instagram'].map((p) => (
+              p.toLowerCase() !== platform.toLowerCase() && (
                 <Button
-                  key={platform}
-                  onClick={() => handleRemix(platform)}
+                  key={p}
+                  onClick={() => handleRemix(p.toLowerCase())}
                   variant="outline"
                 >
-                  Remix for {platform}
+                  Remix for {p}
                 </Button>
               )
             ))}

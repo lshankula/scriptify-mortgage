@@ -47,15 +47,21 @@ export const PostOutline = ({ answers, onBack, onSubmit }: PostOutlineProps) => 
 
       const { content } = await response.json();
 
-      // Save the post to the database
+      // Save the post to the database with the new structure
       const { data: post, error: saveError } = await supabase
         .from('posts')
         .insert({
           user_id: session.user.id,
           title: answers.topic,
           content,
-          platform: answers.platform || 'linkedin',
-          status: 'draft'
+          type: 'thoughtLeadership', // Default type
+          status: 'draft',
+          metadata: {
+            platform: answers.platform || 'linkedin',
+            brandVoice: answers.brandVoice,
+            keyMessages: answers.keyMessages,
+            callToAction: answers.callToAction
+          }
         })
         .select()
         .single();
