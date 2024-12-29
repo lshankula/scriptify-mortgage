@@ -44,10 +44,10 @@ export type Database = {
           content: string
           created_at: string
           id: string
-          platform: string
-          remixed_from: string | null
+          metadata: Json | null
           status: Database["public"]["Enums"]["post_status"] | null
           title: string
+          type: string
           updated_at: string
           user_id: string
         }
@@ -55,10 +55,10 @@ export type Database = {
           content: string
           created_at?: string
           id?: string
-          platform: string
-          remixed_from?: string | null
+          metadata?: Json | null
           status?: Database["public"]["Enums"]["post_status"] | null
           title: string
+          type: string
           updated_at?: string
           user_id: string
         }
@@ -66,22 +66,14 @@ export type Database = {
           content?: string
           created_at?: string
           id?: string
-          platform?: string
-          remixed_from?: string | null
+          metadata?: Json | null
           status?: Database["public"]["Enums"]["post_status"] | null
           title?: string
+          type?: string
           updated_at?: string
           user_id?: string
         }
-        Relationships: [
-          {
-            foreignKeyName: "posts_remixed_from_fkey"
-            columns: ["remixed_from"]
-            isOneToOne: false
-            referencedRelation: "posts"
-            referencedColumns: ["id"]
-          },
-        ]
+        Relationships: []
       }
       prompt_templates: {
         Row: {
