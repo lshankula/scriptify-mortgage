@@ -1,10 +1,16 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from "@/components/ui/button";
-import { Answers } from '@/types/social';
+import { Answers, Post } from '@/types/social';
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { PostgrestFilterBuilder } from '@supabase/postgrest-js';
+
+type FilterOptions = {
+  count?: 'exact' | 'planned' | 'estimated';
+  defaultToNull?: boolean;
+};
 
 interface PostOutlineProps {
   answers: Answers;
