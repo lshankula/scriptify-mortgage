@@ -4,20 +4,13 @@ export type Post = {
   id: string;
   content: string;
   created_at: string;
-  user_id: string;  // Changed from author_id to user_id
+  user_id: string;
   status: 'draft' | 'published';
   title: string;
-  type: keyof typeof PostTypes;
+  type: keyof typeof postTypes;
   updated_at: string;
   metadata?: Record<string, any>;
 };
-
-export interface PostTypes {
-  thoughtLeadership: PostType;
-  marketUpdate: PostType;
-  valueContent: PostType;
-  announcement: PostType;
-}
 
 export interface PostType {
   icon: ReactNode;
@@ -26,7 +19,7 @@ export interface PostType {
   examples: string[];
 }
 
-export const postTypeValues = {
+export const postTypes = {
   thoughtLeadership: {
     icon: null,
     title: "Thought Leadership",
@@ -52,3 +45,17 @@ export const postTypeValues = {
     examples: ["Product launches", "Company news", "Updates"]
   }
 } as const;
+
+// Add back the missing types
+export interface Answers {
+  [key: string]: string;
+}
+
+export interface Question {
+  id: string;
+  question: string;
+  description: string;
+  type: string;
+  placeholder: string;
+  options?: string[];
+}

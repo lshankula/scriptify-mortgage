@@ -5,12 +5,6 @@ import { Answers, Post } from '@/types/social';
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { PostgrestFilterBuilder } from '@supabase/postgrest-js';
-
-type FilterOptions = {
-  count?: 'exact' | 'planned' | 'estimated';
-  defaultToNull?: boolean;
-};
 
 interface PostOutlineProps {
   answers: Answers;
@@ -60,8 +54,8 @@ export const PostOutline = ({ answers, onBack, onSubmit }: PostOutlineProps) => 
           user_id: session.user.id,
           title: answers.topic,
           content,
-          type: 'thoughtLeadership', // Default type
-          status: 'draft',
+          type: 'thoughtLeadership' as const,
+          status: 'draft' as const,
           metadata: {
             platform: answers.platform || 'linkedin',
             brandVoice: answers.brandVoice,
