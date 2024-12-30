@@ -1,8 +1,8 @@
 import React from 'react';
 import { Award, FileText, Lightbulb, Megaphone } from 'lucide-react';
-import { PostTypes } from '@/types/social';
+import { PostType } from '@/types/social';
 
-export const postTypes: PostTypes = {
+export const postTypes: Record<string, PostType> = {
   thoughtLeadership: {
     icon: <Award className="w-6 h-6" />,
     title: "Thought Leadership",

@@ -1,5 +1,5 @@
 import React from 'react';
-import { postTypes } from '@/data/postTypes';
+import { postTypes } from '@/types/social';
 
 interface PostTypeSelectionProps {
   onSelect: (type: string) => void;

@@ -6,7 +6,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { postTypes } from '@/data/postTypes';
+import { postTypes, PostType } from '@/types/social';
 
 interface PostTypeSelectProps {
   value: string;
