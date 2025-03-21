@@ -2,6 +2,7 @@ import { OnboardingResponse, OnboardingResponseInsert, OnboardingResponseUpdate 
 import { Post, PostInsert, PostUpdate, PostStatus } from './posts';
 import { ContentType, PromptTemplate, PromptTemplateInsert, PromptTemplateUpdate } from './prompt-templates';
 import { Subscription, SubscriptionInsert, SubscriptionUpdate, SubscriptionTier } from './subscriptions';
+import { Mission, MissionInsert, MissionUpdate, MissionStatus } from './missions';
 
 export type Json =
   | string
@@ -46,6 +47,12 @@ export interface Database {
         Update: SubscriptionUpdate;
         Relationships: [];
       };
+      missions: {
+        Row: Mission;
+        Insert: MissionInsert;
+        Update: MissionUpdate;
+        Relationships: [];
+      };
     };
     Views: {
       [_ in never]: never;
@@ -57,6 +64,7 @@ export interface Database {
       content_type: ContentType;
       post_status: PostStatus;
       subscription_tier: SubscriptionTier;
+      mission_status: MissionStatus;
     };
     CompositeTypes: {
       [_ in never]: never;
