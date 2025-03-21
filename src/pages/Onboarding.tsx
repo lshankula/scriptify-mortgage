@@ -121,7 +121,13 @@ const Onboarding = () => {
       if (responses) {
         setExistingResponses(responses);
         
-        if (mode !== 'edit' && mode !== 'advanced' && responses.length > 0) {
+        // Count unique question numbers to handle potential duplicates
+        const uniqueQuestionCount = new Set(
+          responses?.map(response => response.question_number)
+        ).size;
+        
+        // Only redirect if all basic questions have been answered
+        if (mode !== 'edit' && mode !== 'advanced' && uniqueQuestionCount === basicQuestions.length) {
           toast({
             title: "Onboarding Already Completed",
             description: "You can edit your responses or take the advanced training.",
