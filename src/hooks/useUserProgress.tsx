@@ -32,16 +32,16 @@ export const useUserProgress = () => {
         // If the table doesn't exist or the user doesn't have a progress record,
         // we'll create a default one
         if (error.code === 'PGRST116') { // Table doesn't exist
-          console.log('User progress table does not exist, using mock data');
-          // Return mock data for now
-          const mockXpTotal = 2450;
-          const mockLevel = calculateLevel(mockXpTotal);
+          console.log('User progress table does not exist, using default data');
+          // Return default data with 0 XP
+          const initialXpTotal = 0;
+          const initialLevel = calculateLevel(initialXpTotal);
           setProgress({
             id: 'mock-id',
             user_id: session.user.id,
-            xp_total: mockXpTotal,
-            level: mockLevel,
-            xp_to_next_level: calculateXpToNextLevel(mockXpTotal),
+            xp_total: initialXpTotal,
+            level: initialLevel,
+            xp_to_next_level: calculateXpToNextLevel(initialXpTotal),
             created_at: new Date().toISOString(),
             updated_at: new Date().toISOString(),
           });
@@ -58,15 +58,15 @@ export const useUserProgress = () => {
       setProgress(data);
     } catch (error: any) {
       console.error('Error fetching user progress:', error);
-      // Use mock data as fallback
-      const mockXpTotal = 2450;
-      const mockLevel = calculateLevel(mockXpTotal);
+      // Use default data as fallback with 0 XP
+      const initialXpTotal = 0;
+      const initialLevel = calculateLevel(initialXpTotal);
       setProgress({
         id: 'mock-id',
         user_id: session.user.id,
-        xp_total: mockXpTotal,
-        level: mockLevel,
-        xp_to_next_level: calculateXpToNextLevel(mockXpTotal),
+        xp_total: initialXpTotal,
+        level: initialLevel,
+        xp_to_next_level: calculateXpToNextLevel(initialXpTotal),
         created_at: new Date().toISOString(),
         updated_at: new Date().toISOString(),
       });
