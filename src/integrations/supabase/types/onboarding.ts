@@ -6,6 +6,7 @@ export interface OnboardingResponse {
   text_response: string | null;
   voice_url: string | null;
   video_url: string | null;
+  transcription_source?: 'voice' | 'video' | null;
 }
 
 export interface OnboardingResponseInsert {
@@ -16,6 +17,7 @@ export interface OnboardingResponseInsert {
   text_response?: string | null;
   voice_url?: string | null;
   video_url?: string | null;
+  transcription_source?: 'voice' | 'video' | null;
 }
 
 export interface OnboardingResponseUpdate {
@@ -26,4 +28,5 @@ export interface OnboardingResponseUpdate {
   text_response?: string | null;
   voice_url?: string | null;
   video_url?: string | null;
+  transcription_source?: 'voice' | 'video' | null;
 }

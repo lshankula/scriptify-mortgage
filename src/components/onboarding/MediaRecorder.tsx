@@ -6,9 +6,10 @@ import { useToast } from "@/hooks/use-toast";
 interface MediaRecorderProps {
   onRecordingComplete: (blob: Blob) => void;
   type: 'voice' | 'video';
+  disabled?: boolean;
 }
 
-export const MediaRecorder = ({ onRecordingComplete, type }: MediaRecorderProps) => {
+export const MediaRecorder = ({ onRecordingComplete, type, disabled = false }: MediaRecorderProps) => {
   const [isRecording, setIsRecording] = useState(false);
   const [isSupported, setIsSupported] = useState(true);
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
@@ -134,6 +135,7 @@ export const MediaRecorder = ({ onRecordingComplete, type }: MediaRecorderProps)
       variant={isRecording ? "destructive" : "secondary"}
       onClick={isRecording ? stopRecording : startRecording}
       className="flex items-center gap-2"
+      disabled={disabled}
     >
       {isRecording ? (
         <>

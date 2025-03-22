@@ -3,6 +3,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { MediaRecorder } from "./MediaRecorder";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
+import { transcribeMedia } from "@/integrations/openai/transcription";
 
 interface ResponseInputProps {
   currentQ: {
@@ -17,6 +18,7 @@ interface ResponseInputProps {
 
 export const ResponseInput = ({ currentQ, userId, onResponseChange, value }: ResponseInputProps) => {
   const { toast } = useToast();
+  const [isTranscribing, setIsTranscribing] = useState(false);
 
   const handleMediaUpload = async (file: File, type: 'video' | 'voice') => {
     try {
@@ -49,6 +51,7 @@ export const ResponseInput = ({ currentQ, userId, onResponseChange, value }: Res
     if (!url) return;
     
     try {
+      // First save the media URL
       const { error } = await supabase
         .from("onboarding_responses")
         .upsert({
@@ -65,6 +68,39 @@ export const ResponseInput = ({ currentQ, userId, onResponseChange, value }: Res
         title: `${type === 'video' ? 'Video' : 'Voice Note'} Saved`,
         description: `Your ${type} has been uploaded successfully.`,
       });
+      
+      // Now try to transcribe the media
+      setIsTranscribing(true);
+      toast({
+        title: "Transcribing...",
+        description: `We're transcribing your ${type}. This may take a moment.`,
+      });
+      
+      const transcription = await transcribeMedia(url);
+      
+      if (transcription) {
+        // Update the text response with the transcription
+        onResponseChange(transcription);
+        
+        // Save the transcription to the database
+        const { error: transcriptionError } = await supabase
+          .from("onboarding_responses")
+          .upsert({
+            question_number: currentQ.id,
+            user_id: userId,
+            text_response: transcription,
+            transcription_source: type
+          }, {
+            onConflict: 'user_id,question_number'
+          });
+        
+        if (transcriptionError) throw transcriptionError;
+        
+        toast({
+          title: "Transcription Complete",
+          description: "Your recording has been transcribed successfully.",
+        });
+      }
     } catch (error: any) {
       console.error(`Error saving ${type}:`, error);
       toast({
@@ -72,6 +108,8 @@ export const ResponseInput = ({ currentQ, userId, onResponseChange, value }: Res
         description: error.message || `Failed to save ${type}. Please try again.`,
         variant: "destructive",
       });
+    } finally {
+      setIsTranscribing(false);
     }
   };
 
@@ -85,6 +123,7 @@ export const ResponseInput = ({ currentQ, userId, onResponseChange, value }: Res
         onChange={(e) => onResponseChange(e.target.value)}
         placeholder={currentQ.placeholder}
         className="min-h-[100px] mb-4"
+        disabled={isTranscribing}
       />
       <div className="flex gap-4 mb-4">
         <MediaRecorder
@@ -94,6 +133,7 @@ export const ResponseInput = ({ currentQ, userId, onResponseChange, value }: Res
             if (url) await handleMediaSave(url, 'voice');
           }}
           type="voice"
+          disabled={isTranscribing}
         />
         <MediaRecorder
           onRecordingComplete={async (blob) => {
@@ -102,6 +142,7 @@ export const ResponseInput = ({ currentQ, userId, onResponseChange, value }: Res
             if (url) await handleMediaSave(url, 'video');
           }}
           type="video"
+          disabled={isTranscribing}
         />
       </div>
     </div>
