@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Plus, Star, Target, TrendingUp, Users, Zap } from 'lucide-react';
 import { NavigationMenu } from '@/components/navigation/NavigationMenu';
 import { OnboardingDialog } from '@/components/onboarding/OnboardingDialog';
@@ -53,6 +54,8 @@ const MissionItem = ({
 };
 
 const ContentItem = ({ post }: { post: Post }) => {
+  const navigate = useNavigate();
+  
   // Determine content type based on platform or other properties
   const getContentType = (post: Post) => {
     switch (post.platform.toLowerCase()) {
@@ -72,6 +75,22 @@ const ContentItem = ({ post }: { post: Post }) => {
     }
   };
   
+  const handleViewPost = () => {
+    // Navigate to the post detail page
+    if (post.platform.toLowerCase() === 'facebook' || 
+        post.platform.toLowerCase() === 'instagram' || 
+        post.platform.toLowerCase() === 'twitter' || 
+        post.platform.toLowerCase() === 'linkedin') {
+      navigate(`/social/post/${post.id}`);
+    } else if (post.platform.toLowerCase() === 'blog') {
+      navigate(`/content/blog/${post.id}`);
+    } else if (post.platform.toLowerCase() === 'video') {
+      navigate(`/content/video/${post.id}`);
+    } else {
+      navigate(`/content/post/${post.id}`);
+    }
+  };
+  
   return (
     <div className="flex items-center justify-between p-3 hover:bg-gray-50 rounded-lg">
       <div>
@@ -80,7 +99,12 @@ const ContentItem = ({ post }: { post: Post }) => {
           {getContentType(post)} • {formatDistanceToNow(new Date(post.created_at), { addSuffix: true })}
         </p>
       </div>
-      <button className="text-primary hover:text-primary-dark">View</button>
+      <button 
+        className="text-primary hover:text-primary-dark"
+        onClick={handleViewPost}
+      >
+        View
+      </button>
     </div>
   );
 };

@@ -2,6 +2,7 @@ import { useState, useCallback } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 
+// Match the number of basic questions in Onboarding.tsx
 const TOTAL_QUESTIONS = 10;
 
 export const useOnboardingStatus = () => {
@@ -33,20 +34,34 @@ export const useOnboardingStatus = () => {
         .select("*")
         .eq("user_id", userId);
 
+      // Handle the case where the table doesn't exist or other database errors
       if (error) {
         console.error("Error fetching onboarding responses:", error);
+        
+        // If the table doesn't exist (PGRST116) or another database error occurs,
+        // assume onboarding is not completed
+        if (error.code === 'PGRST116' || error.code === '42P01') {
+          console.log("Onboarding table doesn't exist, assuming onboarding not completed");
+          return false;
+        }
+        
         throw error;
+      }
+
+      if (!existingResponses || existingResponses.length === 0) {
+        console.log("No onboarding responses found");
+        return false;
       }
 
       // Count unique question numbers to handle potential duplicates
       const uniqueQuestionCount = new Set(
-        existingResponses?.map(response => response.question_number)
+        existingResponses.map(response => response.question_number)
       ).size;
 
       console.log("Onboarding responses:", existingResponses);
       console.log("Unique question count:", uniqueQuestionCount);
       
-      const hasCompletedOnboarding = uniqueQuestionCount === TOTAL_QUESTIONS;
+      const hasCompletedOnboarding = uniqueQuestionCount >= TOTAL_QUESTIONS;
       console.log("Has completed onboarding:", hasCompletedOnboarding, 
         "Response count:", uniqueQuestionCount,
         "Required questions:", TOTAL_QUESTIONS);
@@ -55,8 +70,8 @@ export const useOnboardingStatus = () => {
     } catch (error) {
       console.error("Error in checkOnboardingStatus:", error);
       toast({
-        title: "Authentication Error",
-        description: "Please sign in again to continue",
+        title: "Error Checking Onboarding Status",
+        description: "There was a problem checking your onboarding status",
         variant: "destructive",
       });
       return false;

@@ -7,32 +7,37 @@ import { supabase } from "@/integrations/supabase/client";
 
 export const OnboardingButton = () => {
   const [showButton, setShowButton] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const { checkOnboardingStatus } = useOnboardingStatus();
   const navigate = useNavigate();
 
   useEffect(() => {
     const checkStatus = async () => {
-      const { data: { session } } = await supabase.auth.getSession();
-      if (!session?.user) {
-        console.log("No active session found in OnboardingButton");
-        setShowButton(false);
-        return;
-      }
-
-      console.log("Checking onboarding status for user:", session.user.id);
+      setIsLoading(true);
       try {
+        const { data: { session } } = await supabase.auth.getSession();
+        if (!session?.user) {
+          console.log("No active session found in OnboardingButton");
+          setShowButton(false);
+          return;
+        }
+
+        console.log("Checking onboarding status for user:", session.user.id);
         const hasCompletedOnboarding = await checkOnboardingStatus(session.user.id);
         setShowButton(!hasCompletedOnboarding);
       } catch (error) {
         console.error("Error checking onboarding status:", error);
-        setShowButton(false);
+        // Show the button if there's an error, so users can complete onboarding
+        setShowButton(true);
+      } finally {
+        setIsLoading(false);
       }
     };
 
     checkStatus();
   }, [checkOnboardingStatus]);
 
-  if (!showButton) return null;
+  if (isLoading || !showButton) return null;
 
   return (
     <Button
