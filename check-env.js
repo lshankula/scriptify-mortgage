@@ -16,6 +16,12 @@ import { fileURLToPath } from 'url';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
+// Skip environment variable check in production (Netlify)
+if (process.env.NODE_ENV === 'production') {
+  console.log('Running in production mode, skipping environment variable check.');
+  process.exit(0);
+}
+
 // Load environment variables from .env file
 const result = config();
 
@@ -60,13 +66,6 @@ function checkRequiredVars(requiredVars) {
 // Main function
 function main() {
   console.log('Checking environment variables...');
-  
-  // Skip environment variable check in production (Netlify)
-  if (process.env.NODE_ENV === 'production') {
-    console.log('Running in production mode, skipping environment variable check.');
-    process.exit(0);
-    return;
-  }
   
   // Try to find the .env file
   const envPath = path.resolve(process.cwd(), '.env');
