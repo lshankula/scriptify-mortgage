@@ -111,7 +111,6 @@ const ContentItem = ({ post }: { post: Post }) => {
 
 const Dashboard = () => {
   const navigate = useNavigate();
-  const [notifications] = useState(3);
   const { session } = useSession();
   const { missions, isLoading: missionsLoading, updateMissionStatus } = useMissions();
   const { posts, isLoading: postsLoading } = usePosts();

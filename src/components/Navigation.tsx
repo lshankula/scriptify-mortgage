@@ -4,6 +4,7 @@ import { Menu, X } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { useNotifications } from "@/hooks/useNotifications";
 import { MobileMenu } from './navigation/MobileMenu';
 import { UserAvatar } from './navigation/UserAvatar';
 import { SearchBar } from './navigation/SearchBar';
@@ -14,7 +15,7 @@ import { OnboardingButton } from './navigation/OnboardingButton';
 export const Navigation = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [user, setUser] = useState<any>(null);
-  const [notifications] = useState(3); // For demo purposes
+  const { count: notificationCount, isLoading: notificationsLoading } = useNotifications();
   const navigate = useNavigate();
   const { toast } = useToast();
 
@@ -95,7 +96,7 @@ export const Navigation = () => {
               <>
                 <OnboardingButton />
                 <CreateContentButton />
-                <NotificationButton count={notifications} />
+                <NotificationButton count={notificationCount} />
                 <UserAvatar email={user?.email} onLogout={handleLogout} />
               </>
             )}
