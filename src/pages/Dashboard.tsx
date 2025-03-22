@@ -110,6 +110,7 @@ const ContentItem = ({ post }: { post: Post }) => {
 };
 
 const Dashboard = () => {
+  const navigate = useNavigate();
   const [notifications] = useState(3);
   const { session } = useSession();
   const { missions, isLoading: missionsLoading, updateMissionStatus } = useMissions();
@@ -127,13 +128,23 @@ const Dashboard = () => {
   
   // Handle mission toggle
   const handleMissionToggle = async (id: string, status: MissionType['status']) => {
+    // Get the mission before updating it
+    const mission = missions.find(m => m.id === id);
+    const previousStatus = mission?.status;
+    
     await updateMissionStatus(id, status);
     
-    // If mission is completed, add XP
-    if (status === 'completed') {
-      const mission = missions.find(m => m.id === id);
+    // If mission is newly completed, add XP
+    if (status === 'completed' && previousStatus !== 'completed') {
       if (mission) {
         addXP(mission.xp_reward);
+      }
+    }
+    // If mission was completed but now is not, remove XP
+    else if (previousStatus === 'completed' && status !== 'completed') {
+      if (mission) {
+        // Use negative XP to subtract
+        addXP(-mission.xp_reward);
       }
     }
   };
@@ -160,6 +171,7 @@ const Dashboard = () => {
             <div 
               className="bg-primary rounded-full h-2 transition-all duration-500 ease-in-out" 
               style={{ width: `${Math.round(levelProgress * 100)}%` }}
+              title={`${Math.round(levelProgress * 100)}% progress to next level`}
             ></div>
           </div>
           
@@ -201,7 +213,16 @@ const Dashboard = () => {
               {postsLoading ? (
                 <span className="inline-block w-24 h-4 bg-gray-200 animate-pulse rounded"></span>
               ) : (
-                posts.length > 0 ? "↑ New content added" : "Create your first content"
+                posts.length > 0 ? (
+                  "↑ New content added"
+                ) : (
+                  <button 
+                    className="text-green-600 hover:text-green-700 underline"
+                    onClick={() => navigate('/social')}
+                  >
+                    Create your first content
+                  </button>
+                )
               )}
             </div>
           </div>
@@ -259,17 +280,25 @@ const Dashboard = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {/* Daily Missions */}
           <div className="bg-white p-6 rounded-lg border">
-            <h3 className="text-lg font-bold mb-4 flex items-center gap-2">
-              <Zap className="w-5 h-5 text-accent" />
-              Daily Missions
-            </h3>
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-lg font-bold flex items-center gap-2">
+                <Zap className="w-5 h-5 text-accent" />
+                Daily Missions
+              </h3>
+              {!missionsLoading && missions.filter(m => m.mission_type === 'daily').length > 0 && (
+                <div className="text-sm text-gray-600">
+                  {missions.filter(m => m.mission_type === 'daily' && m.status === 'completed').length}/
+                  {missions.filter(m => m.mission_type === 'daily').length} completed
+                </div>
+              )}
+            </div>
             <div className="space-y-3">
               {missionsLoading ? (
                 // Loading state
                 <div className="flex justify-center py-4">
                   <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
                 </div>
-              ) : missions.length === 0 ? (
+              ) : missions.filter(m => m.mission_type === 'daily').length === 0 ? (
                 // Empty state
                 <div className="text-center py-4 text-gray-500">
                   <p>No missions available</p>
@@ -287,63 +316,22 @@ const Dashboard = () => {
                     />
                   ))
               )}
-              
-              {/* If we don't have enough real missions, show some mock ones */}
-              {!missionsLoading && missions.filter(m => m.mission_type === 'daily').length === 0 && (
-                <>
-                  <MissionItem 
-                    mission={{
-                      id: 'mock-1',
-                      user_id: session?.user?.id || 'test-user',
-                      title: "Create your first video script",
-                      description: "Create a video script for your mortgage business",
-                      xp_reward: 100,
-                      status: 'not_started',
-                      created_at: new Date().toISOString(),
-                      updated_at: new Date().toISOString(),
-                      expires_at: null,
-                      mission_type: 'daily'
-                    }}
-                    onToggle={handleMissionToggle}
-                  />
-                  <MissionItem 
-                    mission={{
-                      id: 'mock-2',
-                      user_id: session?.user?.id || 'test-user',
-                      title: "Share content with an agent",
-                      description: "Share one of your content pieces with a real estate agent",
-                      xp_reward: 50,
-                      status: 'in_progress',
-                      created_at: new Date().toISOString(),
-                      updated_at: new Date().toISOString(),
-                      expires_at: null,
-                      mission_type: 'daily'
-                    }}
-                    onToggle={handleMissionToggle}
-                  />
-                  <MissionItem 
-                    mission={{
-                      id: 'mock-3',
-                      user_id: session?.user?.id || 'test-user',
-                      title: "Complete your profile",
-                      description: "Fill out all fields in your profile",
-                      xp_reward: 25,
-                      status: 'completed',
-                      created_at: new Date().toISOString(),
-                      updated_at: new Date().toISOString(),
-                      expires_at: null,
-                      mission_type: 'daily'
-                    }}
-                    onToggle={handleMissionToggle}
-                  />
-                </>
-              )}
             </div>
           </div>
 
           {/* Recent Content */}
           <div className="bg-white p-6 rounded-lg border">
-            <h3 className="text-lg font-bold mb-4">Recent Content</h3>
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-lg font-bold">Recent Content</h3>
+              {!postsLoading && posts.length > 0 && (
+                <button 
+                  className="text-sm text-primary hover:text-primary-dark"
+                  onClick={() => navigate('/content')}
+                >
+                  View all
+                </button>
+              )}
+            </div>
             <div className="space-y-3">
               {postsLoading ? (
                 // Loading state
@@ -351,60 +339,21 @@ const Dashboard = () => {
                   <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
                 </div>
               ) : posts.length === 0 ? (
-                // Empty state
-                <div className="text-center py-4 text-gray-500">
-                  <p>No content created yet</p>
+                // Empty state with call to action
+                <div className="text-center py-6 bg-gray-50 rounded-lg">
+                  <p className="text-gray-600 mb-3">No content created yet</p>
+                  <button 
+                    className="px-4 py-2 bg-primary text-white rounded-md hover:bg-primary-dark transition-colors"
+                    onClick={() => navigate('/social')}
+                  >
+                    Create Your First Content
+                  </button>
                 </div>
               ) : (
                 // Posts list
                 posts.slice(0, 3).map(post => (
                   <ContentItem key={post.id} post={post} />
                 ))
-              )}
-              
-              {/* If we don't have enough real posts, show some mock ones */}
-              {!postsLoading && posts.length === 0 && (
-                <>
-                  <ContentItem 
-                    post={{
-                      id: 'mock-1',
-                      user_id: session?.user?.id || 'test-user',
-                      title: "First-Time Homebuyer Guide",
-                      content: "Content about first-time homebuyers...",
-                      type: "blog",
-                      status: 'published',
-                      remixed_from: null,
-                      created_at: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString(), // 2 hours ago
-                      updated_at: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString(),
-                    }}
-                  />
-                  <ContentItem 
-                    post={{
-                      id: 'mock-2',
-                      user_id: session?.user?.id || 'test-user',
-                      title: "Market Update Video Script",
-                      content: "Script for a market update video...",
-                      type: "video",
-                      status: 'published',
-                      remixed_from: null,
-                      created_at: new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString(), // Yesterday
-                      updated_at: new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString(),
-                    }}
-                  />
-                  <ContentItem 
-                    post={{
-                      id: 'mock-3',
-                      user_id: session?.user?.id || 'test-user',
-                      title: "Rate Change Announcement",
-                      content: "Announcement about rate changes...",
-                      type: "facebook",
-                      status: 'published',
-                      remixed_from: null,
-                      created_at: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(), // 2 days ago
-                      updated_at: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(),
-                    }}
-                  />
-                </>
               )}
             </div>
           </div>
