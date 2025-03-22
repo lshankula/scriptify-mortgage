@@ -5,7 +5,7 @@ export interface Post {
   user_id: string;
   title: string;
   content: string;
-  platform: string;
+  type: string;
   status: PostStatus | null;
   remixed_from: string | null;
   created_at: string;
@@ -17,7 +17,7 @@ export interface PostInsert {
   user_id: string;
   title: string;
   content: string;
-  platform: string;
+  type: string;
   status?: PostStatus | null;
   remixed_from?: string | null;
   created_at?: string;
@@ -29,7 +29,7 @@ export interface PostUpdate {
   user_id?: string;
   title?: string;
   content?: string;
-  platform?: string;
+  type?: string;
   status?: PostStatus | null;
   remixed_from?: string | null;
   created_at?: string;

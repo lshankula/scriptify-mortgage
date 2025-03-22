@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Plus, Star, Target, TrendingUp, Users, Zap } from 'lucide-react';
+import { Plus, Star, Target, TrendingUp, Users, Zap, Trophy } from 'lucide-react';
 import { NavigationMenu } from '@/components/navigation/NavigationMenu';
 import { OnboardingDialog } from '@/components/onboarding/OnboardingDialog';
 import { DashboardLayout } from '@/components/layouts/DashboardLayout';
@@ -56,9 +56,9 @@ const MissionItem = ({
 const ContentItem = ({ post }: { post: Post }) => {
   const navigate = useNavigate();
   
-  // Determine content type based on platform or other properties
+  // Determine content type based on type field
   const getContentType = (post: Post) => {
-    switch (post.platform.toLowerCase()) {
+    switch (post.type.toLowerCase()) {
       case 'facebook':
       case 'instagram':
       case 'twitter':
@@ -77,14 +77,14 @@ const ContentItem = ({ post }: { post: Post }) => {
   
   const handleViewPost = () => {
     // Navigate to the post detail page
-    if (post.platform.toLowerCase() === 'facebook' || 
-        post.platform.toLowerCase() === 'instagram' || 
-        post.platform.toLowerCase() === 'twitter' || 
-        post.platform.toLowerCase() === 'linkedin') {
+    if (post.type.toLowerCase() === 'facebook' || 
+        post.type.toLowerCase() === 'instagram' || 
+        post.type.toLowerCase() === 'twitter' || 
+        post.type.toLowerCase() === 'linkedin') {
       navigate(`/social/post/${post.id}`);
-    } else if (post.platform.toLowerCase() === 'blog') {
+    } else if (post.type.toLowerCase() === 'blog') {
       navigate(`/content/blog/${post.id}`);
-    } else if (post.platform.toLowerCase() === 'video') {
+    } else if (post.type.toLowerCase() === 'video') {
       navigate(`/content/video/${post.id}`);
     } else {
       navigate(`/content/post/${post.id}`);
@@ -116,9 +116,11 @@ const Dashboard = () => {
   const { posts, isLoading: postsLoading } = usePosts();
   const { 
     level, 
+    levelTitle,
     xpTotal, 
     xpToNextLevel, 
     levelProgress, 
+    levelConfig,
     isLoading: progressLoading,
     addXP
   } = useUserProgress();
@@ -144,22 +146,37 @@ const Dashboard = () => {
           <div className="flex items-center justify-between mb-4">
             <div>
               <h2 className="text-xl font-bold flex items-center gap-2">
-                <Star className="w-5 h-5 text-accent" />
-                Content Master Level {level}
+                <Trophy className="w-5 h-5 text-accent" />
+                {levelTitle} (Level {level})
               </h2>
-              <p className="text-gray-600">Complete daily tasks to level up!</p>
+              <p className="text-gray-600">{levelConfig.description}</p>
             </div>
             <div className="text-right">
               <div className="text-2xl font-bold text-primary">{xpTotal.toLocaleString()} XP</div>
               <p className="text-sm text-gray-600">Next level: {xpToNextLevel.toLocaleString()} XP needed</p>
             </div>
           </div>
-          <div className="w-full bg-gray-200 rounded-full h-2">
+          <div className="w-full bg-gray-200 rounded-full h-2 mb-2">
             <div 
               className="bg-primary rounded-full h-2 transition-all duration-500 ease-in-out" 
               style={{ width: `${Math.round(levelProgress * 100)}%` }}
             ></div>
           </div>
+          
+          {/* Level benefits */}
+          {levelConfig.benefits && levelConfig.benefits.length > 0 && (
+            <div className="mt-2">
+              <p className="text-xs text-gray-500 mb-1">Level Benefits:</p>
+              <div className="flex flex-wrap gap-2">
+                {levelConfig.benefits.map((benefit, index) => (
+                  <span key={index} className="inline-flex items-center px-2 py-1 rounded-full text-xs bg-primary/10 text-primary">
+                    <Star className="w-3 h-3 mr-1" />
+                    {benefit}
+                  </span>
+                ))}
+              </div>
+            </div>
+          )}
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
@@ -354,7 +371,7 @@ const Dashboard = () => {
                       user_id: session?.user?.id || 'test-user',
                       title: "First-Time Homebuyer Guide",
                       content: "Content about first-time homebuyers...",
-                      platform: "blog",
+                      type: "blog",
                       status: 'published',
                       remixed_from: null,
                       created_at: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString(), // 2 hours ago
@@ -367,7 +384,7 @@ const Dashboard = () => {
                       user_id: session?.user?.id || 'test-user',
                       title: "Market Update Video Script",
                       content: "Script for a market update video...",
-                      platform: "video",
+                      type: "video",
                       status: 'published',
                       remixed_from: null,
                       created_at: new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString(), // Yesterday
@@ -380,7 +397,7 @@ const Dashboard = () => {
                       user_id: session?.user?.id || 'test-user',
                       title: "Rate Change Announcement",
                       content: "Announcement about rate changes...",
-                      platform: "facebook",
+                      type: "facebook",
                       status: 'published',
                       remixed_from: null,
                       created_at: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(), // 2 days ago

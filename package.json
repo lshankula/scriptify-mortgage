@@ -5,10 +5,14 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
+    "prebuild": "node check-env.js",
     "build": "vite build",
     "build:dev": "vite build --mode development",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "test-build": "node test-build.js",
+    "deploy:supabase": "node setup-supabase-env.js && supabase functions deploy generate-post && supabase functions deploy create-checkout-session",
+    "deploy:netlify": "npm run build && netlify deploy --prod"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.9.0",
@@ -48,6 +52,7 @@
     "clsx": "^2.1.1",
     "cmdk": "^1.0.0",
     "date-fns": "^3.6.0",
+    "dotenv": "^16.4.7",
     "embla-carousel-react": "^8.3.0",
     "input-otp": "^1.2.4",
     "lucide-react": "^0.462.0",
@@ -78,6 +83,7 @@
     "eslint-plugin-react-refresh": "^0.4.9",
     "globals": "^15.9.0",
     "lovable-tagger": "^1.0.19",
+    "netlify-cli": "^17.19.0",
     "postcss": "^8.4.47",
     "tailwindcss": "^3.4.11",
     "typescript": "^5.5.3",

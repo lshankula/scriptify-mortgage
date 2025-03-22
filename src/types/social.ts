@@ -7,7 +7,8 @@ export type Post = {
   user_id: string;
   status: 'draft' | 'published';
   title: string;
-  type: keyof typeof postTypes;
+  type: string;
+  remixed_from: string | null;
   updated_at: string;
   metadata?: Record<string, any>;
 };

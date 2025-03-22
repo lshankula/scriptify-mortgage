@@ -54,7 +54,7 @@ export const PostOutline = ({ answers, onBack, onSubmit }: PostOutlineProps) => 
           user_id: session.user.id,
           title: answers.topic || 'Untitled Post',
           content,
-          platform: answers.platform || 'linkedin',
+          type: answers.platform || 'linkedin',
           status: 'draft',
           created_at: new Date().toISOString(),
           updated_at: new Date().toISOString()

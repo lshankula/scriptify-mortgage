@@ -3,6 +3,7 @@ import { Post, PostInsert, PostUpdate, PostStatus } from './posts';
 import { ContentType, PromptTemplate, PromptTemplateInsert, PromptTemplateUpdate } from './prompt-templates';
 import { Subscription, SubscriptionInsert, SubscriptionUpdate, SubscriptionTier } from './subscriptions';
 import { Mission, MissionInsert, MissionUpdate, MissionStatus } from './missions';
+import { UserProgress, UserProgressInsert, UserProgressUpdate } from './user-progress';
 
 export type Json =
   | string
@@ -51,6 +52,12 @@ export interface Database {
         Row: Mission;
         Insert: MissionInsert;
         Update: MissionUpdate;
+        Relationships: [];
+      };
+      user_progress: {
+        Row: UserProgress;
+        Insert: UserProgressInsert;
+        Update: UserProgressUpdate;
         Relationships: [];
       };
     };

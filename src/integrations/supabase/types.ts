@@ -48,6 +48,7 @@ export type Database = {
           status: Database["public"]["Enums"]["post_status"] | null
           title: string
           type: string
+          remixed_from: string | null
           updated_at: string
           user_id: string
         }
@@ -59,6 +60,7 @@ export type Database = {
           status?: Database["public"]["Enums"]["post_status"] | null
           title: string
           type: string
+          remixed_from?: string | null
           updated_at?: string
           user_id: string
         }
@@ -70,6 +72,7 @@ export type Database = {
           status?: Database["public"]["Enums"]["post_status"] | null
           title?: string
           type?: string
+          remixed_from?: string | null
           updated_at?: string
           user_id?: string
         }
@@ -135,6 +138,36 @@ export type Database = {
           tier?: Database["public"]["Enums"]["subscription_tier"] | null
           updated_at?: string
           user_id?: string
+        }
+        Relationships: []
+      }
+      user_progress: {
+        Row: {
+          id: string
+          user_id: string
+          xp_total: number
+          level: number
+          xp_to_next_level: number
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          user_id: string
+          xp_total: number
+          level: number
+          xp_to_next_level: number
+          created_at?: string
+          updated_at?: string
+          id?: string
+        }
+        Update: {
+          user_id?: string
+          xp_total?: number
+          level?: number
+          xp_to_next_level?: number
+          updated_at?: string
+          id?: string
+          created_at?: string
         }
         Relationships: []
       }

@@ -7,9 +7,10 @@ const corsHeaders = {
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 }
 
+// Get price IDs from environment variables or use defaults
 const PRICE_IDS = {
-  pro: 'price_1QaQsCGbSMrsXfWs8UT3n1XA',
-  enterprise: 'price_1QaQsTGbSMrsXfWsQj7UOBk8'
+  pro: Deno.env.get('STRIPE_PRICE_ID_PRO') || 'price_1QaQsCGbSMrsXfWs8UT3n1XA',
+  enterprise: Deno.env.get('STRIPE_PRICE_ID_ENTERPRISE') || 'price_1QaQsTGbSMrsXfWsQj7UOBk8'
 };
 
 serve(async (req) => {

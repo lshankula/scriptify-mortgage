@@ -69,7 +69,7 @@ export const QuestionForm = ({
         });
 
       if (error) throw error;
-
+      
       if (mode === 'edit') {
         toast({
           title: "Response Updated",

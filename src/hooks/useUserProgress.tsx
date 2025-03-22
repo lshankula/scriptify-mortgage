@@ -2,16 +2,13 @@ import { useState, useEffect, useCallback } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { useSession } from '@/hooks/useSession';
-
-interface UserProgress {
-  id: string;
-  user_id: string;
-  xp_total: number;
-  level: number;
-  xp_to_next_level: number;
-  created_at: string;
-  updated_at: string;
-}
+import { 
+  calculateLevel, 
+  calculateXpToNextLevel, 
+  calculateLevelProgress, 
+  getLevelConfig 
+} from '@/data/levelConfig';
+import type { UserProgress } from '@/integrations/supabase/types/user-progress';
 
 export const useUserProgress = () => {
   const [progress, setProgress] = useState<UserProgress | null>(null);
@@ -37,12 +34,14 @@ export const useUserProgress = () => {
         if (error.code === 'PGRST116') { // Table doesn't exist
           console.log('User progress table does not exist, using mock data');
           // Return mock data for now
+          const mockXpTotal = 2450;
+          const mockLevel = calculateLevel(mockXpTotal);
           setProgress({
             id: 'mock-id',
             user_id: session.user.id,
-            xp_total: 2450,
-            level: 3,
-            xp_to_next_level: 550,
+            xp_total: mockXpTotal,
+            level: mockLevel,
+            xp_to_next_level: calculateXpToNextLevel(mockXpTotal),
             created_at: new Date().toISOString(),
             updated_at: new Date().toISOString(),
           });
@@ -60,12 +59,14 @@ export const useUserProgress = () => {
     } catch (error: any) {
       console.error('Error fetching user progress:', error);
       // Use mock data as fallback
+      const mockXpTotal = 2450;
+      const mockLevel = calculateLevel(mockXpTotal);
       setProgress({
         id: 'mock-id',
         user_id: session.user.id,
-        xp_total: 2450,
-        level: 3,
-        xp_to_next_level: 550,
+        xp_total: mockXpTotal,
+        level: mockLevel,
+        xp_to_next_level: calculateXpToNextLevel(mockXpTotal),
         created_at: new Date().toISOString(),
         updated_at: new Date().toISOString(),
       });
@@ -78,11 +79,13 @@ export const useUserProgress = () => {
     if (!session?.user?.id) return;
 
     try {
+      const initialXpTotal = 0;
+      const initialLevel = calculateLevel(initialXpTotal);
       const initialProgress = {
         user_id: session.user.id,
-        xp_total: 0,
-        level: 1,
-        xp_to_next_level: 1000,
+        xp_total: initialXpTotal,
+        level: initialLevel,
+        xp_to_next_level: calculateXpToNextLevel(initialXpTotal),
         created_at: new Date().toISOString(),
         updated_at: new Date().toISOString(),
       };
@@ -107,12 +110,14 @@ export const useUserProgress = () => {
     } catch (error: any) {
       console.error('Error creating initial user progress:', error);
       // Use mock data as fallback
+      const initialXpTotal = 0;
+      const initialLevel = calculateLevel(initialXpTotal);
       setProgress({
         id: 'mock-id',
         user_id: session.user.id,
-        xp_total: 0,
-        level: 1,
-        xp_to_next_level: 1000,
+        xp_total: initialXpTotal,
+        level: initialLevel,
+        xp_to_next_level: calculateXpToNextLevel(initialXpTotal),
         created_at: new Date().toISOString(),
         updated_at: new Date().toISOString(),
       });
@@ -122,17 +127,10 @@ export const useUserProgress = () => {
   const addXP = useCallback(async (amount: number) => {
     if (!session?.user?.id || !progress) return;
 
-    // Calculate new values
+    // Calculate new values using the level config system
     const newXpTotal = progress.xp_total + amount;
-    let newLevel = progress.level;
-    let newXpToNextLevel = progress.xp_to_next_level - amount;
-    
-    // Check if user leveled up
-    if (newXpToNextLevel <= 0) {
-      newLevel += 1;
-      // Each level requires more XP (simple formula: 1000 * level)
-      newXpToNextLevel = 1000 * newLevel - Math.abs(newXpToNextLevel);
-    }
+    const newLevel = calculateLevel(newXpTotal);
+    const newXpToNextLevel = calculateXpToNextLevel(newXpTotal);
 
     try {
       // Try to update in database
@@ -215,14 +213,19 @@ export const useUserProgress = () => {
     }
   }, [session, fetchProgress]);
 
+  // Get the level title and config from the level config
+  const levelConfig = progress ? getLevelConfig(progress.level) : getLevelConfig(1);
+  
   return {
     progress,
     isLoading,
     fetchProgress,
     addXP,
     level: progress?.level || 1,
+    levelTitle: levelConfig.title,
     xpTotal: progress?.xp_total || 0,
-    xpToNextLevel: progress?.xp_to_next_level || 1000,
-    levelProgress: progress ? 1 - (progress.xp_to_next_level / (1000 * progress.level)) : 0,
+    xpToNextLevel: progress?.xp_to_next_level || calculateXpToNextLevel(0),
+    levelProgress: progress ? calculateLevelProgress(progress.xp_total) : 0,
+    levelConfig,
   };
 };

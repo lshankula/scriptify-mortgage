@@ -1,69 +1,102 @@
-# Welcome to your Lovable project
+# Scriptify Mortgage
 
-## Project info
+A modern web application for mortgage content creation and social media management.
 
-**URL**: https://lovable.dev/projects/08b50c92-b910-40d8-8526-77eae24bb4d1
+## Project Overview
 
-## How can I edit this code?
+Scriptify Mortgage is a comprehensive platform that helps mortgage professionals create engaging content for social media, manage their online presence, and grow their business through effective digital marketing.
 
-There are several ways of editing your application.
+## Technologies Used
 
-**Use Lovable**
+This project is built with:
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/08b50c92-b910-40d8-8526-77eae24bb4d1) and start prompting.
+- **Frontend**: React, TypeScript, Vite
+- **UI Components**: shadcn/ui (based on Radix UI)
+- **Styling**: Tailwind CSS
+- **Backend**: Supabase (Authentication, Database, Edge Functions)
+- **Payment Processing**: Stripe
+- **AI Integration**: OpenAI and Anthropic APIs for content generation
 
-Changes made via Lovable will be committed automatically to this repo.
+## Getting Started
 
-**Use your preferred IDE**
+### Prerequisites
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+- Node.js (v18 or later recommended)
+- npm or bun
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+### Installation
 
-Follow these steps:
-
+1. Clone the repository:
 ```sh
-# Step 1: Clone the repository using the project's Git URL.
 git clone <YOUR_GIT_URL>
-
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
-
-# Step 3: Install the necessary dependencies.
-npm i
-
-# Step 4: Start the development server with auto-reloading and an instant preview.
-npm run dev
+cd scriptify-mortgage
 ```
 
-**Edit a file directly in GitHub**
+2. Install dependencies:
+```sh
+npm install
+# or
+bun install
+```
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+3. Create a `.env` file based on the `.env.example` template:
+```sh
+cp .env.example .env
+# Edit .env with your actual values
+```
 
-**Use GitHub Codespaces**
+4. Start the development server:
+```sh
+npm run dev
+# or
+bun run dev
+```
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+## Features
 
-## What technologies are used for this project?
+- **Content Creation**: AI-powered tools to generate mortgage-related content
+- **Social Media Management**: Schedule and manage posts across platforms
+- **Analytics**: Track performance of your content
+- **Learning Center**: Resources for mortgage professionals
+- **Subscription Plans**: Pro and Enterprise tiers with different features
 
-This project is built with .
+## Deployment
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+For detailed deployment instructions, see [DEPLOYMENT.md](./DEPLOYMENT.md).
 
-## How can I deploy this project?
+### Quick Deployment
 
-Simply open [Lovable](https://lovable.dev/projects/08b50c92-b910-40d8-8526-77eae24bb4d1) and click on Share -> Publish.
+#### Deploy to Netlify
 
-## I want to use a custom domain - is that possible?
+```sh
+# Install Netlify CLI if not already installed
+npm install -g netlify-cli
 
-We don't support custom domains (yet). If you want to deploy your project under your own domain then we recommend using Netlify. Visit our docs for more details: [Custom domains](https://docs.lovable.dev/tips-tricks/custom-domain/)
+# Build the project
+npm run build
+
+# Deploy to Netlify
+npm run deploy:netlify
+```
+
+#### Deploy Supabase Functions
+
+```sh
+# Install Supabase CLI if not already installed
+npm install -g supabase
+
+# Deploy functions and set environment variables
+npm run deploy:supabase
+```
+
+## Contributing
+
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add some amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
+
+## License
+
+This project is proprietary software. All rights reserved.
