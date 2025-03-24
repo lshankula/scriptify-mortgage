@@ -35,13 +35,21 @@ const MissionItem = ({
   return (
     <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
       <div className="flex items-center gap-3">
-        <input 
-          type="checkbox" 
-          checked={progress === 1}
-          className="w-4 h-4 text-primary rounded cursor-pointer"
-          onChange={handleToggle}
-        />
-        <span className={progress === 1 ? 'text-gray-500 line-through' : ''}>
+        <div 
+          className="cursor-pointer"
+          onClick={handleToggle}
+        >
+          <input 
+            type="checkbox" 
+            checked={progress === 1}
+            className="w-4 h-4 text-primary rounded cursor-pointer"
+            readOnly
+          />
+        </div>
+        <span 
+          className={progress === 1 ? 'text-gray-500 line-through cursor-pointer' : 'cursor-pointer'}
+          onClick={handleToggle}
+        >
           {mission.title}
         </span>
       </div>
