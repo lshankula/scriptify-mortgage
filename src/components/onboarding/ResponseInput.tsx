@@ -135,15 +135,6 @@ export const ResponseInput = ({ currentQ, userId, onResponseChange, value }: Res
           type="voice"
           disabled={isTranscribing}
         />
-        <MediaRecorder
-          onRecordingComplete={async (blob) => {
-            const file = new File([blob], `video_${Date.now()}.webm`, { type: blob.type });
-            const url = await handleMediaUpload(file, 'video');
-            if (url) await handleMediaSave(url, 'video');
-          }}
-          type="video"
-          disabled={isTranscribing}
-        />
       </div>
     </div>
   );
